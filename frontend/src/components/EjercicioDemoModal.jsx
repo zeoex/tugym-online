@@ -26,18 +26,35 @@ export default function EjercicioDemoModal({ nombre, musculo, metaColor, metaBg,
 
     (async () => {
       try {
-        const searchRes = await fetch(
-          `https://wger.de/api/v2/exercise/?format=json&name=${encodeURIComponent(englishName)}&language=2&limit=5`
+        // exercisesearch is the autocomplete endpoint — devuelve base_id correcto por cada ejercicio
+        const res = await fetch(
+          `https://wger.de/api/v2/exercisesearch/?term=${encodeURIComponent(englishName)}&language=english&format=json`
         );
         if (cancelled) return;
-        const searchData = await searchRes.json();
+        const data = await res.json();
 
-        if (!searchData.results?.length) { setImgError(true); return; }
+        const suggestions = data.suggestions ?? [];
 
-        const baseId = searchData.results[0].exercise_base;
+        // Preferir coincidencia exacta, sino usar la primera sugerencia
+        const exact = suggestions.find(
+          s => s.value?.toLowerCase() === englishName.toLowerCase()
+        );
+        const best = exact ?? suggestions[0];
+
+        if (!best) { setImgError(true); return; }
+
+        // A veces la sugerencia ya trae la imagen directamente
+        if (best.data?.image) {
+          setImgUrl(best.data.image);
+          return;
+        }
+
+        // Si no, buscar imagen por base_id
+        const baseId = best.data?.base_id;
+        if (!baseId) { setImgError(true); return; }
 
         const imgRes = await fetch(
-          `https://wger.de/api/v2/exerciseimage/?format=json&exercise_base=${baseId}&limit=5`
+          `https://wger.de/api/v2/exerciseimage/?format=json&exercise_base=${baseId}&limit=3`
         );
         if (cancelled) return;
         const imgData = await imgRes.json();
