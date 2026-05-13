@@ -1,0 +1,125 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Usuario {
+  id           Int      @id @default(autoincrement())
+  nombre       String
+  email        String   @unique
+  passwordHash String   @map("password_hash")
+  rol          String   @default("ADMIN")
+  activo       Boolean  @default(true)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("usuarios")
+}
+
+model Socio {
+  id            Int      @id @default(autoincrement())
+  nombre        String
+  apellido      String
+  email         String?  @unique
+  telefono      String?
+  dni           String?  @unique
+  foto          String?
+  sexo          String     @default("OTROS")
+  fechaNac      DateTime?  @map("fecha_nac")
+  fechaAlta     DateTime   @default(now()) @map("fecha_alta")
+  estado        String     @default("ACTIVO")
+  observaciones String?
+  createdAt     DateTime   @default(now()) @map("created_at")
+  updatedAt     DateTime   @updatedAt @map("updated_at")
+
+  pagos          Pago[]
+  notificaciones Notificacion[]
+
+  @@index([apellido, nombre])
+  @@index([estado])
+  @@map("socios")
+}
+
+model Plan {
+  id           Int      @id @default(autoincrement())
+  nombre       String
+  tipo         String
+  duracionDias Int      @map("duracion_dias")
+  precio       Float
+  descripcion  String?
+  activo       Boolean  @default(true)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  pagos        Pago[]
+
+  @@map("planes")
+}
+
+model Pago {
+  id               Int      @id @default(autoincrement())
+  socioId          Int      @map("socio_id")
+  planId           Int      @map("plan_id")
+  monto            Float
+  fechaPago        DateTime @default(now()) @map("fecha_pago")
+  fechaVencimiento DateTime @map("fecha_vencimiento")
+  estado           String   @default("ACTIVO")
+  metodoPago       String   @default("EFECTIVO") @map("metodo_pago")
+  observaciones    String?
+  createdAt        DateTime @default(now()) @map("created_at")
+
+  socio            Socio    @relation(fields: [socioId], references: [id])
+  plan             Plan     @relation(fields: [planId], references: [id])
+
+  @@index([socioId])
+  @@index([fechaVencimiento])
+  @@index([estado])
+  @@map("pagos")
+}
+
+model RutinaDia {
+  id         Int      @id @default(autoincrement())
+  fecha      DateTime
+  tipo       String
+  nombre     String   @default("")
+  ejercicios String
+  editada    Boolean  @default(false)
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@unique([fecha, tipo])
+  @@map("rutinas_dia")
+}
+
+model CajaDia {
+  id            Int      @id @default(autoincrement())
+  fecha         DateTime @unique
+  montoApertura Float    @default(0) @map("monto_apertura")
+  montoCierre   Float?   @map("monto_cierre")
+  estado        String   @default("ABIERTA")
+  observaciones String?
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  @@map("caja_dia")
+}
+
+model Notificacion {
+  id         Int      @id @default(autoincrement())
+  socioId    Int      @map("socio_id")
+  tipo       String
+  mensaje    String
+  enviado    Boolean  @default(false)
+  fechaEnvio DateTime? @map("fecha_envio")
+  createdAt  DateTime  @default(now()) @map("created_at")
+
+  socio      Socio    @relation(fields: [socioId], references: [id])
+
+  @@index([socioId])
+  @@index([enviado])
+  @@map("notificaciones")
+}
