@@ -1,15 +1,28 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Card, CardContent, TextField, Button, Typography, Alert, CircularProgress } from '@mui/material';
+import { Box, TextField, Button, Typography, Alert, CircularProgress } from '@mui/material';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
+import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 import { useAuth } from '../context/AuthContext';
 
+/* Pesas decorativas dispersas en el fondo */
+const BG_ICONS = [
+  { Icon: FitnessCenterIcon, top: '6%',  left: '4%',   size: 90,  rotate: -30, opacity: 0.07 },
+  { Icon: FitnessCenterIcon, top: '10%', right: '6%',  size: 60,  rotate:  25, opacity: 0.06 },
+  { Icon: FitnessCenterIcon, top: '38%', left: '-2%',  size: 110, rotate: -15, opacity: 0.05 },
+  { Icon: FitnessCenterIcon, top: '55%', right: '2%',  size: 80,  rotate:  40, opacity: 0.06 },
+  { Icon: DirectionsRunIcon, top: '72%', left: '8%',   size: 70,  rotate: -10, opacity: 0.07 },
+  { Icon: FitnessCenterIcon, bottom:'5%',right: '8%',  size: 100, rotate: -35, opacity: 0.05 },
+  { Icon: FitnessCenterIcon, bottom:'12%',left:'30%',  size: 55,  rotate:  20, opacity: 0.04 },
+  { Icon: DirectionsRunIcon, top: '25%', right: '18%', size: 50,  rotate:   5, opacity: 0.05 },
+];
+
 export default function Login() {
-  const [form, setForm]     = useState({ email: '', password: '' });
-  const [error, setError]   = useState('');
+  const [form, setForm]       = useState({ email: '', password: '' });
+  const [error, setError]     = useState('');
   const [loading, setLoading] = useState(false);
-  const { login }   = useAuth();
-  const navigate    = useNavigate();
+  const { login }  = useAuth();
+  const navigate   = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -31,7 +44,8 @@ export default function Login() {
       display: 'flex',
       background: 'linear-gradient(145deg, #0f172a 0%, #111827 60%, #0c1a2e 100%)',
     }}>
-      {/* Panel izquierdo — branding */}
+
+      {/* ── Panel izquierdo branding (solo desktop) ── */}
       <Box sx={{
         flex: 1,
         display: { xs: 'none', md: 'flex' },
@@ -42,24 +56,19 @@ export default function Login() {
         position: 'relative',
         overflow: 'hidden',
       }}>
-        {/* Círculo decorativo de fondo */}
         <Box sx={{
           position: 'absolute',
-          width: 500, height: 500,
-          borderRadius: '50%',
+          width: 500, height: 500, borderRadius: '50%',
           background: 'radial-gradient(circle, rgba(6,182,212,0.15) 0%, transparent 70%)',
           top: '50%', left: '50%',
           transform: 'translate(-50%, -50%)',
           pointerEvents: 'none',
         }} />
-
         <Box sx={{ position: 'relative', textAlign: 'center' }}>
           <Box sx={{
-            width: 72, height: 72, borderRadius: 3,
-            bgcolor: '#06b6d4',
+            width: 72, height: 72, borderRadius: 3, bgcolor: '#06b6d4',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            mx: 'auto', mb: 3,
-            boxShadow: '0 0 40px rgba(6,182,212,0.4)',
+            mx: 'auto', mb: 3, boxShadow: '0 0 40px rgba(6,182,212,0.4)',
           }}>
             <FitnessCenterIcon sx={{ fontSize: 38, color: '#fff' }} />
           </Box>
@@ -69,8 +78,6 @@ export default function Login() {
           <Typography variant="body1" sx={{ color: 'rgba(255,255,255,0.45)', maxWidth: 300, mx: 'auto', lineHeight: 1.7 }}>
             Sistema de gestión para gimnasios. Socios, pagos y rutinas en un solo lugar.
           </Typography>
-
-          {/* Stats decorativos */}
           <Box sx={{ display: 'flex', gap: 4, mt: 5, justifyContent: 'center' }}>
             {[['Socios', 'activos'], ['Planes', 'flexibles'], ['100%', 'digital']].map(([val, label]) => (
               <Box key={label} sx={{ textAlign: 'center' }}>
@@ -82,33 +89,88 @@ export default function Login() {
         </Box>
       </Box>
 
-      {/* Panel derecho — formulario */}
+      {/* ── Panel derecho — formulario ── */}
       <Box sx={{
         width: { xs: '100%', md: 460 },
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         px: { xs: 3, md: 6 },
-        bgcolor: '#ffffff',
+        position: 'relative',
+        /* Mobile: fondo transparente sobre el dark bg global */
+        bgcolor: { xs: 'transparent', md: '#ffffff' },
+        overflow: 'hidden',
       }}>
-        <Box sx={{ width: '100%', maxWidth: 360 }}>
-          {/* Logo mobile */}
-          <Box sx={{ display: { md: 'none' }, textAlign: 'center', mb: 4 }}>
+
+        {/* Iconos decorativos — solo mobile */}
+        {BG_ICONS.map(({ Icon, size, rotate, opacity, ...pos }, i) => (
+          <Box
+            key={i}
+            sx={{
+              display: { xs: 'block', md: 'none' },
+              position: 'absolute',
+              ...pos,
+              pointerEvents: 'none',
+              transform: `rotate(${rotate}deg)`,
+              opacity,
+              color: '#fff',
+            }}
+          >
+            <Icon sx={{ fontSize: size }} />
+          </Box>
+        ))}
+
+        {/* Brilillo radial mobile */}
+        <Box sx={{
+          display: { xs: 'block', md: 'none' },
+          position: 'absolute',
+          width: 340, height: 340, borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(6,182,212,0.18) 0%, transparent 70%)',
+          top: '50%', left: '50%',
+          transform: 'translate(-50%, -50%)',
+          pointerEvents: 'none',
+        }} />
+
+        {/* Card del formulario */}
+        <Box sx={{
+          position: 'relative',
+          width: '100%',
+          maxWidth: 360,
+          /* Mobile: glassmorphism sobre fondo oscuro */
+          bgcolor: { xs: 'rgba(255,255,255,0.07)', md: 'transparent' },
+          backdropFilter: { xs: 'blur(16px)', md: 'none' },
+          borderRadius: { xs: 4, md: 0 },
+          border: { xs: '1px solid rgba(255,255,255,0.12)', md: 'none' },
+          p: { xs: 3.5, md: 0 },
+        }}>
+
+          {/* Logo + marca — mobile */}
+          <Box sx={{ display: { md: 'none' }, textAlign: 'center', mb: 3.5 }}>
             <Box sx={{
-              width: 56, height: 56, borderRadius: 2,
+              width: 64, height: 64, borderRadius: 2.5,
               bgcolor: '#06b6d4',
               display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
               mb: 1.5,
+              boxShadow: '0 0 28px rgba(6,182,212,0.5)',
             }}>
-              <FitnessCenterIcon sx={{ fontSize: 28, color: '#fff' }} />
+              <FitnessCenterIcon sx={{ fontSize: 34, color: '#fff' }} />
             </Box>
-            <Typography variant="h5" fontWeight={700}>TuGymOnLine</Typography>
+            <Typography variant="h5" fontWeight={800} color="#fff" letterSpacing="-0.5px">
+              TuGymOnLine
+            </Typography>
+            <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.45)' }}>
+              Sistema de gestión de gimnasios
+            </Typography>
           </Box>
 
-          <Typography variant="h4" fontWeight={800} color="text.primary" gutterBottom>
+          {/* Título — desktop */}
+          <Typography variant="h4" fontWeight={800} color={{ xs: '#fff', md: 'text.primary' }} gutterBottom sx={{ display: { xs: 'none', md: 'block' } }}>
             Bienvenido
           </Typography>
-          <Typography variant="body2" color="text.secondary" mb={4} lineHeight={1.7}>
+          <Typography variant="h6" fontWeight={700} color="#fff" gutterBottom sx={{ display: { xs: 'block', md: 'none' } }}>
+            Iniciar sesión
+          </Typography>
+          <Typography variant="body2" sx={{ color: { xs: 'rgba(255,255,255,0.5)', md: 'text.secondary' } }} mb={3} lineHeight={1.7}>
             Ingresá tus credenciales para continuar
           </Typography>
 
@@ -123,6 +185,17 @@ export default function Login() {
               required
               fullWidth
               autoFocus
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': { borderColor: { xs: 'rgba(255,255,255,0.25)', md: undefined } },
+                  '&:hover fieldset': { borderColor: { xs: 'rgba(255,255,255,0.5)', md: undefined } },
+                  '&.Mui-focused fieldset': { borderColor: { xs: '#06b6d4', md: undefined } },
+                  color: { xs: '#fff', md: undefined },
+                  bgcolor: { xs: 'rgba(255,255,255,0.06)', md: undefined },
+                },
+                '& .MuiInputLabel-root': { color: { xs: 'rgba(255,255,255,0.6)', md: undefined } },
+                '& .MuiInputLabel-root.Mui-focused': { color: { xs: '#06b6d4', md: undefined } },
+              }}
             />
             <TextField
               label="Contraseña"
@@ -131,6 +204,17 @@ export default function Login() {
               onChange={e => setForm(p => ({ ...p, password: e.target.value }))}
               required
               fullWidth
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': { borderColor: { xs: 'rgba(255,255,255,0.25)', md: undefined } },
+                  '&:hover fieldset': { borderColor: { xs: 'rgba(255,255,255,0.5)', md: undefined } },
+                  '&.Mui-focused fieldset': { borderColor: { xs: '#06b6d4', md: undefined } },
+                  color: { xs: '#fff', md: undefined },
+                  bgcolor: { xs: 'rgba(255,255,255,0.06)', md: undefined },
+                },
+                '& .MuiInputLabel-root': { color: { xs: 'rgba(255,255,255,0.6)', md: undefined } },
+                '& .MuiInputLabel-root.Mui-focused': { color: { xs: '#06b6d4', md: undefined } },
+              }}
             />
             <Button
               type="submit"
@@ -138,7 +222,12 @@ export default function Login() {
               size="large"
               disabled={loading}
               fullWidth
-              sx={{ mt: 1, py: 1.4, fontSize: 16 }}
+              sx={{
+                mt: 1, py: 1.4, fontSize: 16,
+                bgcolor: '#06b6d4',
+                '&:hover': { bgcolor: '#0891b2' },
+                boxShadow: { xs: '0 0 20px rgba(6,182,212,0.4)', md: undefined },
+              }}
             >
               {loading ? <CircularProgress size={22} color="inherit" /> : 'Ingresar'}
             </Button>
