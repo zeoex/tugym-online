@@ -16,6 +16,7 @@ import WomanIcon from '@mui/icons-material/Woman';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import { QRCodeSVG } from 'qrcode.react';
 import api from '../../services/api';
+import EjercicioDemoModal from '../../components/EjercicioDemoModal';
 
 const TIPO_META = {
   HOMBRE:           { label: 'Hombres',         icon: <ManIcon />,           color: '#0ea5e9', bg: '#e0f2fe' },
@@ -41,11 +42,24 @@ function buildQrCombinado(rutinas) {
 }
 
 function PanelRutina({ rutina, onRegenerar, onEditar, onQr, regenerando, qrTooltip }) {
-  const theme   = useTheme();
+  const theme    = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const [demo, setDemo] = useState(null);
 
   if (!rutina) return null;
   const meta = TIPO_META[rutina.tipo];
+
+  const abrirDemo = (e) => setDemo({ nombre: e.nombre, musculo: e.musculo });
+
+  const btnEjercicio = {
+    background: 'none',
+    border: 'none',
+    padding: 0,
+    cursor: 'pointer',
+    textAlign: 'left',
+    fontFamily: 'inherit',
+  };
 
   return (
     <Paper sx={{ overflow: 'hidden', height: '100%', display: 'flex', flexDirection: 'column' }}>
@@ -101,7 +115,25 @@ function PanelRutina({ rutina, onRegenerar, onEditar, onQr, regenerando, qrToolt
                 {i + 1}
               </Typography>
               <Box flex={1} minWidth={0}>
-                <Typography fontWeight={600} fontSize={13} noWrap>{e.nombre}</Typography>
+                <Tooltip title="Ver cómo se hace" placement="top">
+                  <Typography
+                    component="button"
+                    onClick={() => abrirDemo(e)}
+                    fontWeight={600}
+                    fontSize={13}
+                    noWrap
+                    sx={{
+                      ...btnEjercicio,
+                      color: meta.color,
+                      textDecoration: 'underline',
+                      textDecorationStyle: 'dotted',
+                      textUnderlineOffset: 3,
+                      '&:hover': { opacity: 0.75 },
+                    }}
+                  >
+                    {e.nombre}
+                  </Typography>
+                </Tooltip>
                 <Box display="flex" alignItems="center" gap={1} mt={0.3} flexWrap="wrap">
                   <Chip label={e.musculo} size="small" sx={{ bgcolor: meta.bg, color: meta.color, fontWeight: 600, fontSize: 11, height: 20 }} />
                   <Typography variant="caption" color="text.secondary">
@@ -130,7 +162,26 @@ function PanelRutina({ rutina, onRegenerar, onEditar, onQr, regenerando, qrToolt
               {rutina.ejercicios.map((e, i) => (
                 <TableRow key={i} hover>
                   <TableCell sx={{ color: 'text.disabled' }}>{i + 1}</TableCell>
-                  <TableCell><Typography fontWeight={500} fontSize={13}>{e.nombre}</Typography></TableCell>
+                  <TableCell>
+                    <Tooltip title="Ver cómo se hace" placement="right">
+                      <Typography
+                        component="button"
+                        onClick={() => abrirDemo(e)}
+                        fontWeight={500}
+                        fontSize={13}
+                        sx={{
+                          ...btnEjercicio,
+                          color: meta.color,
+                          textDecoration: 'underline',
+                          textDecorationStyle: 'dotted',
+                          textUnderlineOffset: 3,
+                          '&:hover': { opacity: 0.75 },
+                        }}
+                      >
+                        {e.nombre}
+                      </Typography>
+                    </Tooltip>
+                  </TableCell>
                   <TableCell>
                     <Chip label={e.musculo} size="small" sx={{ bgcolor: meta.bg, color: meta.color, fontWeight: 600, fontSize: 11 }} />
                   </TableCell>
@@ -142,6 +193,18 @@ function PanelRutina({ rutina, onRegenerar, onEditar, onQr, regenerando, qrToolt
             </TableBody>
           </Table>
         </TableContainer>
+      )}
+
+      {/* Modal demo */}
+      {demo && (
+        <EjercicioDemoModal
+          open
+          nombre={demo.nombre}
+          musculo={demo.musculo}
+          metaColor={meta.color}
+          metaBg={meta.bg}
+          onClose={() => setDemo(null)}
+        />
       )}
     </Paper>
   );
