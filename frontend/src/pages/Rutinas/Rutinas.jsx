@@ -3,7 +3,7 @@ import {
   Box, Typography, Paper, Chip, CircularProgress,
   Table, TableBody, TableCell, TableHead, TableRow, TableContainer,
   IconButton, Button, Dialog, DialogTitle, DialogContent, DialogActions,
-  TextField, Tooltip, Alert, Grid,
+  TextField, Tooltip, Alert, Grid, useTheme, useMediaQuery,
 } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import EditIcon from '@mui/icons-material/Edit';
@@ -41,6 +41,9 @@ function buildQrCombinado(rutinas) {
 }
 
 function PanelRutina({ rutina, onRegenerar, onEditar, onQr, regenerando, qrTooltip }) {
+  const theme   = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   if (!rutina) return null;
   const meta = TIPO_META[rutina.tipo];
 
@@ -79,44 +82,79 @@ function PanelRutina({ rutina, onRegenerar, onEditar, onQr, regenerando, qrToolt
         </Tooltip>
       </Box>
 
-      {/* Tabla */}
-      <TableContainer sx={{ flex: 1 }}>
-        <Table size="small">
-          <TableHead>
-            <TableRow sx={{ bgcolor: meta.bg }}>
-              <TableCell sx={{ color: meta.color, fontWeight: 700, width: 28 }}>#</TableCell>
-              <TableCell sx={{ color: meta.color, fontWeight: 700 }}>Ejercicio</TableCell>
-              <TableCell sx={{ color: meta.color, fontWeight: 700 }}>Músculo</TableCell>
-              <TableCell sx={{ color: meta.color, fontWeight: 700, width: 52 }}>Ser.</TableCell>
-              <TableCell sx={{ color: meta.color, fontWeight: 700, width: 72 }}>Reps</TableCell>
-              <TableCell sx={{ color: meta.color, fontWeight: 700, width: 84 }}>Descanso</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rutina.ejercicios.map((e, i) => (
-              <TableRow key={i} hover>
-                <TableCell sx={{ color: 'text.disabled' }}>{i + 1}</TableCell>
-                <TableCell><Typography fontWeight={500} fontSize={13}>{e.nombre}</Typography></TableCell>
-                <TableCell>
-                  <Chip label={e.musculo} size="small" sx={{ bgcolor: meta.bg, color: meta.color, fontWeight: 600, fontSize: 11 }} />
-                </TableCell>
-                <TableCell sx={{ fontWeight: 600 }}>{e.series}</TableCell>
-                <TableCell>{e.reps}</TableCell>
-                <TableCell sx={{ color: 'text.secondary', fontSize: 12 }}>{e.descanso}</TableCell>
+      {/* Mobile: lista compacta */}
+      {isMobile ? (
+        <Box sx={{ flex: 1, overflow: 'auto' }}>
+          {rutina.ejercicios.map((e, i) => (
+            <Box
+              key={i}
+              sx={{
+                px: 2, py: 1.25,
+                borderBottom: '1px solid',
+                borderColor: 'divider',
+                display: 'flex',
+                alignItems: 'flex-start',
+                gap: 1.5,
+              }}
+            >
+              <Typography sx={{ color: 'text.disabled', fontSize: 12, width: 18, flexShrink: 0, mt: 0.4 }}>
+                {i + 1}
+              </Typography>
+              <Box flex={1} minWidth={0}>
+                <Typography fontWeight={600} fontSize={13} noWrap>{e.nombre}</Typography>
+                <Box display="flex" alignItems="center" gap={1} mt={0.3} flexWrap="wrap">
+                  <Chip label={e.musculo} size="small" sx={{ bgcolor: meta.bg, color: meta.color, fontWeight: 600, fontSize: 11, height: 20 }} />
+                  <Typography variant="caption" color="text.secondary">
+                    {e.series}×{e.reps} · {e.descanso}
+                  </Typography>
+                </Box>
+              </Box>
+            </Box>
+          ))}
+        </Box>
+      ) : (
+        /* Desktop: tabla */
+        <TableContainer sx={{ flex: 1 }}>
+          <Table size="small">
+            <TableHead>
+              <TableRow sx={{ bgcolor: meta.bg }}>
+                <TableCell sx={{ color: meta.color, fontWeight: 700, width: 28 }}>#</TableCell>
+                <TableCell sx={{ color: meta.color, fontWeight: 700 }}>Ejercicio</TableCell>
+                <TableCell sx={{ color: meta.color, fontWeight: 700 }}>Músculo</TableCell>
+                <TableCell sx={{ color: meta.color, fontWeight: 700, width: 52 }}>Ser.</TableCell>
+                <TableCell sx={{ color: meta.color, fontWeight: 700, width: 72 }}>Reps</TableCell>
+                <TableCell sx={{ color: meta.color, fontWeight: 700, width: 84 }}>Descanso</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {rutina.ejercicios.map((e, i) => (
+                <TableRow key={i} hover>
+                  <TableCell sx={{ color: 'text.disabled' }}>{i + 1}</TableCell>
+                  <TableCell><Typography fontWeight={500} fontSize={13}>{e.nombre}</Typography></TableCell>
+                  <TableCell>
+                    <Chip label={e.musculo} size="small" sx={{ bgcolor: meta.bg, color: meta.color, fontWeight: 600, fontSize: 11 }} />
+                  </TableCell>
+                  <TableCell sx={{ fontWeight: 600 }}>{e.series}</TableCell>
+                  <TableCell>{e.reps}</TableCell>
+                  <TableCell sx={{ color: 'text.secondary', fontSize: 12 }}>{e.descanso}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
     </Paper>
   );
 }
 
 export default function Rutinas() {
+  const theme    = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   const [rutinas, setRutinas]   = useState({});
   const [loading, setLoading]   = useState(true);
   const [editando, setEditando] = useState(null);
-  const [qrData, setQrData]     = useState(null); // { titulo, rutinas: [] }
+  const [qrData, setQrData]     = useState(null);
   const [regenerando, setRegen] = useState(null);
   const [error, setError]       = useState('');
 
@@ -186,19 +224,20 @@ export default function Rutinas() {
 
   return (
     <Box>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
+      {/* Header */}
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3} flexWrap="wrap" gap={1}>
         <Box display="flex" alignItems="center" gap={1.5}>
           <FitnessCenterIcon color="primary" />
           <Typography variant="h5" fontWeight={700}>Rutinas del Día</Typography>
         </Box>
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" color="text.secondary" sx={{ display: { xs: 'none', sm: 'block' } }}>
           {new Date().toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
         </Typography>
       </Box>
 
       {error && <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError('')}>{error}</Alert>}
 
-      {/* Botones QR destacados al tope */}
+      {/* Botones QR */}
       {(hombre || mujer) && (
         <Grid container spacing={2} mb={3}>
           {hombre && (
@@ -217,13 +256,13 @@ export default function Rutinas() {
                 <Box sx={{ width: 48, height: 48, borderRadius: 2, bgcolor: '#0ea5e9', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                   <ManIcon sx={{ color: '#fff', fontSize: 28 }} />
                 </Box>
-                <Box flex={1}>
+                <Box flex={1} minWidth={0}>
                   <Typography fontWeight={700} color="#0369a1">QR Rutina Hombres</Typography>
-                  <Typography variant="caption" color="text.secondary">
+                  <Typography variant="caption" color="text.secondary" noWrap>
                     {hombre.nombre ? `${hombre.nombre} + Precalentamiento` : 'Precalentamiento + Rutina'}
                   </Typography>
                 </Box>
-                <QrCode2Icon sx={{ color: '#0ea5e9', fontSize: 28 }} />
+                <QrCode2Icon sx={{ color: '#0ea5e9', fontSize: 28, flexShrink: 0 }} />
               </Paper>
             </Grid>
           )}
@@ -243,20 +282,20 @@ export default function Rutinas() {
                 <Box sx={{ width: 48, height: 48, borderRadius: 2, bgcolor: '#ec4899', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                   <WomanIcon sx={{ color: '#fff', fontSize: 28 }} />
                 </Box>
-                <Box flex={1}>
+                <Box flex={1} minWidth={0}>
                   <Typography fontWeight={700} color="#9d174d">QR Rutina Mujeres</Typography>
-                  <Typography variant="caption" color="text.secondary">
+                  <Typography variant="caption" color="text.secondary" noWrap>
                     {mujer.nombre ? `${mujer.nombre} + Precalentamiento` : 'Precalentamiento + Rutina'}
                   </Typography>
                 </Box>
-                <QrCode2Icon sx={{ color: '#ec4899', fontSize: 28 }} />
+                <QrCode2Icon sx={{ color: '#ec4899', fontSize: 28, flexShrink: 0 }} />
               </Paper>
             </Grid>
           )}
         </Grid>
       )}
 
-      {/* Precalentamiento — ancho completo, sin botón QR propio */}
+      {/* Precalentamiento */}
       {precalentamiento && (
         <Box mb={2}>
           <PanelRutina
@@ -269,7 +308,7 @@ export default function Rutinas() {
         </Box>
       )}
 
-      {/* Hombres | Mujeres — dos columnas, cada uno con QR combinado */}
+      {/* Hombres | Mujeres */}
       <Grid container spacing={2}>
         <Grid item xs={12} md={6}>
           <PanelRutina
@@ -295,7 +334,7 @@ export default function Rutinas() {
 
       {/* Dialog edición */}
       {editando && (
-        <Dialog open onClose={() => setEditando(null)} maxWidth="md" fullWidth>
+        <Dialog open onClose={() => setEditando(null)} maxWidth="md" fullWidth fullScreen={isMobile}>
           <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <FitnessCenterIcon color="primary" />
             Editar — {TIPO_META[editando.tipo]?.label}
@@ -344,7 +383,7 @@ export default function Rutinas() {
         </Dialog>
       )}
 
-      {/* Dialog QR combinado */}
+      {/* Dialog QR */}
       {qrData && (
         <Dialog open onClose={() => setQrData(null)} maxWidth="sm" fullWidth>
           <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -354,7 +393,7 @@ export default function Rutinas() {
             <Box display="flex" flexDirection="column" alignItems="center" gap={2} py={1}>
               <QRCodeSVG
                 value={buildQrCombinado(qrData.rutinas)}
-                size={300}
+                size={isMobile ? 240 : 300}
                 level="L"
                 includeMargin
               />

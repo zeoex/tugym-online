@@ -1,5 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Box, Typography, Button, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Chip, Dialog, DialogTitle, DialogContent, DialogActions, TextField, MenuItem, Select, FormControl, InputLabel, CircularProgress, Autocomplete, Alert } from '@mui/material';
+import {
+  Box, Typography, Button, Paper, Table, TableBody, TableCell,
+  TableContainer, TableHead, TableRow, Chip, Dialog, DialogTitle,
+  DialogContent, DialogActions, TextField, MenuItem, Select,
+  FormControl, InputLabel, CircularProgress, Autocomplete, Alert,
+  useTheme, useMediaQuery,
+} from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import PaymentIcon from '@mui/icons-material/Payment';
 import api from '../../services/api';
@@ -8,14 +14,17 @@ const METODOS = ['EFECTIVO', 'TARJETA', 'TRANSFERENCIA', 'OTRO'];
 const ESTADO_COLOR = { ACTIVO: 'success', VENCIDO: 'error', CANCELADO: 'default' };
 
 export default function GestionPagos() {
-  const [pagos, setPagos] = useState([]);
-  const [total, setTotal] = useState(0);
+  const theme    = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const [pagos, setPagos]   = useState([]);
+  const [total, setTotal]   = useState(0);
   const [loading, setLoading] = useState(false);
-  const [open, setOpen] = useState(false);
+  const [open, setOpen]     = useState(false);
   const [planes, setPlanes] = useState([]);
   const [socios, setSocios] = useState([]);
-  const [form, setForm] = useState({ socio: null, planId: '', metodoPago: 'EFECTIVO', observaciones: '' });
-  const [error, setError] = useState('');
+  const [form, setForm]     = useState({ socio: null, planId: '', metodoPago: 'EFECTIVO', observaciones: '' });
+  const [error, setError]   = useState('');
   const [saving, setSaving] = useState(false);
 
   const cargar = async () => {
@@ -47,39 +56,69 @@ export default function GestionPagos() {
         <Box display="flex" alignItems="center" gap={1.5}>
           <PaymentIcon color="primary" />
           <Typography variant="h5" fontWeight={700}>Pagos</Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ ml: 0.5 }}>({total})</Typography>
+          <Typography variant="body2" color="text.secondary">({total})</Typography>
         </Box>
-        <Button variant="contained" startIcon={<AddIcon />} onClick={abrirDialog}>Registrar pago</Button>
+        <Button variant="contained" startIcon={<AddIcon />} onClick={abrirDialog} size={isMobile ? 'small' : 'medium'}>
+          {isMobile ? 'Registrar' : 'Registrar pago'}
+        </Button>
       </Box>
 
-      <TableContainer component={Paper}>
-        <Table size="small">
-          <TableHead>
-            <TableRow>
-              {['Socio', 'Plan', 'Monto', 'Fecha pago', 'Vencimiento', 'Método', 'Estado'].map(h => (
-                <TableCell key={h}>{h}</TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {loading ? (
-              <TableRow><TableCell colSpan={7} align="center"><CircularProgress size={28} sx={{ my: 2 }} /></TableCell></TableRow>
-            ) : pagos.map(p => (
-              <TableRow key={p.id} hover>
-                <TableCell>{p.socio?.apellido}, {p.socio?.nombre}</TableCell>
-                <TableCell>{p.plan?.nombre}</TableCell>
-                <TableCell sx={{ fontWeight: 700, color: 'success.main' }}>${Number(p.monto).toLocaleString('es-AR')}</TableCell>
-                <TableCell>{new Date(p.fechaPago).toLocaleDateString('es-AR')}</TableCell>
-                <TableCell>{new Date(p.fechaVencimiento).toLocaleDateString('es-AR')}</TableCell>
-                <TableCell>{p.metodoPago}</TableCell>
-                <TableCell><Chip label={p.estado} color={ESTADO_COLOR[p.estado]} size="small" /></TableCell>
+      {/* Mobile: tarjetas */}
+      {isMobile ? (
+        <Box display="flex" flexDirection="column" gap={1}>
+          {loading ? (
+            <Box display="flex" justifyContent="center" py={4}><CircularProgress size={28} /></Box>
+          ) : pagos.map(p => (
+            <Paper key={p.id} sx={{ p: 1.5 }}>
+              <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={0.5}>
+                <Typography fontWeight={600} fontSize={14}>{p.socio?.apellido}, {p.socio?.nombre}</Typography>
+                <Chip label={p.estado} color={ESTADO_COLOR[p.estado]} size="small" />
+              </Box>
+              <Typography variant="body2" color="text.secondary" mb={0.5}>{p.plan?.nombre}</Typography>
+              <Box display="flex" justifyContent="space-between" alignItems="center">
+                <Typography fontWeight={700} color="success.main">
+                  ${Number(p.monto).toLocaleString('es-AR')}
+                </Typography>
+                <Typography variant="caption" color="text.secondary">{p.metodoPago}</Typography>
+              </Box>
+              <Typography variant="caption" color="text.secondary">
+                {new Date(p.fechaPago).toLocaleDateString('es-AR')} → vence {new Date(p.fechaVencimiento).toLocaleDateString('es-AR')}
+              </Typography>
+            </Paper>
+          ))}
+        </Box>
+      ) : (
+        /* Desktop: tabla */
+        <TableContainer component={Paper}>
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                {['Socio', 'Plan', 'Monto', 'Fecha pago', 'Vencimiento', 'Método', 'Estado'].map(h => (
+                  <TableCell key={h}>{h}</TableCell>
+                ))}
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {loading ? (
+                <TableRow><TableCell colSpan={7} align="center"><CircularProgress size={28} sx={{ my: 2 }} /></TableCell></TableRow>
+              ) : pagos.map(p => (
+                <TableRow key={p.id} hover>
+                  <TableCell>{p.socio?.apellido}, {p.socio?.nombre}</TableCell>
+                  <TableCell>{p.plan?.nombre}</TableCell>
+                  <TableCell sx={{ fontWeight: 700, color: 'success.main' }}>${Number(p.monto).toLocaleString('es-AR')}</TableCell>
+                  <TableCell>{new Date(p.fechaPago).toLocaleDateString('es-AR')}</TableCell>
+                  <TableCell>{new Date(p.fechaVencimiento).toLocaleDateString('es-AR')}</TableCell>
+                  <TableCell>{p.metodoPago}</TableCell>
+                  <TableCell><Chip label={p.estado} color={ESTADO_COLOR[p.estado]} size="small" /></TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
 
-      <Dialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
+      {/* Dialog registrar pago */}
+      <Dialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth fullScreen={isMobile}>
         <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
           <PaymentIcon color="primary" /> Registrar pago
         </DialogTitle>
@@ -96,7 +135,11 @@ export default function GestionPagos() {
             <FormControl fullWidth required>
               <InputLabel>Plan</InputLabel>
               <Select label="Plan" value={form.planId} onChange={e => setForm(p => ({ ...p, planId: e.target.value }))}>
-                {planes.map(pl => <MenuItem key={pl.id} value={pl.id}>{pl.nombre} — ${Number(pl.precio).toLocaleString('es-AR')} ({pl.duracionDias} días)</MenuItem>)}
+                {planes.map(pl => (
+                  <MenuItem key={pl.id} value={pl.id}>
+                    {pl.nombre} — ${Number(pl.precio).toLocaleString('es-AR')} ({pl.duracionDias} días)
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
             <FormControl fullWidth>
