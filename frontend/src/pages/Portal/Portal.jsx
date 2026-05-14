@@ -113,15 +113,6 @@ export default function Portal() {
         {/* Anuncios — siempre visibles */}
         {!loadInit && anuncios.length > 0 && (
           <Box mb={3}>
-            <Box display="flex" alignItems="center" gap={0.75} mb={1.25}>
-              <NotificationsActiveIcon sx={{ color: '#f59e0b', fontSize: 17,
-                animation: 'bellRing 3.5s ease-in-out infinite',
-                transformOrigin: 'top center',
-              }} />
-              <Typography fontWeight={700} color="rgba(255,255,255,0.7)" fontSize={12} letterSpacing="0.06em" textTransform="uppercase">
-                Anuncios del gym
-              </Typography>
-            </Box>
             <Box display="flex" flexDirection="column" gap={1}>
               {anuncios.map(a => (
                 <Paper key={a.id} sx={{
@@ -173,16 +164,16 @@ export default function Portal() {
 
               <Box display="flex" gap={1.5} justifyContent="center">
                 {[
-                  { key: 'HOMBRE', label: 'Varón',  icon: <ManIcon  sx={{ fontSize: 22 }} />, color: '#06b6d4', shadow: 'rgba(6,182,212,0.3)'  },
-                  { key: 'MUJER',  label: 'Mujer',  icon: <WomanIcon sx={{ fontSize: 22 }} />, color: '#ec4899', shadow: 'rgba(236,72,153,0.3)' },
+                  { key: 'HOMBRE', label: 'Varón',  icon: <ManIcon  sx={{ fontSize: 26 }} />, color: '#06b6d4', shadow: 'rgba(6,182,212,0.3)'  },
+                  { key: 'MUJER',  label: 'Mujer',  icon: <WomanIcon sx={{ fontSize: 26 }} />, color: '#ec4899', shadow: 'rgba(236,72,153,0.3)' },
                 ].map(g => (
                   <Box
                     key={g.key}
                     onClick={() => setGenero(g.key)}
                     sx={{
-                      flex: 1, maxWidth: 200,
-                      height: 52,
-                      px: 2.5,
+                      flex: 1, maxWidth: 220,
+                      height: 62,
+                      px: 3,
                       borderRadius: 2,
                       border: `1.5px solid ${g.color}55`,
                       background: `linear-gradient(110deg, ${g.color}12 0%, ${g.color}22 100%)`,
@@ -199,7 +190,7 @@ export default function Portal() {
                     }}
                   >
                     <Box sx={{ color: g.color, display: 'flex', alignItems: 'center' }}>{g.icon}</Box>
-                    <Typography fontWeight={700} color="#fff" fontSize={15}>{g.label}</Typography>
+                    <Typography fontWeight={700} color="#fff" fontSize={17}>{g.label}</Typography>
                   </Box>
                 ))}
               </Box>
