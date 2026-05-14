@@ -10,6 +10,7 @@ import QrCode2Icon from '@mui/icons-material/QrCode2';
 import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 import ManIcon from '@mui/icons-material/Man';
 import WomanIcon from '@mui/icons-material/Woman';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import EjercicioDemoModal from './EjercicioDemoModal';
 
 export const TIPO_META = {
@@ -27,11 +28,6 @@ export default function PanelRutina({ rutina, onRegenerar, onEditar, onQr, regen
   const meta = TIPO_META[rutina.tipo];
 
   const abrirDemo = (e) => setDemo({ nombre: e.nombre, musculo: e.musculo });
-
-  const btnEjercicio = {
-    background: 'none', border: 'none', padding: 0,
-    cursor: 'pointer', textAlign: 'left', fontFamily: 'inherit',
-  };
 
   return (
     <Paper sx={{ overflow: 'hidden', height: '100%', display: 'flex', flexDirection: 'column' }}>
@@ -92,25 +88,9 @@ export default function PanelRutina({ rutina, onRegenerar, onEditar, onQr, regen
                 {i + 1}
               </Typography>
               <Box flex={1} minWidth={0}>
-                <Tooltip title="Ver cómo se hace" placement="top">
-                  <Typography
-                    component="button"
-                    onClick={() => abrirDemo(e)}
-                    fontWeight={600}
-                    fontSize={13}
-                    noWrap
-                    sx={{
-                      ...btnEjercicio,
-                      color: meta.color,
-                      textDecoration: 'underline',
-                      textDecorationStyle: 'dotted',
-                      textUnderlineOffset: 3,
-                      '&:hover': { opacity: 0.75 },
-                    }}
-                  >
-                    {e.nombre}
-                  </Typography>
-                </Tooltip>
+                <Typography fontWeight={600} fontSize={13} noWrap sx={{ color: 'text.primary' }}>
+                  {e.nombre}
+                </Typography>
                 <Box display="flex" alignItems="center" gap={1} mt={0.3} flexWrap="wrap">
                   <Chip
                     label={e.musculo}
@@ -122,6 +102,11 @@ export default function PanelRutina({ rutina, onRegenerar, onEditar, onQr, regen
                   </Typography>
                 </Box>
               </Box>
+              <Tooltip title="Ver cómo se hace">
+                <IconButton size="small" onClick={() => abrirDemo(e)} sx={{ color: meta.color, flexShrink: 0 }}>
+                  <VisibilityIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
             </Box>
           ))}
         </Box>
@@ -136,38 +121,27 @@ export default function PanelRutina({ rutina, onRegenerar, onEditar, onQr, regen
                 <TableCell sx={{ color: meta.color, fontWeight: 700, width: 52 }}>Ser.</TableCell>
                 <TableCell sx={{ color: meta.color, fontWeight: 700, width: 72 }}>Reps</TableCell>
                 <TableCell sx={{ color: meta.color, fontWeight: 700, width: 84 }}>Descanso</TableCell>
+                <TableCell sx={{ width: 44 }} />
               </TableRow>
             </TableHead>
             <TableBody>
               {rutina.ejercicios.map((e, i) => (
                 <TableRow key={i} hover>
                   <TableCell sx={{ color: 'text.disabled' }}>{i + 1}</TableCell>
-                  <TableCell>
-                    <Tooltip title="Ver cómo se hace" placement="right">
-                      <Typography
-                        component="button"
-                        onClick={() => abrirDemo(e)}
-                        fontWeight={500}
-                        fontSize={13}
-                        sx={{
-                          ...btnEjercicio,
-                          color: meta.color,
-                          textDecoration: 'underline',
-                          textDecorationStyle: 'dotted',
-                          textUnderlineOffset: 3,
-                          '&:hover': { opacity: 0.75 },
-                        }}
-                      >
-                        {e.nombre}
-                      </Typography>
-                    </Tooltip>
-                  </TableCell>
+                  <TableCell sx={{ fontWeight: 500, fontSize: 13 }}>{e.nombre}</TableCell>
                   <TableCell>
                     <Chip label={e.musculo} size="small" sx={{ bgcolor: meta.bg, color: meta.color, fontWeight: 600, fontSize: 11 }} />
                   </TableCell>
                   <TableCell sx={{ fontWeight: 600 }}>{e.series}</TableCell>
                   <TableCell>{e.reps}</TableCell>
                   <TableCell sx={{ color: 'text.secondary', fontSize: 12 }}>{e.descanso}</TableCell>
+                  <TableCell sx={{ py: 0 }}>
+                    <Tooltip title="Ver cómo se hace" placement="left">
+                      <IconButton size="small" onClick={() => abrirDemo(e)} sx={{ color: meta.color }}>
+                        <VisibilityIcon sx={{ fontSize: 18 }} />
+                      </IconButton>
+                    </Tooltip>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
