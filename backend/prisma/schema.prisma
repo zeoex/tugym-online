@@ -33,9 +33,11 @@ model Socio {
   fechaNac      DateTime?  @map("fecha_nac")
   fechaAlta     DateTime   @default(now()) @map("fecha_alta")
   estado        String     @default("ACTIVO")
-  observaciones String?
-  createdAt     DateTime   @default(now()) @map("created_at")
-  updatedAt     DateTime   @updatedAt @map("updated_at")
+  observaciones  String?
+  rutinaAsignada String?  @map("rutina_asignada")
+  tipoRutina     String?  @map("tipo_rutina")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
 
   pagos          Pago[]
   notificaciones Notificacion[]
@@ -107,6 +109,18 @@ model CajaDia {
   updatedAt     DateTime @updatedAt @map("updated_at")
 
   @@map("caja_dia")
+}
+
+model Anuncio {
+  id        Int       @id @default(autoincrement())
+  titulo    String
+  contenido String
+  activo    Boolean   @default(true)
+  fechaFin  DateTime? @map("fecha_fin")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
+  @@map("anuncios")
 }
 
 model Notificacion {

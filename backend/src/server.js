@@ -13,6 +13,9 @@ const pagosRoutes     = require('./routes/pagos');
 const dashboardRoutes = require('./routes/dashboard');
 const rutinasRoutes   = require('./routes/rutinas');
 const cajaRoutes      = require('./routes/caja');
+const portalRoutes    = require('./routes/portal');
+const anunciosRoutes  = require('./routes/anuncios');
+const auth            = require('./middleware/auth');
 require('./jobs/vencimientosJob');
 
 const app = express();
@@ -31,6 +34,7 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 200, message: { error: 'Demasiadas solicitudes' } }));
 
+app.use('/api/portal',    portalRoutes);
 app.use('/api/auth',      authRoutes);
 app.use('/api/socios',    sociosRoutes);
 app.use('/api/planes',    planesRoutes);
@@ -38,6 +42,7 @@ app.use('/api/pagos',     pagosRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/rutinas',   rutinasRoutes);
 app.use('/api/caja',      cajaRoutes);
+app.use('/api/anuncios',  auth, anunciosRoutes);
 
 app.use(errorHandler);
 

@@ -12,6 +12,8 @@ import Vencimientos from './pages/Vencimientos/Vencimientos';
 import GestionPlanes from './pages/Planes/GestionPlanes';
 import Rutinas from './pages/Rutinas/Rutinas';
 import Caja from './pages/Caja/Caja';
+import GestionAnuncios from './pages/Anuncios/GestionAnuncios';
+import Portal from './pages/Portal/Portal';
 
 function ProtectedRoute({ children }) {
   const { usuario, cargando } = useAuth();
@@ -22,7 +24,8 @@ function ProtectedRoute({ children }) {
 export default function App() {
   return (
     <Routes>
-      <Route path="/login" element={<Login />} />
+      <Route path="/login"  element={<Login />} />
+      <Route path="/portal" element={<Portal />} />
       <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
         <Route index element={<Navigate to="/dashboard" replace />} />
         <Route path="dashboard"          element={<Dashboard />} />
@@ -35,6 +38,7 @@ export default function App() {
         <Route path="vencimientos"       element={<Vencimientos />} />
         <Route path="rutinas"            element={<Rutinas />} />
         <Route path="caja"               element={<Caja />} />
+        <Route path="anuncios"           element={<GestionAnuncios />} />
       </Route>
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>

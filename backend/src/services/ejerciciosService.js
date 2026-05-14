@@ -280,4 +280,18 @@ async function generarEjercicios(tipo) {
   return { nombre: rutina.nombre, ejercicios: rutina.ejercicios };
 }
 
-module.exports = { generarEjercicios };
+function obtenerRutinaPorNombre(tipo, nombre) {
+  const lista = tipo === 'HOMBRE' ? RUTINAS_HOMBRE
+    : tipo === 'MUJER' ? RUTINAS_MUJER
+    : RUTINAS_PRECALENTAMIENTO;
+  return lista.find(r => r.nombre === nombre) ?? null;
+}
+
+function listarRutinasPorTipo(tipo) {
+  if (tipo === 'HOMBRE')           return RUTINAS_HOMBRE.map(r => r.nombre);
+  if (tipo === 'MUJER')            return RUTINAS_MUJER.map(r => r.nombre);
+  if (tipo === 'PRECALENTAMIENTO') return RUTINAS_PRECALENTAMIENTO.map(r => r.nombre);
+  return [];
+}
+
+module.exports = { generarEjercicios, obtenerRutinaPorNombre, listarRutinasPorTipo };

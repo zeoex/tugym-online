@@ -7,6 +7,7 @@ import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import StyleIcon from '@mui/icons-material/Style';
 import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
+import CampaignIcon from '@mui/icons-material/Campaign';
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const SIDEBAR_BG  = '#0f172a';
@@ -34,6 +35,7 @@ const GROUPS = [
     label: 'Operación',
     items: [
       { label: 'Rutinas',      icon: <DirectionsRunIcon />, path: '/rutinas'      },
+      { label: 'Anuncios',     icon: <CampaignIcon />,      path: '/anuncios'     },
       { label: 'Caja',         icon: <PointOfSaleIcon />,   path: '/caja'         },
     ],
   },

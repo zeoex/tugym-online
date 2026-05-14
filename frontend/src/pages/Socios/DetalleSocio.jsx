@@ -1,16 +1,33 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
-  Box, Typography, Button, Paper, Avatar, Chip, Grid, Card, CardContent,
+  Box, Typography, Button, Paper, Chip, Grid, Card, CardContent,
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
   CircularProgress, Dialog, DialogTitle, DialogContent, DialogActions,
-  TextField, Select, MenuItem, FormControl, InputLabel, Alert, Divider, IconButton
+  TextField, Select, MenuItem, FormControl, InputLabel, Alert, Divider, IconButton,
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
+import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
+import SaveIcon from '@mui/icons-material/Save';
 import api from '../../services/api';
 import SocioAvatar from '../../components/SocioAvatar';
+
+const RUTINAS_HOMBRE = [
+  'Pecho & Tríceps', 'Espalda & Bíceps', 'Piernas & Glúteos', 'Hombros & Abdomen',
+  'Full Body Potencia', 'Push Day (Empuje)', 'Pull Day (Jalón)', 'Upper Body Completo',
+];
+const RUTINAS_MUJER = [
+  'Glúteos & Piernas Intensivo', 'Abdomen & Core Total', 'Brazos & Hombros Tonificados',
+  'Full Body Femenino', 'Cardio & Tonificación', 'Piernas Completo',
+  'Upper Body Femenino', 'Cuerpo Completo Funcional',
+];
+const RUTINAS_PRECALENTAMIENTO = [
+  'Movilidad Articular Completa', 'Activación Cardiovascular',
+  'Estiramiento Dinámico', 'Activación Neuromuscular',
+];
+const RUTINAS_POR_TIPO = { HOMBRE: RUTINAS_HOMBRE, MUJER: RUTINAS_MUJER, PRECALENTAMIENTO: RUTINAS_PRECALENTAMIENTO };
 
 const ESTADO_COLOR      = { ACTIVO: 'success', VENCIDO: 'error', INACTIVO: 'default' };
 const ESTADO_PAGO_COLOR = { ACTIVO: 'success', VENCIDO: 'error', CANCELADO: 'default' };
@@ -21,17 +38,24 @@ export default function DetalleSocio() {
   const navigate = useNavigate();
   const [socio, setSocio] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [openPago, setOpenPago] = useState(false);
-  const [planes, setPlanes] = useState([]);
-  const [form, setForm] = useState({ planId: '', metodoPago: 'EFECTIVO', observaciones: '' });
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState('');
+  const [openPago,  setOpenPago]  = useState(false);
+  const [planes,    setPlanes]    = useState([]);
+  const [form,      setForm]      = useState({ planId: '', metodoPago: 'EFECTIVO', observaciones: '' });
+  const [saving,    setSaving]    = useState(false);
+  const [error,     setError]     = useState('');
+
+  const [tipoRutina,     setTipoRutina]     = useState('');
+  const [rutinaAsignada, setRutinaAsignada] = useState('');
+  const [savingRutina,   setSavingRutina]   = useState(false);
+  const [rutinaOk,       setRutinaOk]       = useState(false);
 
   const cargar = useCallback(async () => {
     setLoading(true);
     try {
       const { data } = await api.get(`/socios/${id}`);
       setSocio(data);
+      setTipoRutina(data.tipoRutina || '');
+      setRutinaAsignada(data.rutinaAsignada || '');
     } finally {
       setLoading(false);
     }
@@ -49,6 +73,15 @@ export default function DetalleSocio() {
     } catch {
       setError('Error al cargar los planes');
     }
+  };
+
+  const guardarRutina = async () => {
+    setSavingRutina(true); setRutinaOk(false);
+    try {
+      await api.put(`/socios/${id}`, { tipoRutina: tipoRutina || null, rutinaAsignada: rutinaAsignada || null });
+      setRutinaOk(true);
+      setTimeout(() => setRutinaOk(false), 2500);
+    } finally { setSavingRutina(false); }
   };
 
   const guardarPago = async () => {
@@ -161,6 +194,60 @@ export default function DetalleSocio() {
           </Card>
         </Grid>
       </Grid>
+
+      {/* Rutina asignada */}
+      <Card sx={{ mb: 3 }}>
+        <CardContent>
+          <Box display="flex" alignItems="center" gap={1} mb={2}>
+            <FitnessCenterIcon color="primary" fontSize="small" />
+            <Typography variant="subtitle1" fontWeight={700}>Rutina asignada (portal del socio)</Typography>
+          </Box>
+          {rutinaOk && <Alert severity="success" sx={{ mb: 1.5 }}>Rutina guardada correctamente</Alert>}
+          <Box display="flex" flexDirection={{ xs: 'column', sm: 'row' }} gap={2} alignItems={{ sm: 'flex-end' }}>
+            <FormControl size="small" sx={{ minWidth: 180 }}>
+              <InputLabel>Tipo de rutina</InputLabel>
+              <Select
+                label="Tipo de rutina"
+                value={tipoRutina}
+                onChange={e => { setTipoRutina(e.target.value); setRutinaAsignada(''); }}
+              >
+                <MenuItem value=""><em>Sin asignar</em></MenuItem>
+                <MenuItem value="HOMBRE">Hombres</MenuItem>
+                <MenuItem value="MUJER">Mujeres</MenuItem>
+                <MenuItem value="PRECALENTAMIENTO">Precalentamiento</MenuItem>
+              </Select>
+            </FormControl>
+            <FormControl size="small" sx={{ flex: 1, minWidth: 200 }} disabled={!tipoRutina}>
+              <InputLabel>Rutina específica</InputLabel>
+              <Select
+                label="Rutina específica"
+                value={rutinaAsignada}
+                onChange={e => setRutinaAsignada(e.target.value)}
+              >
+                <MenuItem value=""><em>Seleccioná una rutina</em></MenuItem>
+                {(RUTINAS_POR_TIPO[tipoRutina] || []).map(r => (
+                  <MenuItem key={r} value={r}>{r}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <Button
+              variant="contained"
+              startIcon={savingRutina ? <CircularProgress size={16} color="inherit" /> : <SaveIcon />}
+              onClick={guardarRutina}
+              disabled={savingRutina}
+              size="small"
+              sx={{ height: 40, flexShrink: 0 }}
+            >
+              Guardar
+            </Button>
+          </Box>
+          {tipoRutina && rutinaAsignada && (
+            <Typography variant="caption" color="text.secondary" display="block" mt={1}>
+              El socio verá esta rutina en <strong>tugymonline.vercel.app/portal</strong>
+            </Typography>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Historial de pagos */}
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
