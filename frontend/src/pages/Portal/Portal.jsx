@@ -224,6 +224,13 @@ export default function Portal() {
         )}
 
       </Box>
+
+      {/* Footer */}
+      <Box sx={{ mt: 'auto', pt: 4, pb: 2, textAlign: 'center' }}>
+        <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.18)', fontSize: 10 }}>
+          &copy; ZeoDev 2026
+        </Typography>
+      </Box>
     </Box>
   );
 }

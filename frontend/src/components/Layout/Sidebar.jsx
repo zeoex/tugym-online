@@ -124,6 +124,9 @@ export default function Sidebar() {
       {/* Footer */}
       <Box sx={{ px: 3, py: 2, borderTop: '1px solid rgba(255,255,255,0.05)' }}>
         <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.2)', fontSize: 10 }}>v1.0.0</Typography>
+        <Typography variant="caption" display="block" sx={{ color: 'rgba(255,255,255,0.15)', fontSize: 9, mt: 0.25 }}>
+          &copy; ZeoDev 2026
+        </Typography>
       </Box>
     </Box>
   );
