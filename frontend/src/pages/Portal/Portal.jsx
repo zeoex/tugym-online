@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import {
   Box, Typography, CircularProgress, Paper,
-  useTheme, useMediaQuery, Button, Fade, Divider,
+  useTheme, useMediaQuery, Button, Fade, Divider, GlobalStyles,
 } from '@mui/material';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
-import CampaignIcon from '@mui/icons-material/Campaign';
+import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import ManIcon from '@mui/icons-material/Man';
 import WomanIcon from '@mui/icons-material/Woman';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -40,6 +40,20 @@ export default function Portal() {
   const precalenta   = genero ? rutinasDia?.PRECALENTAMIENTO : null;
 
   return (
+    <>
+    <GlobalStyles styles={{
+      '@keyframes bellRing': {
+        '0%,100%': { transform: 'rotate(0deg)' },
+        '8%':      { transform: 'rotate(22deg)' },
+        '16%':     { transform: 'rotate(-18deg)' },
+        '24%':     { transform: 'rotate(14deg)' },
+        '32%':     { transform: 'rotate(-10deg)' },
+        '40%':     { transform: 'rotate(6deg)' },
+        '48%':     { transform: 'rotate(-3deg)' },
+        '56%':     { transform: 'rotate(1deg)' },
+        '64%':     { transform: 'rotate(0deg)' },
+      },
+    }} />
     <Box sx={{
       minHeight: '100vh',
       background: 'linear-gradient(160deg, #0f172a 0%, #111827 60%, #0c1a2e 100%)',
@@ -99,22 +113,36 @@ export default function Portal() {
         {/* Anuncios — siempre visibles */}
         {!loadInit && anuncios.length > 0 && (
           <Box mb={3}>
-            <Box display="flex" alignItems="center" gap={1} mb={1.5}>
-              <CampaignIcon sx={{ color: ACCENT, fontSize: 20 }} />
-              <Typography fontWeight={700} color="#fff" fontSize={15}>Anuncios del gym</Typography>
+            <Box display="flex" alignItems="center" gap={0.75} mb={1.25}>
+              <NotificationsActiveIcon sx={{ color: '#f59e0b', fontSize: 17,
+                animation: 'bellRing 3.5s ease-in-out infinite',
+                transformOrigin: 'top center',
+              }} />
+              <Typography fontWeight={700} color="rgba(255,255,255,0.7)" fontSize={12} letterSpacing="0.06em" textTransform="uppercase">
+                Anuncios del gym
+              </Typography>
             </Box>
-            <Box display="flex" flexDirection="column" gap={1.5}>
+            <Box display="flex" flexDirection="column" gap={1}>
               {anuncios.map(a => (
                 <Paper key={a.id} sx={{
-                  p: { xs: 1.75, sm: 2 },
-                  borderRadius: 2.5,
-                  bgcolor: 'rgba(6,182,212,0.08)',
-                  border: '1px solid rgba(6,182,212,0.25)',
+                  p: { xs: 1.25, sm: 1.5 },
+                  borderRadius: 2,
+                  bgcolor: 'rgba(245,158,11,0.07)',
+                  border: '1px solid rgba(245,158,11,0.22)',
+                  display: 'flex', gap: 1.25, alignItems: 'flex-start',
                 }}>
-                  <Typography fontWeight={700} color="#fff" fontSize={14} mb={0.5}>{a.titulo}</Typography>
-                  <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.6)', lineHeight: 1.65, whiteSpace: 'pre-line' }}>
-                    {a.contenido}
-                  </Typography>
+                  <NotificationsActiveIcon sx={{
+                    color: '#f59e0b', fontSize: 15, mt: 0.25, flexShrink: 0,
+                    animation: 'bellRing 3.5s ease-in-out infinite',
+                    animationDelay: `${a.id * 0.4}s`,
+                    transformOrigin: 'top center',
+                  }} />
+                  <Box>
+                    <Typography fontWeight={700} color="#fff" fontSize={12.5} mb={0.3}>{a.titulo}</Typography>
+                    <Typography sx={{ color: 'rgba(255,255,255,0.55)', fontSize: 12, lineHeight: 1.6, whiteSpace: 'pre-line' }}>
+                      {a.contenido}
+                    </Typography>
+                  </Box>
                 </Paper>
               ))}
             </Box>
@@ -143,34 +171,35 @@ export default function Portal() {
                 Incluye precalentamiento + rutina del día
               </Typography>
 
-              <Box display="flex" gap={2} justifyContent="center" flexDirection={{ xs: 'column', sm: 'row' }}>
+              <Box display="flex" gap={1.5} justifyContent="center">
                 {[
-                  { key: 'HOMBRE', label: 'Varón', icon: <ManIcon  sx={{ fontSize: 44 }} />, color: '#06b6d4', shadow: 'rgba(6,182,212,0.25)'  },
-                  { key: 'MUJER',  label: 'Mujer', icon: <WomanIcon sx={{ fontSize: 44 }} />, color: '#ec4899', shadow: 'rgba(236,72,153,0.25)' },
+                  { key: 'HOMBRE', label: 'Varón',  icon: <ManIcon  sx={{ fontSize: 22 }} />, color: '#06b6d4', shadow: 'rgba(6,182,212,0.3)'  },
+                  { key: 'MUJER',  label: 'Mujer',  icon: <WomanIcon sx={{ fontSize: 22 }} />, color: '#ec4899', shadow: 'rgba(236,72,153,0.3)' },
                 ].map(g => (
                   <Box
                     key={g.key}
                     onClick={() => setGenero(g.key)}
                     sx={{
-                      flex: 1, maxWidth: 220, mx: 'auto',
-                      p: { xs: 2.5, sm: 3.5 },
-                      borderRadius: 3,
-                      border: `2px solid ${g.color}44`,
-                      background: `linear-gradient(145deg, ${g.color}0d 0%, ${g.color}18 100%)`,
+                      flex: 1, maxWidth: 200,
+                      height: 52,
+                      px: 2.5,
+                      borderRadius: 2,
+                      border: `1.5px solid ${g.color}55`,
+                      background: `linear-gradient(110deg, ${g.color}12 0%, ${g.color}22 100%)`,
                       cursor: 'pointer',
-                      display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1.5,
-                      transition: 'all 0.18s',
+                      display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 1,
+                      transition: 'all 0.15s',
                       '&:hover': {
-                        border: `2px solid ${g.color}cc`,
-                        background: `linear-gradient(145deg, ${g.color}22 0%, ${g.color}33 100%)`,
-                        transform: 'translateY(-3px)',
-                        boxShadow: `0 12px 30px ${g.shadow}`,
+                        border: `1.5px solid ${g.color}bb`,
+                        background: `linear-gradient(110deg, ${g.color}25 0%, ${g.color}38 100%)`,
+                        boxShadow: `0 6px 24px ${g.shadow}`,
+                        transform: 'translateY(-2px)',
                       },
-                      '&:active': { transform: 'translateY(0)' },
+                      '&:active': { transform: 'translateY(0)', boxShadow: 'none' },
                     }}
                   >
-                    <Box sx={{ color: g.color }}>{g.icon}</Box>
-                    <Typography fontWeight={700} color="#fff" fontSize={18}>{g.label}</Typography>
+                    <Box sx={{ color: g.color, display: 'flex', alignItems: 'center' }}>{g.icon}</Box>
+                    <Typography fontWeight={700} color="#fff" fontSize={15}>{g.label}</Typography>
                   </Box>
                 ))}
               </Box>
@@ -232,5 +261,6 @@ export default function Portal() {
         </Typography>
       </Box>
     </Box>
+    </>
   );
 }
