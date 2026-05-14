@@ -1,5 +1,5 @@
 const prisma = require('../config/database');
-const { obtenerRutinaPorNombre } = require('../services/ejerciciosService');
+const { obtenerRutinaPorNombre, listarRutinasPorTipo } = require('../services/ejerciciosService');
 
 exports.listarSocios = async (req, res, next) => {
   try {
@@ -55,6 +55,24 @@ exports.obtenerSocio = async (req, res, next) => {
     }
 
     res.json({ socio, rutina });
+  } catch (err) { next(err); }
+};
+
+exports.listarRutinas = async (req, res, next) => {
+  try {
+    const tipo = (req.params.tipo || '').toUpperCase();
+    const nombres = listarRutinasPorTipo(tipo);
+    res.json(nombres);
+  } catch (err) { next(err); }
+};
+
+exports.obtenerRutina = async (req, res, next) => {
+  try {
+    const tipo   = (req.params.tipo  || '').toUpperCase();
+    const nombre = decodeURIComponent(req.params.nombre || '');
+    const rutina = obtenerRutinaPorNombre(tipo, nombre);
+    if (!rutina) return res.status(404).json({ error: 'Rutina no encontrada' });
+    res.json({ tipo, nombre: rutina.nombre, ejercicios: rutina.ejercicios });
   } catch (err) { next(err); }
 };
 

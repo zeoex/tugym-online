@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 const ctrl = require('../controllers/portalController');
 
-router.get('/socios',      ctrl.listarSocios);
-router.get('/socio/:id',   ctrl.obtenerSocio);
-router.get('/anuncios',    ctrl.listarAnuncios);
+router.get('/anuncios',              ctrl.listarAnuncios);
+router.get('/rutinas/:tipo',         ctrl.listarRutinas);
+router.get('/rutina/:tipo/:nombre',  ctrl.obtenerRutina);
 
 module.exports = router;
