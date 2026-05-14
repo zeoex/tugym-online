@@ -1,5 +1,50 @@
 const prisma = require('../config/database');
-const { obtenerRutinaPorNombre, listarRutinasPorTipo } = require('../services/ejerciciosService');
+const { obtenerRutinaPorNombre, listarRutinasPorTipo, generarEjercicios } = require('../services/ejerciciosService');
+
+function inicioDia() {
+  const h = new Date();
+  return new Date(h.getFullYear(), h.getMonth(), h.getDate());
+}
+function finDia() {
+  const h = new Date();
+  return new Date(h.getFullYear(), h.getMonth(), h.getDate() + 1);
+}
+
+exports.rutinaDia = async (req, res, next) => {
+  try {
+    const inicio = inicioDia();
+    const fin    = finDia();
+
+    let rutinas = await prisma.rutinaDia.findMany({
+      where: { fecha: { gte: inicio, lt: fin } },
+    });
+
+    if (rutinas.length < 3) {
+      const existeTipos = new Set(rutinas.map(r => r.tipo));
+      const tipos = ['HOMBRE', 'MUJER', 'PRECALENTAMIENTO'].filter(t => !existeTipos.has(t));
+      const nuevas = await Promise.all(
+        tipos.map(async (tipo) => {
+          const { nombre, ejercicios } = await generarEjercicios(tipo);
+          return { fecha: inicio, tipo, nombre, ejercicios: JSON.stringify(ejercicios) };
+        })
+      );
+      await Promise.all(
+        nuevas.map(r =>
+          prisma.rutinaDia.upsert({
+            where: { fecha_tipo: { fecha: r.fecha, tipo: r.tipo } },
+            update: {},
+            create: r,
+          })
+        )
+      );
+      rutinas = await prisma.rutinaDia.findMany({ where: { fecha: { gte: inicio, lt: fin } } });
+    }
+
+    const map = {};
+    for (const r of rutinas) map[r.tipo] = { ...r, ejercicios: JSON.parse(r.ejercicios) };
+    res.json(map);
+  } catch (err) { next(err); }
+};
 
 exports.listarSocios = async (req, res, next) => {
   try {
