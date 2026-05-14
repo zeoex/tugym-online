@@ -145,8 +145,8 @@ export default function Portal() {
 
               <Box display="flex" gap={2} justifyContent="center" flexDirection={{ xs: 'column', sm: 'row' }}>
                 {[
-                  { key: 'HOMBRE', label: 'Varón',  icon: <ManIcon  sx={{ fontSize: 44 }} /> },
-                  { key: 'MUJER',  label: 'Mujer',  icon: <WomanIcon sx={{ fontSize: 44 }} /> },
+                  { key: 'HOMBRE', label: 'Varón', icon: <ManIcon  sx={{ fontSize: 44 }} />, color: '#06b6d4', shadow: 'rgba(6,182,212,0.25)'  },
+                  { key: 'MUJER',  label: 'Mujer', icon: <WomanIcon sx={{ fontSize: 44 }} />, color: '#ec4899', shadow: 'rgba(236,72,153,0.25)' },
                 ].map(g => (
                   <Box
                     key={g.key}
@@ -155,21 +155,21 @@ export default function Portal() {
                       flex: 1, maxWidth: 220, mx: 'auto',
                       p: { xs: 2.5, sm: 3.5 },
                       borderRadius: 3,
-                      border: '2px solid rgba(6,182,212,0.3)',
-                      bgcolor: 'rgba(6,182,212,0.06)',
+                      border: `2px solid ${g.color}44`,
+                      background: `linear-gradient(145deg, ${g.color}0d 0%, ${g.color}18 100%)`,
                       cursor: 'pointer',
                       display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 1.5,
                       transition: 'all 0.18s',
                       '&:hover': {
-                        border: `2px solid ${ACCENT}`,
-                        bgcolor: 'rgba(6,182,212,0.14)',
+                        border: `2px solid ${g.color}cc`,
+                        background: `linear-gradient(145deg, ${g.color}22 0%, ${g.color}33 100%)`,
                         transform: 'translateY(-3px)',
-                        boxShadow: `0 10px 28px rgba(6,182,212,0.22)`,
+                        boxShadow: `0 12px 30px ${g.shadow}`,
                       },
                       '&:active': { transform: 'translateY(0)' },
                     }}
                   >
-                    <Box sx={{ color: ACCENT }}>{g.icon}</Box>
+                    <Box sx={{ color: g.color }}>{g.icon}</Box>
                     <Typography fontWeight={700} color="#fff" fontSize={18}>{g.label}</Typography>
                   </Box>
                 ))}
