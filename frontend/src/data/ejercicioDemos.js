@@ -273,6 +273,123 @@ export const EJERCICIO_DESC = {
   'Cat-Cow en Cuadrupedia': 'En cuadrupedia, alterna entre arquear la espalda hacia abajo (Cow, cabeza arriba) y redondear la columna hacia arriba (Cat, cabeza abajo). Sincroniza con la respiración. Moviliza toda la columna vertebral.',
 };
 
+// Pre-built image URL mapping from wger.de (no API calls needed at runtime)
+const W = 'https://wger.de/media/exercise-images';
+export const EJERCICIO_IMG = {
+  // Pecho
+  'Press de Banca con Barra':        `${W}/192/Bench-press-1.png`,
+  'Press de Banca':                  `${W}/192/Bench-press-1.png`,
+  'Press de Banca Plano':            `${W}/192/Bench-press-1.png`,
+  'Press Inclinado con Mancuernas':  `${W}/1277/9f3c7817-3e3d-417d-8b08-2c0a1aa5fe03.jpg`,
+  'Press de Banca Inclinado':        `${W}/41/Incline-bench-press-1.png`,
+  'Aperturas con Mancuernas':        `${W}/238/2fc242d3-5bdd-4f97-99bd-678adb8c96fc.png`,
+  'Aperturas en Máquina Pec Deck':   `${W}/98/Butterfly-machine-2.png`,
+  'Press de Banca con Mancuernas':   `${W}/97/Dumbbell-bench-press-1.png`,
+  'Press de Pecho con Mancuernas':   `${W}/97/Dumbbell-bench-press-1.png`,
+
+  // Tríceps
+  'Fondos en Paralelas':                     `${W}/194/34600351-8b0b-4cb0-8daa-583537be15b0.png`,
+  'Press Francés con Barra EZ':              `${W}/50/695ced5c-9961-4076-add2-cb250d01089e.png`,
+  'Extensiones en Polea Alta':               `${W}/1185/c5ca283d-8958-4fd8-9d59-a3f52a3ac66b.jpg`,
+  'Extensiones de Tríceps con Cuerda':       `${W}/659/a60452f1-e2ea-43fe-baa6-c1a2208d060c.png`,
+  'Extensión de Tríceps con Mancuerna':      `${W}/1519/fab7f641-27d4-40b5-8edd-1a0a137bfd94.gif`,
+  'Extensiones de Tríceps sobre Cabeza':     `${W}/1519/fab7f641-27d4-40b5-8edd-1a0a137bfd94.gif`,
+  'Fondos en Banco (Tríceps)':               `${W}/83/Bench-dips-1.png`,
+
+  // Espalda
+  'Dominadas al Pecho':              `${W}/475/b0554016-16fd-4dbe-be47-a2a17d16ae0e.jpg`,
+  'Dominadas':                       `${W}/475/b0554016-16fd-4dbe-be47-a2a17d16ae0e.jpg`,
+  'Dominadas Supinas':               `${W}/181/Chin-ups-2.png`,
+  'Remo con Barra':                  `${W}/109/Barbell-rear-delt-row-1.png`,
+  'Remo en Barra T':                 `${W}/106/T-bar-row-1.png`,
+  'Remo con Mancuerna':              `${W}/1637/a1fbe83a-a3e5-49f6-a2c2-5d5b533c2be8.png`,
+  'Remo Unilateral con Mancuerna':   `${W}/1637/a1fbe83a-a3e5-49f6-a2c2-5d5b533c2be8.png`,
+  'Remo Horizontal con Mancuerna':   `${W}/1637/a1fbe83a-a3e5-49f6-a2c2-5d5b533c2be8.png`,
+  'Jalón al Pecho en Polea':         `${W}/158/02e8a7c3-dc67-434e-a4bc-77fdecf84b49.webp`,
+  'Jalón Frontal Agarre Ancho':      `${W}/158/02e8a7c3-dc67-434e-a4bc-77fdecf84b49.webp`,
+  'Remo en Polea Baja':              `${W}/1117/e74255c0-67a0-4309-b78d-2d79e6ff8c11.png`,
+  'Remo en Polea':                   `${W}/1117/e74255c0-67a0-4309-b78d-2d79e6ff8c11.png`,
+  'Face Pull en Polea':              `${W}/1639/8927346e-f5ca-4795-bdf1-5ac9309401e7.webp`,
+  'Hiperextensiones':                `${W}/128/Hyperextensions-1.png`,
+  'Hiperextensiones en Banco':       `${W}/128/Hyperextensions-1.png`,
+
+  // Bíceps
+  'Curl de Bíceps con Barra':        `${W}/74/Bicep-curls-1.png`,
+  'Curl de Bíceps con Mancuernas':   `${W}/1012/8270fdb8-28f1-4eff-b410-af8642085b3f.png`,
+  'Curl de Bíceps Alterno':          `${W}/1012/8270fdb8-28f1-4eff-b410-af8642085b3f.png`,
+  'Curl Martillo con Mancuernas':    `${W}/86/Bicep-hammer-curl-1.png`,
+  'Curl Martillo Alterno':           `${W}/86/Bicep-hammer-curl-1.png`,
+  'Curl Concentrado':                `${W}/1109/00b0a0bf-c14a-4f13-bb14-62c09030a1aa.png`,
+  'Curl de Bíceps Concentrado':      `${W}/1109/00b0a0bf-c14a-4f13-bb14-62c09030a1aa.png`,
+  'Curl en Polea Baja':              `${W}/129/Standing-biceps-curl-1.png`,
+
+  // Hombros
+  'Press Militar con Barra':         `${W}/1893/7dbad19e-0616-41fd-9d7d-3e21649c0eea.png`,
+  'Press Militar de Pie':            `${W}/1893/7dbad19e-0616-41fd-9d7d-3e21649c0eea.png`,
+  'Press Militar Sentado':           `${W}/119/seated-barbell-shoulder-press-large-1.png`,
+  'Press Militar con Mancuernas':    `${W}/123/dumbbell-shoulder-press-large-1.png`,
+  'Press de Hombros con Mancuernas': `${W}/123/dumbbell-shoulder-press-large-1.png`,
+  'Press de Hombros Alterno':        `${W}/123/dumbbell-shoulder-press-large-1.png`,
+  'Elevaciones Laterales':           `${W}/148/lateral-dumbbell-raises-large-2.png`,
+  'Elevaciones Laterales Sentada':   `${W}/148/lateral-dumbbell-raises-large-2.png`,
+  'Elevaciones Frontales':           `${W}/256/b7def5bc-2352-499b-b9e5-fff741003831.png`,
+  'Pájaros con Mancuernas':          `${W}/829/ad724e5c-b1ed-49e8-9279-a17545b0dd0b.png`,
+  'Encogimientos de Hombros':        `${W}/151/Dumbbell-shrugs-2.png`,
+  'Encogimientos con Mancuernas':    `${W}/151/Dumbbell-shrugs-2.png`,
+
+  // Piernas
+  'Sentadilla con Barra':            `${W}/1801/60043328-1cfb-4289-9865-aaf64d5aaa28.jpg`,
+  'Sentadilla Sumo con Mancuerna':   `${W}/1088/9f66b288-ce8f-4154-ba80-78fee267263c.jpg`,
+  'Sentadilla Goblet con Mancuerna': `${W}/203/1c052351-2af0-4227-aeb0-244008e4b0a8.jpeg`,
+  'Sentadilla Búlgara':              `${W}/988/6283b258-a4d7-4833-84f7-a38987022d3d.png`,
+  'Sentadillas con Salto':           `${W}/977/3124c091-6395-4377-96c5-56048b627ceb.png`,
+  'Prensa de Piernas':               `${W}/371/d2136f96-3a43-4d4c-9944-1919c4ca1ce1.webp`,
+  'Peso Muerto Rumano':              `${W}/1652/0306c8c0-70cc-45d4-92de-6fa72ceaa834.webp`,
+  'Peso Muerto Convencional':        `${W}/184/1709c405-620a-4d07-9658-fade2b66a2df.jpeg`,
+  'Peso Muerto con Mancuernas':      `${W}/1652/0306c8c0-70cc-45d4-92de-6fa72ceaa834.webp`,
+  'Extensiones de Cuádriceps':       `${W}/851/4d621b17-f6cb-4107-97c0-9f44e9a2dbc6.webp`,
+  'Curl Femoral Tumbado':            `${W}/154/lying-leg-curl-machine-large-1.png`,
+  'Curl Femoral en Máquina':         `${W}/154/lying-leg-curl-machine-large-1.png`,
+  'Estocadas con Mancuernas':        `${W}/984/5c7ffe68-e7b2-47f3-a22a-f9cc28640432.png`,
+  'Estocadas Caminando':             `${W}/113/Walking-lunges-1.png`,
+  'Reverse Lunge con Mancuernas':    `${W}/999/d0931eb3-8db0-4049-bb08-aa4036072056.jfif`,
+  'Elevación de Talones de Pie':     `${W}/622/9a429bd0-afd3-4ad0-8043-e9beec901c81.jpeg`,
+  'Elevación de Talones Sentada':    `${W}/1620/edd40e39-e337-4460-a8dd-6127d40ddd16.jpeg`,
+  'Elevación de Talones Bipodal':    `${W}/622/9a429bd0-afd3-4ad0-8043-e9beec901c81.jpeg`,
+  'Step Up con Rodilla Alta':        `${W}/981/f9377a7e-eb58-4cca-b805-2d36863aeb03.png`,
+
+  // Glúteos
+  'Hip Thrust con Barra':            `${W}/1642/a81ad922-caf5-47f8-99b4-640cb0717436.webp`,
+  'Hip Thrust':                      `${W}/1642/a81ad922-caf5-47f8-99b4-640cb0717436.webp`,
+  'Hip Thrust Pulsado':              `${W}/1642/a81ad922-caf5-47f8-99b4-640cb0717436.webp`,
+  'Patada de Glúteo en Polea':       `${W}/1613/a851fe9d-771f-44da-82f0-799e02ae3fd1.jpg`,
+  'Patada Trasera de Glúteo':        `${W}/990/de20457c-914a-45c9-8cf9-0ad9739759a1.png`,
+  'Abducción de Cadera en Máquina':  `${W}/1748/923a3ff7-c269-49bd-9f03-697151a40f06.jpg`,
+  'Abductores en Máquina':           `${W}/1748/923a3ff7-c269-49bd-9f03-697151a40f06.jpg`,
+
+  // Core / Abdomen
+  'Crunch Abdominal':                `${W}/91/Crunches-1.png`,
+  'Crunch con Rodillas Elevadas':    `${W}/91/Crunches-1.png`,
+  'Crunch Inverso':                  `${W}/93/Decline-crunch-1.png`,
+  'Crunch con Giro':                 `${W}/176/Cross-body-crunch-1.png`,
+  'Bicicleta Abdominal':             `${W}/176/Cross-body-crunch-1.png`,
+  'Plancha Frontal':                 `${W}/458/b7bd9c28-9f1d-4647-bd17-ab6a3adf5770.png`,
+  'Plancha con Toque de Hombro':     `${W}/1091/50c8912d-54ef-46c9-99d1-633b6196aa1e.jpg`,
+  'Elevación de Piernas Colgado':    `${W}/979/27097a3a-5749-428d-b94c-6082afe390f6.png`,
+  'Elevación de Piernas Tumbada':    `${W}/125/Leg-raises-2.png`,
+  'Russian Twist con Peso':          `${W}/1193/70ca5d80-3847-4a8c-8882-c6e9e485e29e.png`,
+  'Bird Dog':                        `${W}/1572/3d14e761-a73d-49da-8804-f3016a7573ff.png`,
+
+  // Cardio / Movilidad
+  'Skipping en el Lugar':            `${W}/983/16245344-9957-4a24-8d61-f9939ed5f964.png`,
+  'Skipping Alto':                   `${W}/983/16245344-9957-4a24-8d61-f9939ed5f964.png`,
+  'Marcha con Rodillas Altas':       `${W}/983/16245344-9957-4a24-8d61-f9939ed5f964.png`,
+};
+
+export function getImagen(nombre) {
+  return EJERCICIO_IMG[nombre] ?? null;
+}
+
 export function getDescripcion(nombre) {
   return EJERCICIO_DESC[nombre]
     ?? `Realiza el ejercicio con técnica controlada, manteniendo la postura correcta en todo el recorrido. Ejecuta cada repetición de forma lenta y consciente, enfocándote en los músculos que estás trabajando. Consultá con tu entrenador para verificar la ejecución.`;
