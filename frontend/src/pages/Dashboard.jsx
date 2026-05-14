@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Grid, Card, CardContent, Typography, Box, CircularProgress, Paper, Table, TableBody, TableRow, TableCell, Button, Chip, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { Grid, Card, CardContent, Typography, Box, CircularProgress, Paper, Table, TableBody, TableRow, TableCell, Button, Chip, Dialog, DialogTitle, DialogContent, DialogActions, useTheme, useMediaQuery } from '@mui/material';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import BlockIcon from '@mui/icons-material/Block';
@@ -73,6 +73,8 @@ const StatCard = ({ title, value, icon, color, sub }) => (
 );
 
 export default function Dashboard() {
+  const theme    = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [stats, setStats]               = useState(null);
   const [morosos, setMorosos]           = useState([]);
   const [rutinas, setRutinas]           = useState({});
@@ -255,7 +257,37 @@ export default function Dashboard() {
             <Box py={3} textAlign="center">
               <Typography color="text.secondary">No hay socios con membresía vencida</Typography>
             </Box>
+          ) : isMobile ? (
+            /* Mobile: tarjetas */
+            <Box display="flex" flexDirection="column" gap={0}>
+              {morosos.map((s, i) => (
+                <Box
+                  key={s.id}
+                  sx={{ px: 2, py: 1.5, borderBottom: i < morosos.length - 1 ? '1px solid' : 'none', borderColor: 'divider', display: 'flex', alignItems: 'center', gap: 1.5 }}
+                >
+                  <SocioAvatar socio={s} size={38} />
+                  <Box flex={1} minWidth={0}>
+                    <Typography fontWeight={600} fontSize={13} noWrap>{s.apellido}, {s.nombre}</Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      {s.telefono || 'Sin teléfono'}
+                    </Typography>
+                  </Box>
+                  {s.telefono ? (
+                    <Button variant="contained" size="small" startIcon={<WhatsAppIcon />}
+                      component="a" href={whatsappUrl(s.telefono, s.nombre)} target="_blank" rel="noopener noreferrer"
+                      sx={{ bgcolor: '#25D366', '&:hover': { bgcolor: '#1da851' }, flexShrink: 0, minWidth: 0, px: 1.5 }}>
+                      Avisar
+                    </Button>
+                  ) : (
+                    <Button variant="outlined" size="small" disabled sx={{ flexShrink: 0, minWidth: 0, px: 1.5 }}>
+                      <WhatsAppIcon fontSize="small" />
+                    </Button>
+                  )}
+                </Box>
+              ))}
+            </Box>
           ) : (
+            /* Desktop: tabla */
             <Table size="small">
               <TableBody>
                 {morosos.map(s => (

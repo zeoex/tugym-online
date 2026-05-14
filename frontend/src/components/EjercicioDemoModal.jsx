@@ -1,27 +1,38 @@
 import { useState } from 'react';
 import {
   Dialog, DialogTitle, DialogContent, DialogActions,
-  Button, Box, Typography, Chip, Divider,
+  Button, Box, Typography, Chip, Divider, IconButton,
+  useTheme, useMediaQuery,
 } from '@mui/material';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
+import CloseIcon from '@mui/icons-material/Close';
 import { getImagen, getDescripcion, getYoutubeUrl } from '../data/ejercicioDemos';
 
 export default function EjercicioDemoModal({ nombre, musculo, metaColor, metaBg, open, onClose }) {
   const [imgError, setImgError] = useState(false);
+  const theme    = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const imgUrl = getImagen(nombre);
   const color  = metaColor || '#0ea5e9';
   const bg     = metaBg    || '#e0f2fe';
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1, pb: 0.5 }}>
+    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth fullScreen={isMobile}>
+      <DialogTitle sx={{ display: 'flex', alignItems: 'center', gap: 1, pb: 0.5, pr: isMobile ? 1 : 2 }}>
         <FitnessCenterIcon sx={{ color, flexShrink: 0 }} />
         <Box flex={1} minWidth={0}>
-          <Typography fontWeight={700} fontSize={17} noWrap>{nombre}</Typography>
+          <Typography fontWeight={700} fontSize={17} sx={{ wordBreak: 'break-word', lineHeight: 1.3 }}>
+            {nombre}
+          </Typography>
         </Box>
+        {isMobile && (
+          <IconButton onClick={onClose} size="small" sx={{ ml: 0.5, flexShrink: 0 }}>
+            <CloseIcon />
+          </IconButton>
+        )}
       </DialogTitle>
 
       <DialogContent sx={{ pt: 1.5 }}>
@@ -33,14 +44,12 @@ export default function EjercicioDemoModal({ nombre, musculo, metaColor, metaBg,
           />
         )}
 
-        {/* Descripción */}
         <Typography variant="body2" color="text.secondary" lineHeight={1.75} mb={2}>
           {getDescripcion(nombre)}
         </Typography>
 
         <Divider sx={{ mb: 2 }} />
 
-        {/* Imagen */}
         {imgUrl && !imgError ? (
           <Box
             component="img"
@@ -50,7 +59,7 @@ export default function EjercicioDemoModal({ nombre, musculo, metaColor, metaBg,
             sx={{
               display: 'block',
               width: '100%',
-              maxHeight: 320,
+              maxHeight: isMobile ? 260 : 320,
               objectFit: 'contain',
               borderRadius: 2,
               bgcolor: '#f8fafc',
@@ -82,15 +91,17 @@ export default function EjercicioDemoModal({ nombre, musculo, metaColor, metaBg,
           rel="noopener noreferrer"
           sx={{ color: '#ff0000', mr: 'auto' }}
         >
-          Ver en YouTube
+          {isMobile ? 'YouTube' : 'Ver en YouTube'}
         </Button>
-        <Button
-          variant="contained"
-          onClick={onClose}
-          sx={{ bgcolor: color, '&:hover': { bgcolor: color, filter: 'brightness(0.9)' } }}
-        >
-          Cerrar
-        </Button>
+        {!isMobile && (
+          <Button
+            variant="contained"
+            onClick={onClose}
+            sx={{ bgcolor: color, '&:hover': { bgcolor: color, filter: 'brightness(0.9)' } }}
+          >
+            Cerrar
+          </Button>
+        )}
       </DialogActions>
     </Dialog>
   );

@@ -102,11 +102,13 @@ export default function PanelRutina({ rutina, onRegenerar, onEditar, onQr, regen
                   </Typography>
                 </Box>
               </Box>
-              <Tooltip title="Ver cómo se hace">
-                <IconButton size="small" onClick={() => abrirDemo(e)} sx={{ color: meta.color, flexShrink: 0 }}>
-                  <VisibilityIcon fontSize="small" />
-                </IconButton>
-              </Tooltip>
+              <IconButton
+                onClick={() => abrirDemo(e)}
+                sx={{ color: meta.color, flexShrink: 0, p: '10px' }}
+                aria-label="Ver ejercicio"
+              >
+                <VisibilityIcon fontSize="small" />
+              </IconButton>
             </Box>
           ))}
         </Box>
