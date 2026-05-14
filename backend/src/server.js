@@ -17,6 +17,7 @@ const portalRoutes    = require('./routes/portal');
 const anunciosRoutes  = require('./routes/anuncios');
 const auth            = require('./middleware/auth');
 require('./jobs/vencimientosJob');
+require('./jobs/keepAliveJob');
 
 const app = express();
 
@@ -33,6 +34,8 @@ app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 200, message: { error: 'Demasiadas solicitudes' } }));
+
+app.get('/api/health', (_req, res) => res.json({ ok: true }));
 
 app.use('/api/portal',    portalRoutes);
 app.use('/api/auth',      authRoutes);
