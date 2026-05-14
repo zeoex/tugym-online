@@ -149,6 +149,13 @@ export const EJERCICIO_EN = {
   'Apertura Lateral con Apoyo':      'Side Lunge',
   'Rotación de Hombros':             'Shoulder Rotation',
   'Rotación de Caderas':             'Hip Rotation',
+  'Elevación de Rodillas en el Lugar': 'High Knees',
+  'Apertura Lateral Dinámica':       'Lateral Squat',
+  'Estocada del Corredor':           "Runner's Lunge",
+  'Estocada con Giro de Tronco':     'Lunge with Rotation',
+  'Sentadilla de Activación':        'Goblet Squat',
+  'Estocadas Hacia Atrás':           'Reverse Lunge',
+  'Puente de Glúteos Activación':    'Glute Bridge',
 };
 
 // Spanish execution descriptions
@@ -271,6 +278,18 @@ export const EJERCICIO_DESC = {
   'Clamshell con Banda Elástica': 'Acostado de lado con la banda elástica sobre las rodillas y las rodillas flexionadas. Mantén los pies juntos y abre la rodilla superior como una almeja. Trabaja el glúteo medio. Vuelve lentamente controlando la banda.',
   'Pull Apart con Banda': 'De pie, sostén la banda elástica frente a ti con los brazos extendidos. Separa los brazos hacia los lados estirando la banda hasta que llegue al pecho. Trabaja el deltoides posterior y los romboides. Vuelve con control.',
   'Cat-Cow en Cuadrupedia': 'En cuadrupedia, alterna entre arquear la espalda hacia abajo (Cow, cabeza arriba) y redondear la columna hacia arriba (Cat, cabeza abajo). Sincroniza con la respiración. Moviliza toda la columna vertebral.',
+  'Puente de Glúteos': 'Acostado boca arriba con rodillas flexionadas y pies al ancho de los hombros, empuja las caderas hacia el techo apretando los glúteos. Mantén los hombros apoyados en el suelo. Baja lentamente sin apoyar los glúteos por completo entre repeticiones.',
+  'Puente de Glúteos con Banda': 'Acostado boca arriba con la banda elástica sobre las rodillas, empuja las caderas hacia el techo apretando los glúteos y empujando las rodillas hacia afuera contra la banda. La banda añade trabajo adicional al glúteo medio.',
+  'Puente de Glúteos Unilateral': 'Acostado boca arriba, extiende una pierna y empuja las caderas hacia el techo con la pierna apoyada. Trabaja los glúteos de forma unilateral y mejora el equilibrio pélvico. Alterna las piernas.',
+  'Puente de Glúteos Activación': 'Acostado boca arriba con rodillas flexionadas, activa los glúteos empujando las caderas hacia el techo de forma controlada. Mantén la contracción en lo alto 2 segundos y baja lentamente. Ideal para despertar los glúteos antes del entrenamiento.',
+  'Elevación de Rodillas en el Lugar': 'De pie con los pies al ancho de las caderas, eleva alternadamente cada rodilla hacia el pecho de forma enérgica. Mantén el torso erguido y usa los brazos activamente para acompañar el movimiento. Activa los flexores de cadera y eleva el ritmo cardíaco.',
+  'Apertura Lateral Dinámica': 'De pie, da un paso lateral amplio flexionando la rodilla de la pierna que avanza mientras mantienes la otra extendida. Vuelve al centro y repite hacia el otro lado. Trabaja los aductores, glúteos y la movilidad lateral de cadera.',
+  'Estocada del Corredor': 'Da un paso largo hacia adelante bajando la rodilla trasera cerca del suelo. Mantén el torso erguido y los brazos activos. Empuja con el pie delantero para volver y alterna las piernas. Trabaja cuádriceps, glúteos y mejora la movilidad de cadera.',
+  'Estocada con Giro de Tronco': 'Realiza una estocada hacia adelante y en lo alto del movimiento gira el torso hacia el lado de la pierna delantera extendiendo los brazos. Vuelve al centro y alterna. Trabaja piernas, glúteos, oblicuos y la movilidad torácica.',
+  'Sentadilla de Activación': 'Realiza una sentadilla profunda bajando las caderas lo más cerca posible del suelo con los talones apoyados. Usa los codos para empujar suavemente las rodillas hacia afuera. Ideal para activar caderas y glúteos y mejorar la movilidad antes del entrenamiento.',
+  'Sentadilla de Movilidad (profunda)': 'Baja en sentadilla profunda manteniendo los talones en el suelo y el torso erguido. Puedes usar un soporte si es necesario. Trabaja la movilidad de caderas, rodillas y tobillos. Mantén 2-3 segundos en el punto más bajo.',
+  'Estocadas Hacia Atrás': 'De pie, da un paso hacia atrás con una pierna bajando la rodilla trasera cerca del suelo. La rodilla delantera debe estar a 90° sin sobrepasar el pie. Vuelve empujando con el pie delantero y alterna. Trabaja cuádriceps, glúteos e isquiotibiales.',
+  'Remo en Máquina': 'Sentado en la máquina de remo con los pies en los apoyos y las rodillas ligeramente flexionadas, agarra las asas y tira hacia el abdomen manteniendo el torso erguido. Aprieta los omóplatos al final del movimiento y vuelve con control. Trabaja dorsal, romboides y bíceps.',
 };
 
 // Pre-built image URL mapping from wger.de (no API calls needed at runtime)
@@ -366,6 +385,10 @@ export const EJERCICIO_IMG = {
   'Patada Trasera de Glúteo':        `${W}/990/de20457c-914a-45c9-8cf9-0ad9739759a1.png`,
   'Abducción de Cadera en Máquina':  `${W}/1748/923a3ff7-c269-49bd-9f03-697151a40f06.jpg`,
   'Abductores en Máquina':           `${W}/1748/923a3ff7-c269-49bd-9f03-697151a40f06.jpg`,
+  'Puente de Glúteos':               `${W}/1642/a81ad922-caf5-47f8-99b4-640cb0717436.webp`,
+  'Puente de Glúteos con Banda':     `${W}/1642/a81ad922-caf5-47f8-99b4-640cb0717436.webp`,
+  'Puente de Glúteos Unilateral':    `${W}/1642/a81ad922-caf5-47f8-99b4-640cb0717436.webp`,
+  'Puente de Glúteos Activación':    `${W}/1642/a81ad922-caf5-47f8-99b4-640cb0717436.webp`,
 
   // Core / Abdomen
   'Crunch Abdominal':                `${W}/91/Crunches-1.png`,
@@ -384,6 +407,15 @@ export const EJERCICIO_IMG = {
   'Skipping en el Lugar':            `${W}/983/16245344-9957-4a24-8d61-f9939ed5f964.png`,
   'Skipping Alto':                   `${W}/983/16245344-9957-4a24-8d61-f9939ed5f964.png`,
   'Marcha con Rodillas Altas':       `${W}/983/16245344-9957-4a24-8d61-f9939ed5f964.png`,
+  'Remo en Máquina':                 `${W}/1725/f0ebd44e-b8e1-400c-b598-ca371f3a07af.png`,
+  'Elevación de Rodillas en el Lugar': `${W}/978/d3ffe51f-7eb8-4cc9-9eae-105847af3005.png`,
+  'Estocada con Giro de Tronco':     `${W}/1868/446e7065-215d-4a91-9da7-9416101442bb.png`,
+  'Estocada con Rotación de Tronco': `${W}/1868/446e7065-215d-4a91-9da7-9416101442bb.png`,
+  'Estocada del Corredor':           `${W}/1874/66fca8a5-41e8-42d1-8776-5e46a4902650.png`,
+  'Apertura Lateral Dinámica':       `${W}/1604/7695428e-bfed-4021-b987-498d93153995.png`,
+  'Sentadilla de Activación':        `${W}/203/1c052351-2af0-4227-aeb0-244008e4b0a8.jpeg`,
+  'Sentadilla de Movilidad (profunda)': `${W}/203/1c052351-2af0-4227-aeb0-244008e4b0a8.jpeg`,
+  'Estocadas Hacia Atrás':           `${W}/999/d0931eb3-8db0-4049-bb08-aa4036072056.jfif`,
 };
 
 export function getImagen(nombre) {
