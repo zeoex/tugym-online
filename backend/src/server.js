@@ -5,6 +5,7 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const path = require('path');
 
+const uploadsDir = require('./config/uploads');
 const errorHandler = require('./middleware/errorHandler');
 const authRoutes      = require('./routes/auth');
 const sociosRoutes    = require('./routes/socios');
@@ -17,7 +18,6 @@ const portalRoutes    = require('./routes/portal');
 const anunciosRoutes  = require('./routes/anuncios');
 const auth            = require('./middleware/auth');
 require('./jobs/vencimientosJob');
-require('./jobs/keepAliveJob');
 
 const app = express();
 
@@ -31,7 +31,7 @@ app.use(cors({
   },
 }));
 app.use(express.json());
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+app.use('/uploads', express.static(uploadsDir));
 
 app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 200, message: { error: 'Demasiadas solicitudes' } }));
 

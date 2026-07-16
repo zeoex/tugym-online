@@ -1,0 +1,12 @@
+{
+  "name": "tugym-online",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "npm --prefix backend install --include=dev && npm --prefix backend run db:generate && npm --prefix frontend install --include=dev && npm --prefix frontend run build",
+    "start": "npm --prefix backend run db:deploy && node backend/src/server.js"
+  }
+}
