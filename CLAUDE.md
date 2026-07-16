@@ -89,6 +89,12 @@ Copy `backend/.env.example` to `backend/.env` and fill in values before running 
 - Admin endpoints under `/api/asistencias`: `hoy`, `stats` (peak hours), `inactivos` (active members with no visit in 14+ days, for retention), `manual`
 - Streak (`racha`) = consecutive days with ≥1 check-in ending today or yesterday; server timezone matters, so production sets `TZ=America/Argentina/Buenos_Aires`
 
+### Late-payment surcharges (recargos)
+- All configurable in `Configuracion`: payment window (`diaPagoDesde`–`diaPagoHasta`, e.g. 1–10), `recargoActivo`, `recargoTipo` (PORCENTAJE|FIJO), `recargoValor`
+- The rule lives server-side in `backend/src/utils/recargo.js`: surcharge applies only when paying after `diaPagoHasta`; DIARIO plans never get one; before the window counts as early payment
+- `POST /api/pagos` computes the surcharge itself — the UI can only waive it (`aplicarRecargo: false`); a manual `monto` override skips the automatic surcharge. `GET /api/pagos/recargo-info?planId=` returns today's suggested breakdown
+- `Pago.recargo` stores the surcharge portion for reporting; `monto` is always the total charged
+
 ### Theming
 - `frontend/src/theme.js` holds both MUI themes and brand tokens (LIMA/INK/NOCHE): `portalTheme` (dark, lime-on-black) and `adminTheme` (light, ink + lime). `App.jsx` mounts one shell per route tree — only one CssBaseline is active at a time
 - Fonts are bundled locally via `@fontsource-variable` (Space Grotesk for headings, Inter for body) — no CDN
