@@ -1,7 +1,7 @@
 /* Service worker de TuGymOnLine.
    Regla de oro: la API va SIEMPRE a la red. Solo se cachea el shell
    (navegaciones, red primero) y los assets con hash o imágenes (cache primero). */
-const CACHE = 'tugym-v1';
+const CACHE = 'tugym-v2';
 
 self.addEventListener('install', () => self.skipWaiting());
 

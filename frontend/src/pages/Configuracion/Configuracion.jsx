@@ -10,7 +10,7 @@ import StorefrontIcon from '@mui/icons-material/Storefront';
 import WhereToVoteIcon from '@mui/icons-material/WhereToVote';
 import PaymentsIcon from '@mui/icons-material/Payments';
 import api from '../../services/api';
-import { LIMA, INK } from '../../theme';
+import { ACENTO, INK } from '../../theme';
 
 export default function Configuracion() {
   const [form, setForm] = useState(null);
@@ -127,8 +127,8 @@ export default function Configuracion() {
             size="small"
             label={checkinActivo ? 'Activo' : 'Sin configurar'}
             sx={checkinActivo
-              ? { bgcolor: LIMA, color: INK, fontWeight: 800 }
-              : { bgcolor: 'rgba(18,22,13,0.08)', fontWeight: 700 }}
+              ? { bgcolor: ACENTO, color: INK, fontWeight: 800 }
+              : { bgcolor: 'rgba(13,20,36,0.08)', fontWeight: 700 }}
           />
         </Box>
         <Typography variant="body2" color="text.secondary" mb={2.5}>
@@ -168,7 +168,7 @@ export default function Configuracion() {
           onChange={(_e, v) => setForm((p) => ({ ...p, radioCheckin: v }))}
           min={30} max={500} step={10}
           marks={[{ value: 50, label: '50 m' }, { value: 150, label: '150 m' }, { value: 300, label: '300 m' }, { value: 500, label: '500 m' }]}
-          sx={{ maxWidth: 480, color: INK, '& .MuiSlider-thumb': { bgcolor: LIMA, border: `2px solid ${INK}` } }}
+          sx={{ maxWidth: 480, color: INK, '& .MuiSlider-thumb': { bgcolor: ACENTO, border: `2px solid ${INK}` } }}
         />
         <Typography variant="caption" color="text.secondary" display="block">
           150 m es un buen punto de partida: cubre la vereda y el estacionamiento sin dejar que hagan check-in desde la otra cuadra.
@@ -190,8 +190,8 @@ export default function Configuracion() {
             size="small"
             label={form.recargoActivo ? 'Activo' : 'Desactivado'}
             sx={form.recargoActivo
-              ? { bgcolor: LIMA, color: INK, fontWeight: 800 }
-              : { bgcolor: 'rgba(18,22,13,0.08)', fontWeight: 700 }}
+              ? { bgcolor: ACENTO, color: INK, fontWeight: 800 }
+              : { bgcolor: 'rgba(13,20,36,0.08)', fontWeight: 700 }}
           />
         </Box>
         <Typography variant="body2" color="text.secondary" mb={2}>

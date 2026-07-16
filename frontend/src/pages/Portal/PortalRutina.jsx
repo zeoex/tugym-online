@@ -7,7 +7,7 @@ import ManIcon from '@mui/icons-material/Man';
 import WomanIcon from '@mui/icons-material/Woman';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import WarmupIcon from '@mui/icons-material/DirectionsRun';
-import { LIMA, VIOLETA } from '../../theme';
+import { ACENTO, VIOLETA } from '../../theme';
 import { portalApi } from './portalApi';
 import PanelRutina from '../../components/PanelRutina';
 
@@ -33,7 +33,7 @@ export default function PortalRutina() {
     return (
       <Fade in>
         <Paper sx={{ p: { xs: 3, sm: 4 }, textAlign: 'center' }}>
-          <FitnessCenterIcon sx={{ color: LIMA, fontSize: 40, mb: 1.5 }} />
+          <FitnessCenterIcon sx={{ color: ACENTO, fontSize: 40, mb: 1.5 }} />
           <Typography variant="h6" fontSize={18} mb={0.5}>
             ¿Cuál es tu rutina de hoy?
           </Typography>
@@ -43,7 +43,7 @@ export default function PortalRutina() {
 
           <Box display="flex" gap={1.5} justifyContent="center">
             {[
-              { key: 'HOMBRE', label: 'Varón', icon: <ManIcon sx={{ fontSize: 26 }} />, color: LIMA },
+              { key: 'HOMBRE', label: 'Varón', icon: <ManIcon sx={{ fontSize: 26 }} />, color: ACENTO },
               { key: 'MUJER',  label: 'Mujer', icon: <WomanIcon sx={{ fontSize: 26 }} />, color: VIOLETA },
             ].map((g) => (
               <Box
@@ -95,7 +95,7 @@ export default function PortalRutina() {
                 Precalentamiento — {precalenta.nombre}
               </Typography>
             </Box>
-            <Box sx={{ borderRadius: 4, overflow: 'hidden', border: '1px solid rgba(242,245,234,0.08)' }}>
+            <Box sx={{ borderRadius: 4, overflow: 'hidden', border: '1px solid rgba(237,241,249,0.08)' }}>
               <PanelRutina rutina={precalenta} />
             </Box>
           </Box>
@@ -106,17 +106,17 @@ export default function PortalRutina() {
         {rutinaGenero && (
           <Box>
             <Box display="flex" alignItems="center" gap={1} mb={1.5}>
-              <FitnessCenterIcon sx={{ color: LIMA, fontSize: 20 }} />
+              <FitnessCenterIcon sx={{ color: ACENTO, fontSize: 20 }} />
               <Typography fontWeight={700} fontSize={15}>
                 Rutina del día — {rutinaGenero.nombre}
               </Typography>
-              <Box sx={{ ml: 'auto', px: 1.5, py: 0.4, borderRadius: 10, bgcolor: 'rgba(200,241,63,0.12)' }}>
-                <Typography fontSize={12} fontWeight={700} sx={{ color: LIMA }}>
+              <Box sx={{ ml: 'auto', px: 1.5, py: 0.4, borderRadius: 10, bgcolor: 'rgba(78,159,255,0.12)' }}>
+                <Typography fontSize={12} fontWeight={700} sx={{ color: ACENTO }}>
                   {genero === 'HOMBRE' ? 'Varones' : 'Mujeres'}
                 </Typography>
               </Box>
             </Box>
-            <Box sx={{ borderRadius: 4, overflow: 'hidden', border: '1px solid rgba(242,245,234,0.08)' }}>
+            <Box sx={{ borderRadius: 4, overflow: 'hidden', border: '1px solid rgba(237,241,249,0.08)' }}>
               <PanelRutina rutina={rutinaGenero} />
             </Box>
           </Box>

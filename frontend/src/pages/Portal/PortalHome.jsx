@@ -11,7 +11,7 @@ import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import GroupsIcon from '@mui/icons-material/Groups';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import { LIMA, VIOLETA, INK } from '../../theme';
+import { ACENTO, VIOLETA, INK } from '../../theme';
 import { portalApi, dniGuardado } from './portalApi';
 
 function obtenerUbicacion() {
@@ -38,7 +38,7 @@ function Festejo() {
     return {
       x: Math.cos(angulo) * (70 + (i % 3) * 26),
       y: Math.sin(angulo) * (58 + ((i + 1) % 3) * 24),
-      color: [LIMA, VIOLETA, '#F2F5EA'][i % 3],
+      color: [ACENTO, VIOLETA, '#EDF1F9'][i % 3],
       delay: (i % 4) * 0.05,
     };
   });
@@ -132,8 +132,8 @@ export default function PortalHome() {
           '100%': { transform: 'translate(var(--fx), var(--fy)) scale(0.4)', opacity: 0 },
         },
         '@keyframes latido': {
-          '0%,100%': { boxShadow: '0 0 0 0 rgba(200,241,63,0.35)' },
-          '50%':     { boxShadow: '0 0 0 16px rgba(200,241,63,0)' },
+          '0%,100%': { boxShadow: '0 0 0 0 rgba(78,159,255,0.35)' },
+          '50%':     { boxShadow: '0 0 0 16px rgba(78,159,255,0)' },
         },
         '@keyframes campana': {
           '0%,100%': { transform: 'rotate(0deg)' },
@@ -163,7 +163,7 @@ export default function PortalHome() {
             icon={<GroupsIcon sx={{ fontSize: 16 }} />}
             label={`${info.entrenandoAhora} entrenando`}
             size="small"
-            sx={{ bgcolor: 'rgba(200,241,63,0.12)', color: LIMA, fontWeight: 700, '& .MuiChip-icon': { color: LIMA } }}
+            sx={{ bgcolor: 'rgba(78,159,255,0.12)', color: ACENTO, fontWeight: 700, '& .MuiChip-icon': { color: ACENTO } }}
           />
         )}
       </Box>
@@ -176,8 +176,8 @@ export default function PortalHome() {
               <Festejo />
               <Box sx={{
                 width: 84, height: 84, borderRadius: '50%', mx: 'auto', mb: 2,
-                bgcolor: LIMA, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                boxShadow: '0 0 40px rgba(200,241,63,0.5)',
+                bgcolor: ACENTO, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                boxShadow: '0 0 40px rgba(78,159,255,0.5)',
               }}>
                 <WhereToVoteIcon sx={{ color: INK, fontSize: 44 }} />
               </Box>
@@ -192,7 +192,7 @@ export default function PortalHome() {
                 <Chip
                   icon={<LocalFireDepartmentIcon sx={{ fontSize: 18 }} />}
                   label={`Racha: ${resultado.racha} ${resultado.racha === 1 ? 'día' : 'días'}`}
-                  sx={{ bgcolor: 'rgba(200,241,63,0.14)', color: LIMA, fontWeight: 800, '& .MuiChip-icon': { color: '#FBBF24' } }}
+                  sx={{ bgcolor: 'rgba(78,159,255,0.14)', color: ACENTO, fontWeight: 800, '& .MuiChip-icon': { color: '#FBBF24' } }}
                 />
                 {resultado.entrenandoAhora > 1 && (
                   <Chip
@@ -254,7 +254,7 @@ export default function PortalHome() {
                 width: 148, height: 148, borderRadius: '50%', mx: 'auto', mb: 2,
                 display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 0.5,
                 cursor: ocupado ? 'default' : 'pointer',
-                bgcolor: LIMA,
+                bgcolor: ACENTO,
                 animation: ocupado ? 'none' : 'latido 2.4s ease-out infinite',
                 transition: 'transform 0.12s',
                 '&:active': { transform: ocupado ? 'none' : 'scale(0.95)' },
@@ -293,13 +293,13 @@ export default function PortalHome() {
           p: 2, mb: 2, display: 'flex', alignItems: 'center', gap: 1.5, cursor: 'pointer',
           transition: 'border-color 0.15s, transform 0.12s',
           animation: 'sube 0.45s 0.12s ease-out both',
-          '&:hover': { borderColor: 'rgba(200,241,63,0.4)' },
+          '&:hover': { borderColor: 'rgba(78,159,255,0.4)' },
           '&:active': { transform: 'scale(0.98)' },
         }}
       >
         <Box sx={{
           width: 42, height: 42, borderRadius: 3, flexShrink: 0,
-          background: `linear-gradient(135deg, ${LIMA} 0%, #9BC426 100%)`,
+          background: `linear-gradient(135deg, ${ACENTO} 0%, #2C6FD1 100%)`,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}>
           <FitnessCenterIcon sx={{ color: INK, fontSize: 22 }} />

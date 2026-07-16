@@ -13,7 +13,7 @@ import AddTaskIcon from '@mui/icons-material/AddTask';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import api from '../../services/api';
 import SocioAvatar from '../../components/SocioAvatar';
-import { LIMA, INK } from '../../theme';
+import { ACENTO, INK } from '../../theme';
 
 const fmtHora = (f) => new Date(f).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
 const fmtFecha = (f) => new Date(f).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' });
@@ -43,7 +43,7 @@ function GraficoBarras({ datos, alto = 120 }) {
               width: '100%', maxWidth: 30,
               height: Math.max((d.valor / max) * alto, d.valor ? 5 : 2),
               borderRadius: '5px 5px 2px 2px',
-              bgcolor: d.valor ? (d.destacada ? LIMA : 'rgba(18,22,13,0.75)') : 'rgba(18,22,13,0.08)',
+              bgcolor: d.valor ? (d.destacada ? ACENTO : 'rgba(13,20,36,0.75)') : 'rgba(13,20,36,0.08)',
               transition: 'height 0.4s ease',
             }} />
             <Typography variant="caption" fontSize={9.5} color="text.secondary" noWrap>
@@ -113,7 +113,7 @@ export default function Asistencias() {
             icon={<GroupsIcon sx={{ fontSize: 16 }} />}
             label={`${hoy.entrenandoAhora} entrenando ahora`}
             size="small"
-            sx={{ bgcolor: LIMA, color: INK, fontWeight: 800, '& .MuiChip-icon': { color: INK } }}
+            sx={{ bgcolor: ACENTO, color: INK, fontWeight: 800, '& .MuiChip-icon': { color: INK } }}
           />
         )}
       </Box>
@@ -192,7 +192,7 @@ export default function Asistencias() {
                     {!isMobile && (
                       <TableCell>
                         <Chip size="small" label={a.metodo === 'GEO' ? `GPS${a.distanciaM != null ? ` · ${a.distanciaM} m` : ''}` : 'Recepción'}
-                          sx={{ bgcolor: a.metodo === 'GEO' ? 'rgba(200,241,63,0.25)' : 'rgba(18,22,13,0.08)', fontWeight: 700, fontSize: 11 }} />
+                          sx={{ bgcolor: a.metodo === 'GEO' ? 'rgba(78,159,255,0.25)' : 'rgba(13,20,36,0.08)', fontWeight: 700, fontSize: 11 }} />
                       </TableCell>
                     )}
                     <TableCell>
@@ -259,7 +259,7 @@ export default function Asistencias() {
         !inactivos ? <Box display="flex" justifyContent="center" py={6}><CircularProgress /></Box> :
         inactivos.length === 0 ? (
           <Paper sx={{ p: 4, textAlign: 'center' }}>
-            <LocalFireDepartmentIcon sx={{ fontSize: 40, color: LIMA, mb: 1 }} />
+            <LocalFireDepartmentIcon sx={{ fontSize: 40, color: ACENTO, mb: 1 }} />
             <Typography fontWeight={700}>Nadie abandonó el barco</Typography>
             <Typography variant="body2" color="text.secondary">
               Acá van a aparecer los socios activos que hace 14+ días no registran asistencia,

@@ -12,7 +12,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../services/api';
 import { NAV_ITEMS } from './navItems';
-import { LIMA, INK } from '../../theme';
+import { ACENTO, INK } from '../../theme';
 
 const PASS_INIT = { passwordActual: '', passwordNuevo: '', passwordConfirm: '' };
 
@@ -76,7 +76,7 @@ export default function Navbar({ onMenuClick }) {
             sx={{ display: 'flex', alignItems: 'center', gap: 1, cursor: 'pointer', mr: { md: 2 }, flexShrink: 0 }}
           >
             <Box sx={{
-              width: 32, height: 32, borderRadius: 2, bgcolor: LIMA,
+              width: 32, height: 32, borderRadius: 2, bgcolor: ACENTO,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}>
               <FitnessCenterIcon sx={{ color: INK, fontSize: 18 }} />
@@ -104,10 +104,10 @@ export default function Navbar({ onMenuClick }) {
                       borderRadius: 2.5,
                       cursor: 'pointer',
                       whiteSpace: 'nowrap',
-                      color: active ? LIMA : 'rgba(242,245,234,0.55)',
-                      bgcolor: active ? 'rgba(200,241,63,0.12)' : 'transparent',
+                      color: active ? ACENTO : 'rgba(237,241,249,0.55)',
+                      bgcolor: active ? 'rgba(78,159,255,0.12)' : 'transparent',
                       transition: 'all 0.15s',
-                      '&:hover': { color: active ? LIMA : '#fff', bgcolor: active ? 'rgba(200,241,63,0.14)' : 'rgba(242,245,234,0.06)' },
+                      '&:hover': { color: active ? ACENTO : '#fff', bgcolor: active ? 'rgba(78,159,255,0.14)' : 'rgba(237,241,249,0.06)' },
                       '&:active': { transform: 'scale(0.96)' },
                     }}
                   >
@@ -123,7 +123,7 @@ export default function Navbar({ onMenuClick }) {
           <Box sx={{ flexGrow: { xs: 1, md: 0 } }} />
 
           <IconButton onClick={(e) => setAnchor(e.currentTarget)} size="small" sx={{ flexShrink: 0 }}>
-            <Avatar sx={{ width: 34, height: 34, bgcolor: LIMA, color: INK, fontSize: 14, fontWeight: 800 }}>
+            <Avatar sx={{ width: 34, height: 34, bgcolor: ACENTO, color: INK, fontSize: 14, fontWeight: 800 }}>
               {usuario?.nombre?.charAt(0).toUpperCase()}
             </Avatar>
           </IconButton>

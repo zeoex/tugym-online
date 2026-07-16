@@ -1,10 +1,10 @@
 import { List, ListItemButton, ListItemIcon, ListItemText, Box, Typography } from '@mui/material';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { LIMA, INK } from '../../theme';
+import { ACENTO, INK } from '../../theme';
 import { NAV_GROUPS } from './navItems';
 
-const DEFAULT_CLR = 'rgba(242,245,234,0.45)';
+const DEFAULT_CLR = 'rgba(237,241,249,0.45)';
 
 export default function Sidebar() {
   const navigate = useNavigate();
@@ -16,9 +16,9 @@ export default function Sidebar() {
       <Box sx={{ px: 3, pt: 3.5, pb: 3, display: 'flex', alignItems: 'center', gap: 1.5 }}>
         <Box sx={{
           width: 38, height: 38, borderRadius: 2.5,
-          bgcolor: LIMA,
+          bgcolor: ACENTO,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          boxShadow: '0 0 18px rgba(200,241,63,0.3)',
+          boxShadow: '0 0 18px rgba(78,159,255,0.3)',
         }}>
           <FitnessCenterIcon sx={{ color: INK, fontSize: 20 }} />
         </Box>
@@ -27,7 +27,7 @@ export default function Sidebar() {
             fontFamily="'Barlow Condensed', sans-serif">
             TuGymOnLine
           </Typography>
-          <Typography variant="caption" sx={{ color: LIMA, lineHeight: 1, fontSize: 10, fontWeight: 700, letterSpacing: 1 }}>
+          <Typography variant="caption" sx={{ color: ACENTO, lineHeight: 1, fontSize: 10, fontWeight: 700, letterSpacing: 1 }}>
             ADMIN
           </Typography>
         </Box>
@@ -41,7 +41,7 @@ export default function Sidebar() {
               <Typography
                 variant="caption"
                 sx={{
-                  color: 'rgba(242,245,234,0.25)',
+                  color: 'rgba(237,241,249,0.25)',
                   px: 1.5, pt: gi === 0 ? 1 : 2, pb: 0.75,
                   display: 'block',
                   letterSpacing: '1.4px',
@@ -62,12 +62,12 @@ export default function Sidebar() {
                     onClick={() => navigate(path)}
                     sx={{
                       borderRadius: 2.5, mb: 0.5, px: 1.5,
-                      bgcolor: active ? 'rgba(200,241,63,0.1)' : 'transparent',
-                      '&:hover': { bgcolor: active ? 'rgba(200,241,63,0.12)' : 'rgba(242,245,234,0.04)' },
+                      bgcolor: active ? 'rgba(78,159,255,0.1)' : 'transparent',
+                      '&:hover': { bgcolor: active ? 'rgba(78,159,255,0.12)' : 'rgba(237,241,249,0.04)' },
                       transition: 'all 0.15s',
                     }}
                   >
-                    <ListItemIcon sx={{ color: active ? LIMA : DEFAULT_CLR, minWidth: 36 }}>
+                    <ListItemIcon sx={{ color: active ? ACENTO : DEFAULT_CLR, minWidth: 36 }}>
                       {icon}
                     </ListItemIcon>
                     <ListItemText
@@ -75,7 +75,7 @@ export default function Sidebar() {
                       primaryTypographyProps={{
                         fontSize: 14,
                         fontWeight: active ? 700 : 400,
-                        color: active ? LIMA : DEFAULT_CLR,
+                        color: active ? ACENTO : DEFAULT_CLR,
                       }}
                     />
                   </ListItemButton>
@@ -87,9 +87,9 @@ export default function Sidebar() {
       </Box>
 
       {/* Pie */}
-      <Box sx={{ px: 3, py: 2, borderTop: '1px solid rgba(242,245,234,0.06)' }}>
-        <Typography variant="caption" sx={{ color: 'rgba(242,245,234,0.25)', fontSize: 10 }}>v2.0.0</Typography>
-        <Typography variant="caption" display="block" sx={{ color: 'rgba(242,245,234,0.18)', fontSize: 9, mt: 0.25 }}>
+      <Box sx={{ px: 3, py: 2, borderTop: '1px solid rgba(237,241,249,0.06)' }}>
+        <Typography variant="caption" sx={{ color: 'rgba(237,241,249,0.25)', fontSize: 10 }}>v2.0.0</Typography>
+        <Typography variant="caption" display="block" sx={{ color: 'rgba(237,241,249,0.18)', fontSize: 9, mt: 0.25 }}>
           &copy; ZeoDev 2026
         </Typography>
       </Box>

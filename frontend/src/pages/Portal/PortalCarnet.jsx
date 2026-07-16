@@ -9,7 +9,7 @@ import BadgeIcon from '@mui/icons-material/Badge';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
-import { LIMA, INK } from '../../theme';
+import { ACENTO, INK } from '../../theme';
 import { portalApi, dniGuardado } from './portalApi';
 
 const fmtFecha = (f) => new Date(f).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' });
@@ -56,7 +56,7 @@ export default function PortalCarnet() {
   if (!dni) {
     return (
       <Paper sx={{ p: 3, textAlign: 'center' }}>
-        <BadgeIcon sx={{ color: LIMA, fontSize: 40, mb: 1 }} />
+        <BadgeIcon sx={{ color: ACENTO, fontSize: 40, mb: 1 }} />
         <Typography variant="h6" fontSize={17} mb={0.5}>Tu carnet digital</Typography>
         <Typography variant="body2" color="text.secondary" mb={2.5}>
           Ingresá tu DNI para ver tu credencial, tu cuota y tus asistencias.
@@ -112,24 +112,24 @@ export default function PortalCarnet() {
         {/* ── Carnet ── */}
         <Box sx={{
           p: 2.5, mb: 2, borderRadius: 5,
-          background: `linear-gradient(140deg, #1B2113 0%, #10130A 55%, #171C0E 100%)`,
-          border: '1px solid rgba(200,241,63,0.25)',
-          boxShadow: '0 12px 40px rgba(0,0,0,0.4), inset 0 0 60px rgba(200,241,63,0.04)',
+          background: `linear-gradient(140deg, #101B2E 0%, #0A1120 55%, #101828 100%)`,
+          border: '1px solid rgba(78,159,255,0.25)',
+          boxShadow: '0 12px 40px rgba(0,0,0,0.4), inset 0 0 60px rgba(78,159,255,0.04)',
           position: 'relative', overflow: 'hidden',
         }}>
           <Box sx={{
             position: 'absolute', top: -50, right: -50, width: 170, height: 170, borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(200,241,63,0.14) 0%, transparent 70%)',
+            background: 'radial-gradient(circle, rgba(78,159,255,0.14) 0%, transparent 70%)',
           }} />
 
           <Box display="flex" alignItems="center" gap={1} mb={2}>
             <Box sx={{
-              width: 26, height: 26, borderRadius: 1.5, bgcolor: LIMA,
+              width: 26, height: 26, borderRadius: 1.5, bgcolor: ACENTO,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}>
               <FitnessCenterIcon sx={{ color: INK, fontSize: 15 }} />
             </Box>
-            <Typography fontSize={11} fontWeight={700} letterSpacing={2} sx={{ color: 'rgba(242,245,234,0.5)' }}>
+            <Typography fontSize={11} fontWeight={700} letterSpacing={2} sx={{ color: 'rgba(237,241,249,0.5)' }}>
               CARNET DE SOCIO
             </Typography>
             <Chip label={estadoCuota.texto} size="small" sx={{
@@ -167,10 +167,10 @@ export default function PortalCarnet() {
         {info?.ventanaPago && cuota.plan && (
           <Paper sx={{
             p: 1.5, mb: 2, display: 'flex', gap: 1, alignItems: 'center',
-            bgcolor: cuota.vigente ? 'rgba(200,241,63,0.05)' : 'rgba(251,191,36,0.08)',
-            border: `1px solid ${cuota.vigente ? 'rgba(200,241,63,0.18)' : 'rgba(251,191,36,0.3)'}`,
+            bgcolor: cuota.vigente ? 'rgba(78,159,255,0.05)' : 'rgba(251,191,36,0.08)',
+            border: `1px solid ${cuota.vigente ? 'rgba(78,159,255,0.18)' : 'rgba(251,191,36,0.3)'}`,
           }}>
-            <EventAvailableIcon sx={{ fontSize: 18, color: cuota.vigente ? LIMA : '#FBBF24' }} />
+            <EventAvailableIcon sx={{ fontSize: 18, color: cuota.vigente ? ACENTO : '#FBBF24' }} />
             <Typography fontSize={12.5} color="text.secondary">
               Pagá del <strong>{info.ventanaPago.desde} al {info.ventanaPago.hasta}</strong> de cada mes
               y evitás el recargo por pago fuera de término.
@@ -182,7 +182,7 @@ export default function PortalCarnet() {
         <Box display="flex" gap={1.5} mb={2}>
           {[
             { icono: <LocalFireDepartmentIcon sx={{ color: '#FBBF24', fontSize: 22 }} />, valor: racha, label: racha === 1 ? 'día de racha' : 'días de racha' },
-            { icono: <EventAvailableIcon sx={{ color: LIMA, fontSize: 22 }} />, valor: visitas30, label: 'visitas (30 días)' },
+            { icono: <EventAvailableIcon sx={{ color: ACENTO, fontSize: 22 }} />, valor: visitas30, label: 'visitas (30 días)' },
           ].map((s, i) => (
             <Paper key={i} sx={{ flex: 1, p: 2, textAlign: 'center' }}>
               {s.icono}
@@ -200,7 +200,7 @@ export default function PortalCarnet() {
             <Typography fontWeight={700} fontSize={14} mb={1.5}>Últimas visitas</Typography>
             {ultimas.map((a, i) => (
               <Box key={i} display="flex" justifyContent="space-between" py={0.75}
-                sx={{ borderBottom: i < ultimas.length - 1 ? '1px solid rgba(242,245,234,0.06)' : 'none' }}>
+                sx={{ borderBottom: i < ultimas.length - 1 ? '1px solid rgba(237,241,249,0.06)' : 'none' }}>
                 <Typography fontSize={13.5}>{fmtFecha(a.fecha)}</Typography>
                 <Typography fontSize={13.5} color="text.secondary">
                   {fmtHora(a.fecha)} hs {a.metodo === 'MANUAL' ? '· recepción' : ''}
