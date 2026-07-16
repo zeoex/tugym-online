@@ -17,6 +17,27 @@ const BG_ICONS = [
   { Icon: DirectionsRunIcon, top: '25%', right: '18%', size: 50,  rotate:   5, opacity: 0.05 },
 ];
 
+/* Mobile va sobre el fondo oscuro; desktop sobre el panel blanco.
+   Ojo: cada breakpoint necesita su valor explicito. Un `md: undefined`
+   no resetea el valor de xs, se filtra y deja letras blancas sobre blanco. */
+const CAMPO_SX = {
+  '& .MuiOutlinedInput-root': {
+    color: { xs: '#fff', md: 'rgba(0,0,0,0.87)' },
+    bgcolor: { xs: 'rgba(255,255,255,0.06)', md: 'transparent' },
+    '& fieldset': { borderColor: { xs: 'rgba(255,255,255,0.25)', md: 'rgba(0,0,0,0.23)' } },
+    '&:hover fieldset': { borderColor: { xs: 'rgba(255,255,255,0.5)', md: 'rgba(0,0,0,0.87)' } },
+    '&.Mui-focused fieldset': { borderColor: '#06b6d4' },
+  },
+  '& .MuiInputLabel-root': { color: { xs: 'rgba(255,255,255,0.6)', md: 'rgba(0,0,0,0.6)' } },
+  '& .MuiInputLabel-root.Mui-focused': { color: '#06b6d4' },
+  /* El autocompletado de Chrome pisa color y fondo con los suyos. */
+  '& input:-webkit-autofill': {
+    WebkitTextFillColor: { xs: '#fff', md: 'rgba(0,0,0,0.87)' },
+    WebkitBoxShadow: { xs: '0 0 0 100px #1c2a3f inset', md: '0 0 0 100px #fff inset' },
+    caretColor: { xs: '#fff', md: 'rgba(0,0,0,0.87)' },
+  },
+};
+
 export default function Login() {
   const [form, setForm]       = useState({ email: '', password: '' });
   const [error, setError]     = useState('');
@@ -185,17 +206,7 @@ export default function Login() {
               required
               fullWidth
               autoFocus
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  '& fieldset': { borderColor: { xs: 'rgba(255,255,255,0.25)', md: undefined } },
-                  '&:hover fieldset': { borderColor: { xs: 'rgba(255,255,255,0.5)', md: undefined } },
-                  '&.Mui-focused fieldset': { borderColor: { xs: '#06b6d4', md: undefined } },
-                  color: { xs: '#fff', md: undefined },
-                  bgcolor: { xs: 'rgba(255,255,255,0.06)', md: undefined },
-                },
-                '& .MuiInputLabel-root': { color: { xs: 'rgba(255,255,255,0.6)', md: undefined } },
-                '& .MuiInputLabel-root.Mui-focused': { color: { xs: '#06b6d4', md: undefined } },
-              }}
+              sx={CAMPO_SX}
             />
             <TextField
               label="Contraseña"
@@ -204,17 +215,7 @@ export default function Login() {
               onChange={e => setForm(p => ({ ...p, password: e.target.value }))}
               required
               fullWidth
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  '& fieldset': { borderColor: { xs: 'rgba(255,255,255,0.25)', md: undefined } },
-                  '&:hover fieldset': { borderColor: { xs: 'rgba(255,255,255,0.5)', md: undefined } },
-                  '&.Mui-focused fieldset': { borderColor: { xs: '#06b6d4', md: undefined } },
-                  color: { xs: '#fff', md: undefined },
-                  bgcolor: { xs: 'rgba(255,255,255,0.06)', md: undefined },
-                },
-                '& .MuiInputLabel-root': { color: { xs: 'rgba(255,255,255,0.6)', md: undefined } },
-                '& .MuiInputLabel-root.Mui-focused': { color: { xs: '#06b6d4', md: undefined } },
-              }}
+              sx={CAMPO_SX}
             />
             <Button
               type="submit"
@@ -226,7 +227,7 @@ export default function Login() {
                 mt: 1, py: 1.4, fontSize: 16,
                 bgcolor: '#06b6d4',
                 '&:hover': { bgcolor: '#0891b2' },
-                boxShadow: { xs: '0 0 20px rgba(6,182,212,0.4)', md: undefined },
+                boxShadow: { xs: '0 0 20px rgba(6,182,212,0.4)', md: 'none' },
               }}
             >
               {loading ? <CircularProgress size={22} color="inherit" /> : 'Ingresar'}
