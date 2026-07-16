@@ -1,33 +1,36 @@
-import { useState } from 'react';
-import { Outlet } from 'react-router-dom';
-import { Box, Drawer, useMediaQuery, useTheme } from '@mui/material';
+import { useState, useEffect } from 'react';
+import { Outlet, useLocation } from 'react-router-dom';
+import { Box, Drawer } from '@mui/material';
 import Navbar from './Navbar';
 import Sidebar from './Sidebar';
 
-const DRAWER_WIDTH = 240;
-
+/* Navegación principal arriba; el drawer lateral queda solo para mobile. */
 export default function Layout() {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { pathname } = useLocation();
+
+  useEffect(() => { setMobileOpen(false); }, [pathname]);
 
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
-      <Navbar drawerWidth={DRAWER_WIDTH} onMenuClick={() => setMobileOpen(true)} />
+    <Box sx={{ minHeight: '100vh' }}>
+      <Navbar onMenuClick={() => setMobileOpen(true)} />
 
-      <Box component="nav" sx={{ width: { md: DRAWER_WIDTH }, flexShrink: { md: 0 } }}>
-        {isMobile ? (
-          <Drawer open={mobileOpen} onClose={() => setMobileOpen(false)} variant="temporary" sx={{ '& .MuiDrawer-paper': { width: DRAWER_WIDTH } }}>
-            <Sidebar />
-          </Drawer>
-        ) : (
-          <Drawer open variant="permanent" sx={{ '& .MuiDrawer-paper': { width: DRAWER_WIDTH, boxSizing: 'border-box' } }}>
-            <Sidebar />
-          </Drawer>
-        )}
-      </Box>
+      <Drawer
+        open={mobileOpen}
+        onClose={() => setMobileOpen(false)}
+        variant="temporary"
+        sx={{ display: { md: 'none' }, '& .MuiDrawer-paper': { width: 250 } }}
+      >
+        <Sidebar />
+      </Drawer>
 
-      <Box component="main" sx={{ flexGrow: 1, p: { xs: 2, md: 3.5 }, mt: 8, width: { md: `calc(100% - ${DRAWER_WIDTH}px)` }, maxWidth: '100%' }}>
+      <Box component="main" sx={{
+        pt: { xs: 9.5, md: 10 },
+        pb: 4,
+        px: { xs: 2, md: 3.5 },
+        maxWidth: 1440,
+        mx: 'auto',
+      }}>
         <Outlet />
       </Box>
     </Box>

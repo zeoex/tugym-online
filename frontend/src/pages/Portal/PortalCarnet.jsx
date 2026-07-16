@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
+import { useOutletContext } from 'react-router-dom';
 import {
   Box, Typography, Paper, Button, TextField, CircularProgress, Chip, Fade,
+  Skeleton,
 } from '@mui/material';
 import { QRCodeSVG } from 'qrcode.react';
 import BadgeIcon from '@mui/icons-material/Badge';
@@ -14,6 +16,7 @@ const fmtFecha = (f) => new Date(f).toLocaleDateString('es-AR', { day: '2-digit'
 const fmtHora  = (f) => new Date(f).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
 
 export default function PortalCarnet() {
+  const { info } = useOutletContext();
   const [dni, setDni] = useState(dniGuardado.get());
   const [dniInput, setDniInput] = useState('');
   const [cuenta, setCuenta] = useState(null);
@@ -75,7 +78,16 @@ export default function PortalCarnet() {
   }
 
   if (cargando) {
-    return <Box display="flex" justifyContent="center" py={8}><CircularProgress /></Box>;
+    return (
+      <Box>
+        <Skeleton variant="rounded" height={168} sx={{ borderRadius: 5, mb: 2 }} />
+        <Box display="flex" gap={1.5} mb={2}>
+          <Skeleton variant="rounded" height={104} sx={{ flex: 1, borderRadius: 4 }} />
+          <Skeleton variant="rounded" height={104} sx={{ flex: 1, borderRadius: 4 }} />
+        </Box>
+        <Skeleton variant="rounded" height={150} sx={{ borderRadius: 4 }} />
+      </Box>
+    );
   }
 
   if (error || !cuenta) {
@@ -127,7 +139,8 @@ export default function PortalCarnet() {
 
           <Box display="flex" gap={2} alignItems="center">
             <Box flexGrow={1} minWidth={0}>
-              <Typography variant="h5" fontSize={22} lineHeight={1.15} noWrap>
+              <Typography variant="h5" fontSize={24} lineHeight={1.1} noWrap
+                sx={{ textTransform: 'uppercase', letterSpacing: '0.8px' }}>
                 {socio.nombre} {socio.apellido}
               </Typography>
               <Typography variant="body2" color="text.secondary" fontSize={12} mb={1.25}>
@@ -150,6 +163,21 @@ export default function PortalCarnet() {
           </Box>
         </Box>
 
+        {/* Ventana de pago del gym */}
+        {info?.ventanaPago && cuota.plan && (
+          <Paper sx={{
+            p: 1.5, mb: 2, display: 'flex', gap: 1, alignItems: 'center',
+            bgcolor: cuota.vigente ? 'rgba(200,241,63,0.05)' : 'rgba(251,191,36,0.08)',
+            border: `1px solid ${cuota.vigente ? 'rgba(200,241,63,0.18)' : 'rgba(251,191,36,0.3)'}`,
+          }}>
+            <EventAvailableIcon sx={{ fontSize: 18, color: cuota.vigente ? LIMA : '#FBBF24' }} />
+            <Typography fontSize={12.5} color="text.secondary">
+              Pagá del <strong>{info.ventanaPago.desde} al {info.ventanaPago.hasta}</strong> de cada mes
+              y evitás el recargo por pago fuera de término.
+            </Typography>
+          </Paper>
+        )}
+
         {/* ── Números ── */}
         <Box display="flex" gap={1.5} mb={2}>
           {[
@@ -158,7 +186,9 @@ export default function PortalCarnet() {
           ].map((s, i) => (
             <Paper key={i} sx={{ flex: 1, p: 2, textAlign: 'center' }}>
               {s.icono}
-              <Typography variant="h4" fontSize={26} lineHeight={1.1}>{s.valor}</Typography>
+              <Typography variant="h4" fontSize={30} lineHeight={1.1} sx={{ fontVariantNumeric: 'tabular-nums' }}>
+                {s.valor}
+              </Typography>
               <Typography variant="caption" color="text.secondary">{s.label}</Typography>
             </Paper>
           ))}

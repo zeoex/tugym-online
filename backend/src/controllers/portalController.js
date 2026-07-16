@@ -139,6 +139,9 @@ exports.info = async (_req, res, next) => {
       telefono: config.telefono,
       checkinDisponible: config.latitud != null && config.longitud != null,
       entrenandoAhora: await entrenandoAhora(),
+      ventanaPago: config.recargoActivo
+        ? { desde: config.diaPagoDesde, hasta: config.diaPagoHasta }
+        : null,
     });
   } catch (err) { next(err); }
 };

@@ -1,51 +1,10 @@
 import { List, ListItemButton, ListItemIcon, ListItemText, Box, Typography } from '@mui/material';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import PeopleIcon from '@mui/icons-material/People';
-import PaymentIcon from '@mui/icons-material/Payment';
-import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
-import StyleIcon from '@mui/icons-material/Style';
-import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
-import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
-import CampaignIcon from '@mui/icons-material/Campaign';
-import WhereToVoteIcon from '@mui/icons-material/WhereToVote';
-import SettingsIcon from '@mui/icons-material/Settings';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { LIMA, INK } from '../../theme';
+import { NAV_GROUPS } from './navItems';
 
 const DEFAULT_CLR = 'rgba(242,245,234,0.45)';
-
-const GROUPS = [
-  {
-    items: [
-      { label: 'Dashboard',    icon: <DashboardIcon />,     path: '/dashboard'    },
-    ],
-  },
-  {
-    label: 'Gestión',
-    items: [
-      { label: 'Socios',       icon: <PeopleIcon />,        path: '/socios'       },
-      { label: 'Planes',       icon: <StyleIcon />,         path: '/planes'       },
-      { label: 'Pagos',        icon: <PaymentIcon />,       path: '/pagos'        },
-      { label: 'Vencimientos', icon: <WarningAmberIcon />,  path: '/vencimientos' },
-    ],
-  },
-  {
-    label: 'Operación',
-    items: [
-      { label: 'Asistencias',  icon: <WhereToVoteIcon />,   path: '/asistencias'  },
-      { label: 'Rutinas',      icon: <DirectionsRunIcon />, path: '/rutinas'      },
-      { label: 'Anuncios',     icon: <CampaignIcon />,      path: '/anuncios'     },
-      { label: 'Caja',         icon: <PointOfSaleIcon />,   path: '/caja'         },
-    ],
-  },
-  {
-    label: 'Sistema',
-    items: [
-      { label: 'Configuración', icon: <SettingsIcon />,     path: '/configuracion' },
-    ],
-  },
-];
 
 export default function Sidebar() {
   const navigate = useNavigate();
@@ -65,7 +24,7 @@ export default function Sidebar() {
         </Box>
         <Box>
           <Typography variant="subtitle1" fontWeight={800} color="#fff" lineHeight={1.2} letterSpacing="-0.3px"
-            fontFamily="'Space Grotesk Variable', sans-serif">
+            fontFamily="'Barlow Condensed', sans-serif">
             TuGymOnLine
           </Typography>
           <Typography variant="caption" sx={{ color: LIMA, lineHeight: 1, fontSize: 10, fontWeight: 700, letterSpacing: 1 }}>
@@ -76,7 +35,7 @@ export default function Sidebar() {
 
       {/* Navegación */}
       <Box sx={{ flexGrow: 1, overflowY: 'auto', px: 1.5, pt: 0.5 }}>
-        {GROUPS.map((group, gi) => (
+        {NAV_GROUPS.map((group, gi) => (
           <Box key={gi} mb={0.5}>
             {group.label && (
               <Typography

@@ -1,20 +1,25 @@
 import {
   AppBar, Toolbar, Typography, IconButton, Box, Avatar, Menu, MenuItem,
   Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField,
-  Alert, CircularProgress, Divider,
+  Alert, CircularProgress, Divider, Tooltip,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../services/api';
+import { NAV_ITEMS } from './navItems';
+import { LIMA, INK } from '../../theme';
 
 const PASS_INIT = { passwordActual: '', passwordNuevo: '', passwordConfirm: '' };
 
-export default function Navbar({ drawerWidth, onMenuClick }) {
+export default function Navbar({ onMenuClick }) {
   const { usuario, logout } = useAuth();
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
   const [anchor, setAnchor]         = useState(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [form, setForm]             = useState(PASS_INIT);
@@ -59,28 +64,66 @@ export default function Navbar({ drawerWidth, onMenuClick }) {
 
   return (
     <>
-      <AppBar
-        position="fixed"
-        sx={{
-          zIndex: (t) => t.zIndex.drawer + 1,
-          width: { md: `calc(100% - ${drawerWidth}px)` },
-          ml:    { md: `${drawerWidth}px` },
-        }}
-      >
-        <Toolbar sx={{ minHeight: 60 }}>
-          <IconButton edge="start" onClick={onMenuClick} sx={{ mr: 2, display: { md: 'none' }, color: '#fff' }}>
+      <AppBar position="fixed" sx={{ zIndex: (t) => t.zIndex.drawer + 1 }}>
+        <Toolbar sx={{ minHeight: 60, gap: 1 }}>
+          <IconButton edge="start" onClick={onMenuClick} sx={{ display: { md: 'none' }, color: '#fff' }}>
             <MenuIcon />
           </IconButton>
 
-          {/* Mobile brand */}
-          <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center', gap: 1, flexGrow: 1 }}>
-            <FitnessCenterIcon sx={{ color: '#C8F13F', fontSize: 22 }} />
-            <Typography variant="h6" fontWeight={800} color="#fff">TuGymOnLine</Typography>
+          {/* Marca */}
+          <Box
+            onClick={() => navigate('/dashboard')}
+            sx={{ display: 'flex', alignItems: 'center', gap: 1, cursor: 'pointer', mr: { md: 2 }, flexShrink: 0 }}
+          >
+            <Box sx={{
+              width: 32, height: 32, borderRadius: 2, bgcolor: LIMA,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}>
+              <FitnessCenterIcon sx={{ color: INK, fontSize: 18 }} />
+            </Box>
+            <Typography variant="h6" fontSize={17} color="#fff" sx={{ display: { xs: 'none', sm: 'block' } }}>
+              TuGymOnLine
+            </Typography>
           </Box>
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'block' } }} />
 
-          <IconButton onClick={(e) => setAnchor(e.currentTarget)} size="small">
-            <Avatar sx={{ width: 34, height: 34, bgcolor: '#C8F13F', color: '#12160D', fontSize: 14, fontWeight: 800 }}>
+          {/* Navegación horizontal (desktop) */}
+          <Box sx={{
+            display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 0.25,
+            flexGrow: 1, minWidth: 0, overflowX: 'auto',
+            '&::-webkit-scrollbar': { display: 'none' },
+          }}>
+            {NAV_ITEMS.map(({ label, icon, path }) => {
+              const active = pathname === path || pathname.startsWith(path + '/');
+              return (
+                <Tooltip key={path} title={label} enterDelay={600}>
+                  <Box
+                    onClick={() => navigate(path)}
+                    sx={{
+                      display: 'flex', alignItems: 'center', gap: 0.75,
+                      px: { md: 1.1, lg: 1.5 }, py: 0.8,
+                      borderRadius: 2.5,
+                      cursor: 'pointer',
+                      whiteSpace: 'nowrap',
+                      color: active ? LIMA : 'rgba(242,245,234,0.55)',
+                      bgcolor: active ? 'rgba(200,241,63,0.12)' : 'transparent',
+                      transition: 'all 0.15s',
+                      '&:hover': { color: active ? LIMA : '#fff', bgcolor: active ? 'rgba(200,241,63,0.14)' : 'rgba(242,245,234,0.06)' },
+                      '&:active': { transform: 'scale(0.96)' },
+                    }}
+                  >
+                    <Box sx={{ display: 'flex', '& svg': { fontSize: 19 } }}>{icon}</Box>
+                    <Typography fontSize={13.5} fontWeight={active ? 700 : 500} sx={{ display: { md: 'none', lg: 'block' } }}>
+                      {label}
+                    </Typography>
+                  </Box>
+                </Tooltip>
+              );
+            })}
+          </Box>
+          <Box sx={{ flexGrow: { xs: 1, md: 0 } }} />
+
+          <IconButton onClick={(e) => setAnchor(e.currentTarget)} size="small" sx={{ flexShrink: 0 }}>
+            <Avatar sx={{ width: 34, height: 34, bgcolor: LIMA, color: INK, fontSize: 14, fontWeight: 800 }}>
               {usuario?.nombre?.charAt(0).toUpperCase()}
             </Avatar>
           </IconButton>

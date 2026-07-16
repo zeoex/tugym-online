@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import {
   Box, Typography, Paper, TextField, Button, CircularProgress, Chip,
-  Slider, Alert, Divider,
+  Slider, Alert, Divider, Switch, FormControlLabel, Select, MenuItem,
+  FormControl, InputLabel, InputAdornment,
 } from '@mui/material';
 import MyLocationIcon from '@mui/icons-material/MyLocation';
 import SaveIcon from '@mui/icons-material/Save';
 import StorefrontIcon from '@mui/icons-material/Storefront';
 import WhereToVoteIcon from '@mui/icons-material/WhereToVote';
+import PaymentsIcon from '@mui/icons-material/Payments';
 import api from '../../services/api';
 import { LIMA, INK } from '../../theme';
 
@@ -68,6 +70,11 @@ export default function Configuracion() {
         latitud: form.latitud === '' || form.latitud === null ? null : Number(form.latitud),
         longitud: form.longitud === '' || form.longitud === null ? null : Number(form.longitud),
         radioCheckin: form.radioCheckin,
+        diaPagoDesde: form.diaPagoDesde,
+        diaPagoHasta: form.diaPagoHasta,
+        recargoActivo: form.recargoActivo,
+        recargoTipo: form.recargoTipo,
+        recargoValor: form.recargoValor === '' ? 0 : Number(form.recargoValor),
       });
       setForm(data);
       setAviso({ tipo: 'ok', texto: 'Configuración guardada. Los cambios ya están vivos en el portal.' });
@@ -172,6 +179,89 @@ export default function Configuracion() {
           El GPS del teléfono puede falsearse con apps especiales. Para un gimnasio el riesgo es bajo,
           y el carnet con QR del portal permite verificar la identidad en recepción si hace falta.
         </Typography>
+      </Paper>
+
+      {/* Pagos y recargos */}
+      <Paper sx={{ p: 3, mb: 2.5 }}>
+        <Box display="flex" alignItems="center" gap={1} mb={0.5}>
+          <PaymentsIcon sx={{ color: 'text.secondary', fontSize: 20 }} />
+          <Typography fontWeight={700}>Pagos y recargos</Typography>
+          <Chip
+            size="small"
+            label={form.recargoActivo ? 'Activo' : 'Desactivado'}
+            sx={form.recargoActivo
+              ? { bgcolor: LIMA, color: INK, fontWeight: 800 }
+              : { bgcolor: 'rgba(18,22,13,0.08)', fontWeight: 700 }}
+          />
+        </Box>
+        <Typography variant="body2" color="text.secondary" mb={2}>
+          Definí la ventana de pago del mes. Quien paga después del último día de la ventana
+          abona la cuota con recargo. Los pases diarios nunca llevan recargo.
+        </Typography>
+
+        <FormControlLabel
+          control={
+            <Switch
+              checked={Boolean(form.recargoActivo)}
+              onChange={(e) => setForm((p) => ({ ...p, recargoActivo: e.target.checked }))}
+            />
+          }
+          label={<Typography fontWeight={600} fontSize={14}>Cobrar recargo por pago fuera de término</Typography>}
+          sx={{ mb: form.recargoActivo ? 2 : 0 }}
+        />
+
+        {form.recargoActivo && (
+          <>
+            <Box display="flex" gap={2} flexWrap="wrap" mb={2}>
+              <TextField
+                label="Ventana: desde el día" type="number"
+                value={form.diaPagoDesde ?? 1}
+                onChange={(e) => setForm((p) => ({ ...p, diaPagoDesde: parseInt(e.target.value || 1, 10) }))}
+                inputProps={{ min: 1, max: 28 }}
+                sx={{ width: 170 }}
+              />
+              <TextField
+                label="hasta el día" type="number"
+                value={form.diaPagoHasta ?? 10}
+                onChange={(e) => setForm((p) => ({ ...p, diaPagoHasta: parseInt(e.target.value || 10, 10) }))}
+                inputProps={{ min: 1, max: 28 }}
+                sx={{ width: 150 }}
+                helperText="máx. 28"
+              />
+            </Box>
+            <Box display="flex" gap={2} flexWrap="wrap" alignItems="flex-start">
+              <FormControl sx={{ minWidth: 190 }}>
+                <InputLabel>Tipo de recargo</InputLabel>
+                <Select
+                  label="Tipo de recargo"
+                  value={form.recargoTipo || 'PORCENTAJE'}
+                  onChange={(e) => setForm((p) => ({ ...p, recargoTipo: e.target.value }))}
+                >
+                  <MenuItem value="PORCENTAJE">Porcentaje de la cuota</MenuItem>
+                  <MenuItem value="FIJO">Monto fijo</MenuItem>
+                </Select>
+              </FormControl>
+              <TextField
+                label="Valor" type="number"
+                value={form.recargoValor ?? 10}
+                onChange={(e) => setForm((p) => ({ ...p, recargoValor: e.target.value }))}
+                InputProps={{
+                  startAdornment: form.recargoTipo === 'FIJO' ? <InputAdornment position="start">$</InputAdornment> : undefined,
+                  endAdornment: form.recargoTipo !== 'FIJO' ? <InputAdornment position="end">%</InputAdornment> : undefined,
+                }}
+                sx={{ width: 150 }}
+              />
+            </Box>
+            <Typography variant="caption" color="text.secondary" display="block" mt={1.5}>
+              Ejemplo: ventana del {form.diaPagoDesde ?? 1} al {form.diaPagoHasta ?? 10} — una cuota de $50.000 pagada el {Math.min((form.diaPagoHasta ?? 10) + 5, 28)} sale{' '}
+              <strong>
+                ${(50000 + (form.recargoTipo === 'FIJO'
+                  ? Number(form.recargoValor || 0)
+                  : Math.round(50000 * Number(form.recargoValor || 0) / 100))).toLocaleString('es-AR')}
+              </strong>. Al registrar el pago podés eximir el recargo si hace falta.
+            </Typography>
+          </>
+        )}
       </Paper>
 
       <Button

@@ -17,7 +17,11 @@ exports.obtener = async (_req, res, next) => {
 
 exports.actualizar = async (req, res, next) => {
   try {
-    const { nombreGym, telefono, direccion, latitud, longitud, radioCheckin } = req.body;
+    const {
+      nombreGym, telefono, direccion, latitud, longitud, radioCheckin,
+      diaPagoDesde, diaPagoHasta, recargoActivo, recargoTipo, recargoValor,
+    } = req.body;
+    const config = await obtenerConfig();
     const data = {};
 
     if (nombreGym !== undefined) {
@@ -51,7 +55,35 @@ exports.actualizar = async (req, res, next) => {
       data.radioCheckin = radio;
     }
 
-    const config = await obtenerConfig();
+    if (diaPagoDesde !== undefined || diaPagoHasta !== undefined) {
+      // 28 como techo: todos los meses lo tienen, así la ventana nunca queda inalcanzable.
+      const desde = parseInt(diaPagoDesde ?? 1, 10);
+      const hasta = parseInt(diaPagoHasta ?? 10, 10);
+      if (!Number.isInteger(desde) || !Number.isInteger(hasta) || desde < 1 || hasta > 28 || desde > hasta) {
+        return res.status(400).json({ error: 'La ventana de pago debe estar entre el día 1 y el 28, y el inicio no puede ser mayor que el fin' });
+      }
+      data.diaPagoDesde = desde;
+      data.diaPagoHasta = hasta;
+    }
+
+    if (recargoActivo !== undefined) data.recargoActivo = Boolean(recargoActivo);
+
+    if (recargoTipo !== undefined) {
+      if (!['PORCENTAJE', 'FIJO'].includes(recargoTipo)) {
+        return res.status(400).json({ error: 'El tipo de recargo debe ser PORCENTAJE o FIJO' });
+      }
+      data.recargoTipo = recargoTipo;
+    }
+
+    if (recargoValor !== undefined) {
+      const valor = Number(recargoValor);
+      const esPorcentaje = (recargoTipo ?? config.recargoTipo) === 'PORCENTAJE';
+      if (!Number.isFinite(valor) || valor < 0 || (esPorcentaje && valor > 100)) {
+        return res.status(400).json({ error: 'Valor de recargo inválido' });
+      }
+      data.recargoValor = valor;
+    }
+
     const actualizada = await prisma.configuracion.update({ where: { id: config.id }, data });
     res.json(actualizada);
   } catch (err) { next(err); }

@@ -68,6 +68,7 @@ model Pago {
   socioId          Int      @map("socio_id")
   planId           Int      @map("plan_id")
   monto            Float
+  recargo          Float    @default(0)
   fechaPago        DateTime @default(now()) @map("fecha_pago")
   fechaVencimiento DateTime @map("fecha_vencimiento")
   estado           String   @default("ACTIVO")
@@ -124,14 +125,19 @@ model Anuncio {
 }
 
 model Configuracion {
-  id           Int      @id @default(autoincrement())
-  nombreGym    String   @default("TuGymOnLine") @map("nombre_gym")
-  telefono     String?
-  direccion    String?
-  latitud      Float?
-  longitud     Float?
-  radioCheckin Int      @default(150) @map("radio_checkin_m")
-  updatedAt    DateTime @updatedAt @map("updated_at")
+  id            Int      @id @default(autoincrement())
+  nombreGym     String   @default("TuGymOnLine") @map("nombre_gym")
+  telefono      String?
+  direccion     String?
+  latitud       Float?
+  longitud      Float?
+  radioCheckin  Int      @default(150) @map("radio_checkin_m")
+  diaPagoDesde  Int      @default(1) @map("dia_pago_desde")
+  diaPagoHasta  Int      @default(10) @map("dia_pago_hasta")
+  recargoActivo Boolean  @default(false) @map("recargo_activo")
+  recargoTipo   String   @default("PORCENTAJE") @map("recargo_tipo")
+  recargoValor  Float    @default(10) @map("recargo_valor")
+  updatedAt     DateTime @updatedAt @map("updated_at")
 
   @@map("configuracion")
 }

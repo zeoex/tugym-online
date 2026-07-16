@@ -89,7 +89,12 @@ export default function PortalLayout() {
               value={t.valor}
               label={t.label}
               icon={t.icon}
-              sx={{ '& .MuiBottomNavigationAction-label': { fontSize: 11, fontWeight: 600 } }}
+              sx={{
+                '& .MuiBottomNavigationAction-label': { fontSize: 11, fontWeight: 600 },
+                '&.Mui-selected svg': { filter: 'drop-shadow(0 0 8px rgba(200,241,63,0.55))' },
+                transition: 'transform 0.12s',
+                '&:active': { transform: 'scale(0.94)' },
+              }}
             />
           ))}
         </BottomNavigation>

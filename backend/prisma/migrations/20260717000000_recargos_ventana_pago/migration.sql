@@ -1,0 +1,9 @@
+-- AlterTable
+ALTER TABLE "configuracion" ADD COLUMN     "dia_pago_desde" INTEGER NOT NULL DEFAULT 1,
+ADD COLUMN     "dia_pago_hasta" INTEGER NOT NULL DEFAULT 10,
+ADD COLUMN     "recargo_activo" BOOLEAN NOT NULL DEFAULT false,
+ADD COLUMN     "recargo_tipo" TEXT NOT NULL DEFAULT 'PORCENTAJE',
+ADD COLUMN     "recargo_valor" DOUBLE PRECISION NOT NULL DEFAULT 10;
+
+-- AlterTable
+ALTER TABLE "pagos" ADD COLUMN     "recargo" DOUBLE PRECISION NOT NULL DEFAULT 0;

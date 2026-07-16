@@ -11,20 +11,35 @@ export const INK         = '#12160D';   // negro con tinte verde
 export const NOCHE       = '#0B0D08';   // fondo del portal
 export const NOCHE_PAPEL = '#151A0F';
 
-const FUENTE_TITULOS = "'Space Grotesk Variable', 'Inter Variable', system-ui, sans-serif";
+/* Barlow Condensed: la tipografía atlética por excelencia (recomendación
+   ui-ux-pro-max para gimnasios). Condensada para títulos y números grandes,
+   Inter para lectura. Nada de tracking negativo: condensed no lo necesita. */
+export const FUENTE_TITULOS = "'Barlow Condensed', 'Inter Variable', system-ui, sans-serif";
 const FUENTE_CUERPO  = "'Inter Variable', system-ui, sans-serif";
+const FUENTE_BOTONES = "'Barlow', 'Inter Variable', system-ui, sans-serif";
 
 const tipografia = {
   fontFamily: FUENTE_CUERPO,
-  h1: { fontFamily: FUENTE_TITULOS, fontWeight: 700, letterSpacing: '-1.5px' },
-  h2: { fontFamily: FUENTE_TITULOS, fontWeight: 700, letterSpacing: '-1px' },
-  h3: { fontFamily: FUENTE_TITULOS, fontWeight: 700, letterSpacing: '-0.8px' },
-  h4: { fontFamily: FUENTE_TITULOS, fontWeight: 700, letterSpacing: '-0.6px' },
-  h5: { fontFamily: FUENTE_TITULOS, fontWeight: 700, letterSpacing: '-0.4px' },
-  h6: { fontFamily: FUENTE_TITULOS, fontWeight: 700, letterSpacing: '-0.2px' },
+  h1: { fontFamily: FUENTE_TITULOS, fontWeight: 700, letterSpacing: '0.2px' },
+  h2: { fontFamily: FUENTE_TITULOS, fontWeight: 700, letterSpacing: '0.2px' },
+  h3: { fontFamily: FUENTE_TITULOS, fontWeight: 700, letterSpacing: '0.2px' },
+  h4: { fontFamily: FUENTE_TITULOS, fontWeight: 700, letterSpacing: '0.3px' },
+  h5: { fontFamily: FUENTE_TITULOS, fontWeight: 700, letterSpacing: '0.3px' },
+  h6: { fontFamily: FUENTE_TITULOS, fontWeight: 600, letterSpacing: '0.3px' },
   subtitle1: { fontWeight: 600 },
   subtitle2: { fontWeight: 700 },
-  button: { fontFamily: FUENTE_TITULOS, fontWeight: 700, textTransform: 'none' },
+  button: { fontFamily: FUENTE_BOTONES, fontWeight: 700, textTransform: 'none', letterSpacing: '0.2px' },
+};
+
+/* La skill pide respetar reduced-motion: si el usuario lo activó, todo quieto. */
+const reducedMotion = {
+  '@media (prefers-reduced-motion: reduce)': {
+    '*, *::before, *::after': {
+      animationDuration: '0.01ms !important',
+      animationIterationCount: '1 !important',
+      transitionDuration: '0.01ms !important',
+    },
+  },
 };
 
 /* ── Panel de administración: claro, tinta y lima ── */
@@ -44,6 +59,7 @@ export const adminTheme = createTheme({
   typography: tipografia,
   shape: { borderRadius: 12 },
   components: {
+    MuiCssBaseline: { styleOverrides: { ...reducedMotion } },
     MuiButton: {
       styleOverrides: {
         root: { borderRadius: 10, fontWeight: 700 },
@@ -137,6 +153,7 @@ export const portalTheme = createTheme({
   components: {
     MuiCssBaseline: {
       styleOverrides: {
+        ...reducedMotion,
         body: {
           backgroundImage: `radial-gradient(ellipse 80% 45% at 50% -10%, rgba(200,241,63,0.09), transparent),
                             radial-gradient(ellipse 60% 40% at 100% 110%, rgba(139,92,246,0.07), transparent)`,

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useOutletContext, useNavigate } from 'react-router-dom';
 import {
   Box, Typography, Paper, Button, TextField, CircularProgress,
-  Chip, Fade, GlobalStyles,
+  Chip, Fade, GlobalStyles, Skeleton,
 } from '@mui/material';
 import WhereToVoteIcon from '@mui/icons-material/WhereToVote';
 import MyLocationIcon from '@mui/icons-material/MyLocation';
@@ -141,12 +141,17 @@ export default function PortalHome() {
           '30%': { transform: 'rotate(9deg)' },  '40%': { transform: 'rotate(-5deg)' },
           '50%': { transform: 'rotate(2deg)' },  '60%': { transform: 'rotate(0deg)' },
         },
+        '@keyframes sube': {
+          from: { opacity: 0, transform: 'translateY(14px)' },
+          to:   { opacity: 1, transform: 'translateY(0)' },
+        },
       }} />
 
       {/* Saludo + gente entrenando */}
-      <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
+      <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}
+        sx={{ animation: 'sube 0.45s ease-out both' }}>
         <Box>
-          <Typography variant="h4" fontSize={26}>
+          <Typography variant="h4" fontSize={30}>
             {nombre ? `Hola, ${nombre} 👋` : 'Hola 👋'}
           </Typography>
           <Typography variant="body2" color="text.secondary">
@@ -164,7 +169,7 @@ export default function PortalHome() {
       </Box>
 
       {/* ── Check-in ── */}
-      <Paper sx={{ p: 3, mb: 2, position: 'relative', overflow: 'hidden', textAlign: 'center' }}>
+      <Paper sx={{ p: 3, mb: 2, position: 'relative', overflow: 'hidden', textAlign: 'center', animation: 'sube 0.45s 0.06s ease-out both' }}>
         {fase === 'exito' && resultado ? (
           <Fade in>
             <Box sx={{ position: 'relative' }}>
@@ -208,7 +213,10 @@ export default function PortalHome() {
             </Box>
           </Fade>
         ) : !info ? (
-          <CircularProgress size={28} />
+          <Box>
+            <Skeleton variant="circular" width={148} height={148} sx={{ mx: 'auto', mb: 2 }} />
+            <Skeleton variant="text" width={180} sx={{ mx: 'auto' }} />
+          </Box>
         ) : !info.checkinDisponible ? (
           <Box py={1}>
             <MyLocationIcon sx={{ color: 'text.secondary', fontSize: 34, mb: 1 }} />
@@ -283,8 +291,10 @@ export default function PortalHome() {
         onClick={() => navigate('/portal/rutina')}
         sx={{
           p: 2, mb: 2, display: 'flex', alignItems: 'center', gap: 1.5, cursor: 'pointer',
-          transition: 'border-color 0.15s',
+          transition: 'border-color 0.15s, transform 0.12s',
+          animation: 'sube 0.45s 0.12s ease-out both',
           '&:hover': { borderColor: 'rgba(200,241,63,0.4)' },
+          '&:active': { transform: 'scale(0.98)' },
         }}
       >
         <Box sx={{
@@ -305,7 +315,7 @@ export default function PortalHome() {
 
       {/* Anuncios */}
       {anuncios.length > 0 && (
-        <Box display="flex" flexDirection="column" gap={1}>
+        <Box display="flex" flexDirection="column" gap={1} sx={{ animation: 'sube 0.45s 0.18s ease-out both' }}>
           {anuncios.map((a, i) => (
             <Paper key={a.id} sx={{
               p: 1.5,

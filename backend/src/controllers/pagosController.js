@@ -1,4 +1,6 @@
 const prisma = require('../config/database');
+const { obtenerConfig } = require('./configController');
+const { calcularRecargo } = require('../utils/recargo');
 
 const calcularVencimiento = (plan) => {
   const d = new Date();
@@ -26,17 +28,44 @@ exports.listar = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
+// Cuánto recargo correspondería hoy para un plan: la UI lo muestra antes de cobrar.
+exports.recargoInfo = async (req, res, next) => {
+  try {
+    const plan = await prisma.plan.findUniqueOrThrow({ where: { id: parseInt(req.query.planId) } });
+    const config = await obtenerConfig();
+    const recargo = calcularRecargo(plan, config);
+    res.json({
+      ...recargo,
+      precioBase: plan.precio,
+      total: plan.precio + recargo.monto,
+      ventana: { desde: config.diaPagoDesde, hasta: config.diaPagoHasta },
+      recargoActivo: config.recargoActivo,
+      tipo: config.recargoTipo,
+      valor: config.recargoValor,
+    });
+  } catch (err) { next(err); }
+};
+
 exports.crear = async (req, res, next) => {
   try {
-    const { socioId, planId, metodoPago, observaciones, monto: montoOverride } = req.body;
+    const { socioId, planId, metodoPago, observaciones, monto: montoOverride, aplicarRecargo } = req.body;
     const plan = await prisma.plan.findUniqueOrThrow({ where: { id: parseInt(planId) } });
     const fechaVencimiento = calcularVencimiento(plan);
+
+    // El recargo se calcula SIEMPRE en el servidor; la UI solo puede eximirlo.
+    // Con monto manual no se suma recargo automático: el precio ya lo decidió el admin.
+    let recargo = 0;
+    if (montoOverride == null && aplicarRecargo !== false) {
+      const config = await obtenerConfig();
+      recargo = calcularRecargo(plan, config).monto;
+    }
 
     const pago = await prisma.pago.create({
       data: {
         socioId: parseInt(socioId),
         planId: parseInt(planId),
-        monto: montoOverride ?? plan.precio,
+        monto: montoOverride ?? plan.precio + recargo,
+        recargo,
         fechaVencimiento,
         metodoPago: metodoPago || 'EFECTIVO',
         observaciones,
