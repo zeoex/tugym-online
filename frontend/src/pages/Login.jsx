@@ -199,8 +199,9 @@ export default function Login() {
 
           <Box component="form" onSubmit={handleSubmit} display="flex" flexDirection="column" gap={2.5}>
             <TextField
-              label="Email"
-              type="email"
+              label="Usuario"
+              type="text"
+              autoComplete="username"
               value={form.email}
               onChange={e => setForm(p => ({ ...p, email: e.target.value }))}
               required
@@ -211,6 +212,7 @@ export default function Login() {
             <TextField
               label="Contraseña"
               type="password"
+              autoComplete="current-password"
               value={form.password}
               onChange={e => setForm(p => ({ ...p, password: e.target.value }))}
               required
