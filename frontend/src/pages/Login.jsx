@@ -26,14 +26,14 @@ const CAMPO_SX = {
     bgcolor: { xs: 'rgba(255,255,255,0.06)', md: 'transparent' },
     '& fieldset': { borderColor: { xs: 'rgba(255,255,255,0.25)', md: 'rgba(0,0,0,0.23)' } },
     '&:hover fieldset': { borderColor: { xs: 'rgba(255,255,255,0.5)', md: 'rgba(0,0,0,0.87)' } },
-    '&.Mui-focused fieldset': { borderColor: '#06b6d4' },
+    '&.Mui-focused fieldset': { borderColor: { xs: '#C8F13F', md: '#7C9A16' } },
   },
   '& .MuiInputLabel-root': { color: { xs: 'rgba(255,255,255,0.6)', md: 'rgba(0,0,0,0.6)' } },
-  '& .MuiInputLabel-root.Mui-focused': { color: '#06b6d4' },
+  '& .MuiInputLabel-root.Mui-focused': { color: { xs: '#C8F13F', md: '#5A700F' } },
   /* El autocompletado de Chrome pisa color y fondo con los suyos. */
   '& input:-webkit-autofill': {
     WebkitTextFillColor: { xs: '#fff', md: 'rgba(0,0,0,0.87)' },
-    WebkitBoxShadow: { xs: '0 0 0 100px #1c2a3f inset', md: '0 0 0 100px #fff inset' },
+    WebkitBoxShadow: { xs: '0 0 0 100px #1B2113 inset', md: '0 0 0 100px #fff inset' },
     caretColor: { xs: '#fff', md: 'rgba(0,0,0,0.87)' },
   },
 };
@@ -63,7 +63,7 @@ export default function Login() {
     <Box sx={{
       minHeight: '100vh',
       display: 'flex',
-      background: 'linear-gradient(145deg, #0f172a 0%, #111827 60%, #0c1a2e 100%)',
+      background: 'linear-gradient(145deg, #0B0D08 0%, #12160D 60%, #0E1409 100%)',
     }}>
 
       {/* ── Panel izquierdo branding (solo desktop) ── */}
@@ -80,18 +80,18 @@ export default function Login() {
         <Box sx={{
           position: 'absolute',
           width: 500, height: 500, borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(6,182,212,0.15) 0%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(200,241,63,0.15) 0%, transparent 70%)',
           top: '50%', left: '50%',
           transform: 'translate(-50%, -50%)',
           pointerEvents: 'none',
         }} />
         <Box sx={{ position: 'relative', textAlign: 'center' }}>
           <Box sx={{
-            width: 72, height: 72, borderRadius: 3, bgcolor: '#06b6d4',
+            width: 72, height: 72, borderRadius: 3, bgcolor: '#C8F13F',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
-            mx: 'auto', mb: 3, boxShadow: '0 0 40px rgba(6,182,212,0.4)',
+            mx: 'auto', mb: 3, boxShadow: '0 0 40px rgba(200,241,63,0.4)',
           }}>
-            <FitnessCenterIcon sx={{ fontSize: 38, color: '#fff' }} />
+            <FitnessCenterIcon sx={{ fontSize: 38, color: '#12160D' }} />
           </Box>
           <Typography variant="h3" fontWeight={800} color="#fff" gutterBottom letterSpacing="-1px">
             TuGymOnLine
@@ -146,7 +146,7 @@ export default function Login() {
           display: { xs: 'block', md: 'none' },
           position: 'absolute',
           width: 340, height: 340, borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(6,182,212,0.18) 0%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(200,241,63,0.18) 0%, transparent 70%)',
           top: '50%', left: '50%',
           transform: 'translate(-50%, -50%)',
           pointerEvents: 'none',
@@ -169,12 +169,12 @@ export default function Login() {
           <Box sx={{ display: { md: 'none' }, textAlign: 'center', mb: 3.5 }}>
             <Box sx={{
               width: 64, height: 64, borderRadius: 2.5,
-              bgcolor: '#06b6d4',
+              bgcolor: '#C8F13F',
               display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
               mb: 1.5,
-              boxShadow: '0 0 28px rgba(6,182,212,0.5)',
+              boxShadow: '0 0 28px rgba(200,241,63,0.5)',
             }}>
-              <FitnessCenterIcon sx={{ fontSize: 34, color: '#fff' }} />
+              <FitnessCenterIcon sx={{ fontSize: 34, color: '#12160D' }} />
             </Box>
             <Typography variant="h5" fontWeight={800} color="#fff" letterSpacing="-0.5px">
               TuGymOnLine
@@ -227,9 +227,10 @@ export default function Login() {
               fullWidth
               sx={{
                 mt: 1, py: 1.4, fontSize: 16,
-                bgcolor: '#06b6d4',
-                '&:hover': { bgcolor: '#0891b2' },
-                boxShadow: { xs: '0 0 20px rgba(6,182,212,0.4)', md: 'none' },
+                bgcolor: '#C8F13F',
+                color: '#12160D',
+                '&:hover': { bgcolor: '#B9E32C' },
+                boxShadow: { xs: '0 0 20px rgba(200,241,63,0.4)', md: 'none' },
               }}
             >
               {loading ? <CircularProgress size={22} color="inherit" /> : 'Ingresar'}

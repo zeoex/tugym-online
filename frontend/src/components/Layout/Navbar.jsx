@@ -74,13 +74,13 @@ export default function Navbar({ drawerWidth, onMenuClick }) {
 
           {/* Mobile brand */}
           <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center', gap: 1, flexGrow: 1 }}>
-            <FitnessCenterIcon sx={{ color: 'primary.main', fontSize: 22 }} />
+            <FitnessCenterIcon sx={{ color: '#C8F13F', fontSize: 22 }} />
             <Typography variant="h6" fontWeight={800} color="#fff">TuGymOnLine</Typography>
           </Box>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'block' } }} />
 
           <IconButton onClick={(e) => setAnchor(e.currentTarget)} size="small">
-            <Avatar sx={{ width: 34, height: 34, bgcolor: 'primary.main', fontSize: 14, fontWeight: 700 }}>
+            <Avatar sx={{ width: 34, height: 34, bgcolor: '#C8F13F', color: '#12160D', fontSize: 14, fontWeight: 800 }}>
               {usuario?.nombre?.charAt(0).toUpperCase()}
             </Avatar>
           </IconButton>

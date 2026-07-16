@@ -243,7 +243,7 @@ export default function DetalleSocio() {
           </Box>
           {tipoRutina && rutinaAsignada && (
             <Typography variant="caption" color="text.secondary" display="block" mt={1}>
-              El socio verá esta rutina en <strong>tugymonline.vercel.app/portal</strong>
+              El socio verá esta rutina en <strong>{window.location.host}/portal</strong>
             </Typography>
           )}
         </CardContent>

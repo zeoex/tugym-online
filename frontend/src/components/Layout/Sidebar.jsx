@@ -8,13 +8,12 @@ import StyleIcon from '@mui/icons-material/Style';
 import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
 import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
 import CampaignIcon from '@mui/icons-material/Campaign';
+import WhereToVoteIcon from '@mui/icons-material/WhereToVote';
+import SettingsIcon from '@mui/icons-material/Settings';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { LIMA, INK } from '../../theme';
 
-const SIDEBAR_BG  = '#0f172a';
-const ACCENT      = '#06b6d4';
-const ACTIVE_BG   = 'rgba(6,182,212,0.1)';
-const DEFAULT_CLR = 'rgba(255,255,255,0.45)';
-const HOVER_BG    = 'rgba(255,255,255,0.04)';
+const DEFAULT_CLR = 'rgba(242,245,234,0.45)';
 
 const GROUPS = [
   {
@@ -34,9 +33,16 @@ const GROUPS = [
   {
     label: 'Operación',
     items: [
+      { label: 'Asistencias',  icon: <WhereToVoteIcon />,   path: '/asistencias'  },
       { label: 'Rutinas',      icon: <DirectionsRunIcon />, path: '/rutinas'      },
       { label: 'Anuncios',     icon: <CampaignIcon />,      path: '/anuncios'     },
       { label: 'Caja',         icon: <PointOfSaleIcon />,   path: '/caja'         },
+    ],
+  },
+  {
+    label: 'Sistema',
+    items: [
+      { label: 'Configuración', icon: <SettingsIcon />,     path: '/configuracion' },
     ],
   },
 ];
@@ -46,28 +52,29 @@ export default function Sidebar() {
   const { pathname } = useLocation();
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', bgcolor: SIDEBAR_BG }}>
-      {/* Logo */}
+    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%', bgcolor: INK }}>
+      {/* Marca */}
       <Box sx={{ px: 3, pt: 3.5, pb: 3, display: 'flex', alignItems: 'center', gap: 1.5 }}>
         <Box sx={{
-          width: 38, height: 38, borderRadius: 2,
-          background: `linear-gradient(135deg, ${ACCENT} 0%, #0ea5e9 100%)`,
+          width: 38, height: 38, borderRadius: 2.5,
+          bgcolor: LIMA,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          boxShadow: `0 4px 12px rgba(6,182,212,0.35)`,
+          boxShadow: '0 0 18px rgba(200,241,63,0.3)',
         }}>
-          <FitnessCenterIcon sx={{ color: '#fff', fontSize: 20 }} />
+          <FitnessCenterIcon sx={{ color: INK, fontSize: 20 }} />
         </Box>
         <Box>
-          <Typography variant="subtitle1" fontWeight={800} color="#fff" lineHeight={1.2} letterSpacing="-0.3px">
+          <Typography variant="subtitle1" fontWeight={800} color="#fff" lineHeight={1.2} letterSpacing="-0.3px"
+            fontFamily="'Space Grotesk Variable', sans-serif">
             TuGymOnLine
           </Typography>
-          <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.35)', lineHeight: 1, fontSize: 10 }}>
-            Admin Panel
+          <Typography variant="caption" sx={{ color: LIMA, lineHeight: 1, fontSize: 10, fontWeight: 700, letterSpacing: 1 }}>
+            ADMIN
           </Typography>
         </Box>
       </Box>
 
-      {/* Nav */}
+      {/* Navegación */}
       <Box sx={{ flexGrow: 1, overflowY: 'auto', px: 1.5, pt: 0.5 }}>
         {GROUPS.map((group, gi) => (
           <Box key={gi} mb={0.5}>
@@ -75,13 +82,13 @@ export default function Sidebar() {
               <Typography
                 variant="caption"
                 sx={{
-                  color: 'rgba(255,255,255,0.22)',
+                  color: 'rgba(242,245,234,0.25)',
                   px: 1.5, pt: gi === 0 ? 1 : 2, pb: 0.75,
                   display: 'block',
-                  letterSpacing: '1.2px',
+                  letterSpacing: '1.4px',
                   textTransform: 'uppercase',
                   fontSize: 10,
-                  fontWeight: 600,
+                  fontWeight: 700,
                 }}
               >
                 {group.label}
@@ -95,22 +102,21 @@ export default function Sidebar() {
                     key={path}
                     onClick={() => navigate(path)}
                     sx={{
-                      borderRadius: 2, mb: 0.5, px: 1.5,
-                      bgcolor: active ? ACTIVE_BG : 'transparent',
-                      borderLeft: `3px solid ${active ? ACCENT : 'transparent'}`,
-                      '&:hover': { bgcolor: active ? ACTIVE_BG : HOVER_BG },
+                      borderRadius: 2.5, mb: 0.5, px: 1.5,
+                      bgcolor: active ? 'rgba(200,241,63,0.1)' : 'transparent',
+                      '&:hover': { bgcolor: active ? 'rgba(200,241,63,0.12)' : 'rgba(242,245,234,0.04)' },
                       transition: 'all 0.15s',
                     }}
                   >
-                    <ListItemIcon sx={{ color: active ? ACCENT : DEFAULT_CLR, minWidth: 36 }}>
+                    <ListItemIcon sx={{ color: active ? LIMA : DEFAULT_CLR, minWidth: 36 }}>
                       {icon}
                     </ListItemIcon>
                     <ListItemText
                       primary={label}
                       primaryTypographyProps={{
                         fontSize: 14,
-                        fontWeight: active ? 600 : 400,
-                        color: active ? '#fff' : DEFAULT_CLR,
+                        fontWeight: active ? 700 : 400,
+                        color: active ? LIMA : DEFAULT_CLR,
                       }}
                     />
                   </ListItemButton>
@@ -121,10 +127,10 @@ export default function Sidebar() {
         ))}
       </Box>
 
-      {/* Footer */}
-      <Box sx={{ px: 3, py: 2, borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-        <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.2)', fontSize: 10 }}>v1.0.0</Typography>
-        <Typography variant="caption" display="block" sx={{ color: 'rgba(255,255,255,0.15)', fontSize: 9, mt: 0.25 }}>
+      {/* Pie */}
+      <Box sx={{ px: 3, py: 2, borderTop: '1px solid rgba(242,245,234,0.06)' }}>
+        <Typography variant="caption" sx={{ color: 'rgba(242,245,234,0.25)', fontSize: 10 }}>v2.0.0</Typography>
+        <Typography variant="caption" display="block" sx={{ color: 'rgba(242,245,234,0.18)', fontSize: 9, mt: 0.25 }}>
           &copy; ZeoDev 2026
         </Typography>
       </Box>

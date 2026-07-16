@@ -72,12 +72,26 @@ Copy `backend/.env.example` to `backend/.env` and fill in values before running 
 - **CajaDia** — Daily cash register: opening/closing amounts and state
 - **Anuncio** — Announcements shown in the member portal
 - **Notificacion** — Audit log of emails sent for expiring memberships
+- **Configuracion** — Singleton (lazy-created on first GET): gym name, phone, address, latitude/longitude and check-in radius. Editable from the admin Configuración page; never hardcode gym data
+- **Asistencia** — Member check-ins (GEO from the portal or MANUAL from reception), with distance and whether the membership was expired at the time; cascade-deleted with its Socio
 
 ### API & Auth Flow
 1. `POST /api/auth/login` returns a JWT; frontend stores it in localStorage via `AuthContext`
 2. All subsequent requests go through `api.js` Axios interceptor which attaches the token
 3. Backend `middleware/auth.js` verifies the JWT on every protected route
 4. Vite dev proxy forwards `/api` and `/uploads` to `http://localhost:4000`
+
+### Member portal & GPS check-in
+- The portal (`/portal`) is a public PWA (installable; manifest + `sw.js` in `frontend/public/`) with bottom-nav tabs: Inicio (GPS check-in), Rutina, Carnet (QR credential)
+- Members identify by DNI, remembered in `localStorage` (`portal_dni`); lookup ignores dots/dashes via raw SQL `regexp_replace`
+- `POST /api/portal/checkin` validates the haversine distance **server-side** against `Configuracion` coords (client GPS accuracy is credited up to 80 m; accuracy > 500 m is rejected). Duplicate check-ins within 3 h are idempotent (`yaRegistrado`)
+- Expired membership does NOT block check-in — it flags `cuotaVencida` and the portal shows a renewal warning
+- Admin endpoints under `/api/asistencias`: `hoy`, `stats` (peak hours), `inactivos` (active members with no visit in 14+ days, for retention), `manual`
+- Streak (`racha`) = consecutive days with ≥1 check-in ending today or yesterday; server timezone matters, so production sets `TZ=America/Argentina/Buenos_Aires`
+
+### Theming
+- `frontend/src/theme.js` holds both MUI themes and brand tokens (LIMA/INK/NOCHE): `portalTheme` (dark, lime-on-black) and `adminTheme` (light, ink + lime). `App.jsx` mounts one shell per route tree — only one CssBaseline is active at a time
+- Fonts are bundled locally via `@fontsource-variable` (Space Grotesk for headings, Inter for body) — no CDN
 
 ### Key Behaviors
 - Membership expiry is computed from `Pago.fechaFin`; the cron job updates `Socio.estado` to `INACTIVO` when memberships expire

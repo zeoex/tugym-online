@@ -40,6 +40,7 @@ model Socio {
 
   pagos          Pago[]
   notificaciones Notificacion[]
+  asistencias    Asistencia[]
 
   @@index([apellido, nombre])
   @@index([estado])
@@ -120,6 +121,34 @@ model Anuncio {
   updatedAt DateTime  @updatedAt @map("updated_at")
 
   @@map("anuncios")
+}
+
+model Configuracion {
+  id           Int      @id @default(autoincrement())
+  nombreGym    String   @default("TuGymOnLine") @map("nombre_gym")
+  telefono     String?
+  direccion    String?
+  latitud      Float?
+  longitud     Float?
+  radioCheckin Int      @default(150) @map("radio_checkin_m")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("configuracion")
+}
+
+model Asistencia {
+  id           Int      @id @default(autoincrement())
+  socioId      Int      @map("socio_id")
+  fecha        DateTime @default(now())
+  metodo       String   @default("GEO")
+  distanciaM   Int?     @map("distancia_m")
+  cuotaVencida Boolean  @default(false) @map("cuota_vencida")
+
+  socio        Socio    @relation(fields: [socioId], references: [id], onDelete: Cascade)
+
+  @@index([socioId])
+  @@index([fecha])
+  @@map("asistencias")
 }
 
 model Notificacion {

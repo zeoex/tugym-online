@@ -16,6 +16,8 @@ const rutinasRoutes   = require('./routes/rutinas');
 const cajaRoutes      = require('./routes/caja');
 const portalRoutes    = require('./routes/portal');
 const anunciosRoutes  = require('./routes/anuncios');
+const asistenciasRoutes = require('./routes/asistencias');
+const configRoutes    = require('./routes/config');
 const auth            = require('./middleware/auth');
 require('./jobs/vencimientosJob');
 
@@ -57,6 +59,8 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/rutinas',   rutinasRoutes);
 app.use('/api/caja',      cajaRoutes);
 app.use('/api/anuncios',  auth, anunciosRoutes);
+app.use('/api/asistencias', auth, asistenciasRoutes);
+app.use('/api/config',    auth, configRoutes);
 
 app.use(errorHandler);
 

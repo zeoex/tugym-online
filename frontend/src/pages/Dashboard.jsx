@@ -12,6 +12,7 @@ import NightlightIcon from '@mui/icons-material/Nightlight';
 import ManIcon from '@mui/icons-material/Man';
 import WomanIcon from '@mui/icons-material/Woman';
 import QrCode2Icon from '@mui/icons-material/QrCode2';
+import WhereToVoteIcon from '@mui/icons-material/WhereToVote';
 import { QRCodeSVG } from 'qrcode.react';
 import api from '../services/api';
 import SocioAvatar from '../components/SocioAvatar';
@@ -78,6 +79,7 @@ export default function Dashboard() {
   const [stats, setStats]               = useState(null);
   const [morosos, setMorosos]           = useState([]);
   const [rutinas, setRutinas]           = useState({});
+  const [asistencias, setAsistencias]   = useState(null);
   const [loadingStats, setLoadingStats] = useState(true);
   const [loadingMorosos, setLoadingMorosos] = useState(true);
   const [qrData, setQrData]             = useState(null);
@@ -86,6 +88,10 @@ export default function Dashboard() {
     api.get('/dashboard/stats')
       .then(r => setStats(r.data))
       .finally(() => setLoadingStats(false));
+
+    api.get('/asistencias/hoy')
+      .then(r => setAsistencias(r.data))
+      .catch(() => {});
 
     api.get('/socios', { params: { estado: 'VENCIDO', limit: 100 } })
       .then(r => setMorosos(r.data.datos))
@@ -166,13 +172,16 @@ export default function Dashboard() {
 
       {/* Stat cards */}
       <Grid container spacing={3} mb={3}>
-        <Grid item xs={12} sm={4}>
+        <Grid item xs={12} sm={6} md={3}>
           <StatCard title="Recaudación del Día" value={`$${Number(stats.recaudacionDia).toLocaleString('es-AR')}`} icon={<AttachMoneyIcon />} color="info" sub={`${stats.pagosDia} ${stats.pagosDia === 1 ? 'pago' : 'pagos'} hoy`} />
         </Grid>
-        <Grid item xs={12} sm={4}>
+        <Grid item xs={12} sm={6} md={3}>
+          <StatCard title="Asistencias de Hoy" value={asistencias ? asistencias.asistencias.length : '—'} icon={<WhereToVoteIcon />} color="success" sub={asistencias?.entrenandoAhora > 0 ? `${asistencias.entrenandoAhora} entrenando ahora` : 'check-in desde el celular'} />
+        </Grid>
+        <Grid item xs={12} sm={6} md={3}>
           <StatCard title="Cuotas a Vencer" value={stats.proximosVencer} icon={<WarningAmberIcon />} color="warning" sub="vencen en los próximos 3 días" />
         </Grid>
-        <Grid item xs={12} sm={4}>
+        <Grid item xs={12} sm={6} md={3}>
           <StatCard title="Socios Morosos" value={stats.sociosVencidos} icon={<BlockIcon />} color="error" sub={`${stats.vencidosHoy} con pago vencido sin procesar`} />
         </Grid>
       </Grid>
