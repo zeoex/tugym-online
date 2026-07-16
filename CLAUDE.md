@@ -8,6 +8,12 @@ GymApp (TuGymOnLine) is a full-stack gym membership management application. The 
 
 Deployed to Railway as a single service: the root `package.json` builds the frontend and generates the Prisma client, then `server.js` serves `frontend/dist` when `NODE_ENV=production`. Because the API and the frontend share an origin, `VITE_API_URL` stays empty and requests go to `/api`.
 
+- Production: https://tugym-online-production.up.railway.app (project `tugym-online`, environment `production`)
+- Deploy with `railway up`; Railway injects `PORT` and `DATABASE_URL` (the latter via `${{Postgres.DATABASE_URL}}`), so never hardcode either
+- Member photos live on a volume mounted at `/app/uploads` (`UPLOADS_DIR`). Without it, every deploy wipes them
+- The Postgres is only reachable from inside Railway. To run one-off scripts (seed, migrations) from a laptop, use the `DATABASE_PUBLIC_URL` of the Postgres service
+- Schema changes need a real migration (`db:migrate`). Using `db push` against production leaves the repo without the migration, and a fresh database then comes up with an incomplete schema
+
 ## Development Commands
 
 ### Root — used by Railway
