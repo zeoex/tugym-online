@@ -174,9 +174,11 @@ export default function PortalCarnet() {
               </Box>
             </Box>
 
-            {/* plan + QR */}
-            <Box display="flex" alignItems="flex-end" gap={1.5}>
-              <Box flex={1} minWidth={0}>
+            {/* plan + QR: el bloque del QR está acotado para que NUNCA
+                desborde la tarjeta, ni con letra grande ni en pantallas
+                angostas (el texto envuelve en dos líneas) */}
+            <Box display="flex" alignItems="flex-end" gap={1.5} flexWrap="wrap">
+              <Box flex={1} minWidth={140}>
                 {cuota.plan ? (
                   <>
                     <Chip label={cuota.plan} size="small" sx={{
@@ -199,14 +201,18 @@ export default function PortalCarnet() {
                   </Typography>
                 )}
               </Box>
-              <Box textAlign="center" flexShrink={0}>
+              <Box sx={{ textAlign: 'center', flexShrink: 0, maxWidth: 104, ml: 'auto' }}>
                 <Box sx={{
-                  bgcolor: '#fff', p: 0.9, borderRadius: 2.5, lineHeight: 0,
+                  bgcolor: '#fff', p: 0.8, borderRadius: 2, lineHeight: 0,
+                  display: 'inline-block',
                   boxShadow: '0 4px 18px rgba(0,0,0,0.45)',
                 }}>
-                  <QRCodeSVG value={String(socio.dni || socio.id)} size={82} level="M" />
+                  <QRCodeSVG value={String(socio.dni || socio.id)} size={76} level="M" />
                 </Box>
-                <Typography fontSize={9} sx={{ color: 'rgba(242,245,234,0.4)', mt: 0.5, letterSpacing: 0.4 }}>
+                <Typography sx={{
+                  fontSize: 8.5, color: 'rgba(242,245,234,0.4)', mt: 0.5,
+                  letterSpacing: 0.3, lineHeight: 1.35, maxWidth: 96, mx: 'auto',
+                }}>
                   MOSTRÁ EN RECEPCIÓN
                 </Typography>
               </Box>
