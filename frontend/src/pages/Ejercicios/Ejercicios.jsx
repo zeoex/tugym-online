@@ -14,7 +14,7 @@ import MovieIcon from '@mui/icons-material/Movie';
 import api from '../../services/api';
 import { ACENTO, INK } from '../../theme';
 
-const FORM_INIT = { nombre: '', musculo: '', mediaKey: null };
+const FORM_INIT = { nombre: '', musculo: '', mediaKey: null, categoria: 'CUERPO' };
 
 export default function Ejercicios() {
   const theme = useTheme();
@@ -22,6 +22,7 @@ export default function Ejercicios() {
 
   const [ejercicios, setEjercicios] = useState(null);
   const [q, setQ] = useState('');
+  const [cat, setCat] = useState('TODOS');
   const [dialog, setDialog] = useState(null); // { ejercicio? } — null cerrado, {} nuevo
   const [form, setForm] = useState(FORM_INIT);
   const [animSel, setAnimSel] = useState(null);
@@ -53,7 +54,7 @@ export default function Ejercicios() {
   const abrir = (ejercicio = null) => {
     setError('');
     if (ejercicio) {
-      setForm({ nombre: ejercicio.nombre, musculo: ejercicio.musculo || '', mediaKey: ejercicio.mediaKey });
+      setForm({ nombre: ejercicio.nombre, musculo: ejercicio.musculo || '', mediaKey: ejercicio.mediaKey, categoria: ejercicio.categoria || 'CUERPO' });
       setAnimSel(ejercicio.mediaKey
         ? { key: ejercicio.mediaKey, nombreEn: ejercicio.media?.nombreEn || ejercicio.mediaKey, gifPreview: ejercicio.media?.gif }
         : null);
@@ -70,7 +71,7 @@ export default function Ejercicios() {
     if (!form.nombre.trim()) { setError('El nombre es obligatorio'); return; }
     setGuardando(true);
     try {
-      const payload = { nombre: form.nombre, musculo: form.musculo || null, mediaKey: animSel?.key || null };
+      const payload = { nombre: form.nombre, musculo: form.musculo || null, mediaKey: animSel?.key || null, categoria: form.categoria };
       if (dialog.ejercicio) await api.put(`/ejercicios/${dialog.ejercicio.id}`, payload);
       else await api.post('/ejercicios', payload);
       setDialog(null);
@@ -91,8 +92,12 @@ export default function Ejercicios() {
   };
 
   const filtrados = ejercicios?.filter((e) =>
-    !q || e.nombre.toLowerCase().includes(q.toLowerCase()) || (e.musculo || '').toLowerCase().includes(q.toLowerCase())
+    (cat === 'TODOS' || e.categoria === cat) &&
+    (!q || e.nombre.toLowerCase().includes(q.toLowerCase()) || (e.musculo || '').toLowerCase().includes(q.toLowerCase()))
   );
+  const visibles = filtrados?.slice(0, 300);
+  const nCuerpo = ejercicios?.filter((e) => e.categoria === 'CUERPO').length ?? 0;
+  const nCalent = ejercicios?.filter((e) => e.categoria === 'CALENTAMIENTO').length ?? 0;
 
   return (
     <Box>
@@ -111,12 +116,28 @@ export default function Ejercicios() {
 
       {aviso && <Alert severity="info" sx={{ mb: 2 }} onClose={() => setAviso('')}>{aviso}</Alert>}
 
-      <TextField
-        placeholder="Buscar por nombre o músculo…"
-        value={q} onChange={(e) => setQ(e.target.value)}
-        fullWidth sx={{ mb: 2, maxWidth: 420 }}
-        InputProps={{ startAdornment: <InputAdornment position="start"><SearchIcon sx={{ fontSize: 19 }} /></InputAdornment> }}
-      />
+      <Box display="flex" gap={1.5} alignItems="center" flexWrap="wrap" mb={2}>
+        <TextField
+          placeholder="Buscar por nombre o músculo…"
+          value={q} onChange={(e) => setQ(e.target.value)}
+          sx={{ maxWidth: 380, flex: 1, minWidth: 240 }}
+          InputProps={{ startAdornment: <InputAdornment position="start"><SearchIcon sx={{ fontSize: 19 }} /></InputAdornment> }}
+        />
+        {[
+          { valor: 'TODOS', label: `Todos (${ejercicios?.length ?? 0})` },
+          { valor: 'CUERPO', label: `Cuerpo (${nCuerpo})` },
+          { valor: 'CALENTAMIENTO', label: `Calentamiento (${nCalent})` },
+        ].map((c) => (
+          <Chip
+            key={c.valor}
+            label={c.label}
+            onClick={() => setCat(c.valor)}
+            sx={cat === c.valor
+              ? { bgcolor: ACENTO, color: INK, fontWeight: 800 }
+              : { fontWeight: 600 }}
+          />
+        ))}
+      </Box>
 
       {!filtrados ? (
         <Box display="flex" justifyContent="center" py={6}><CircularProgress /></Box>
@@ -133,7 +154,7 @@ export default function Ejercicios() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {filtrados.map((e) => (
+              {visibles.map((e) => (
                 <TableRow key={e.id} hover>
                   <TableCell sx={{ fontWeight: 600, fontSize: 13.5 }}>
                     {e.nombre}
@@ -141,7 +162,14 @@ export default function Ejercicios() {
                       <Typography variant="caption" display="block" color="text.secondary">{e.musculo}</Typography>
                     )}
                   </TableCell>
-                  {!isMobile && <TableCell><Typography variant="body2" color="text.secondary">{e.musculo || '—'}</Typography></TableCell>}
+                  {!isMobile && (
+                    <TableCell>
+                      <Typography variant="body2" color="text.secondary" component="span">{e.musculo || '—'}</Typography>
+                      {e.categoria === 'CALENTAMIENTO' && (
+                        <Chip label="Calent." size="small" sx={{ ml: 1, fontSize: 10, height: 18, fontWeight: 700 }} />
+                      )}
+                    </TableCell>
+                  )}
                   <TableCell>
                     {e.media?.gif ? (
                       <Chip icon={<MovieIcon sx={{ fontSize: 14 }} />} label={isMobile ? 'GIF' : 'Animado'} size="small"
@@ -161,6 +189,11 @@ export default function Ejercicios() {
               ))}
             </TableBody>
           </Table>
+          {filtrados.length > visibles.length && (
+            <Typography variant="caption" color="text.secondary" display="block" textAlign="center" py={1.5}>
+              Mostrando {visibles.length} de {filtrados.length} — afiná la búsqueda para ver el resto
+            </Typography>
+          )}
         </Paper>
       )}
 
@@ -173,8 +206,16 @@ export default function Ejercicios() {
           <Box display="flex" flexDirection="column" gap={2.5} mt={1}>
             {error && <Alert severity="error" onClose={() => setError('')}>{error}</Alert>}
             <TextField label="Nombre" value={form.nombre} onChange={(e) => setForm((p) => ({ ...p, nombre: e.target.value }))} fullWidth autoFocus />
-            <TextField label="Músculo" value={form.musculo} onChange={(e) => setForm((p) => ({ ...p, musculo: e.target.value }))}
-              placeholder="Pecho, Glúteos, Core…" fullWidth />
+            <Box display="flex" gap={2}>
+              <TextField label="Músculo" value={form.musculo} onChange={(e) => setForm((p) => ({ ...p, musculo: e.target.value }))}
+                placeholder="Pecho, Glúteos, Core…" sx={{ flex: 1 }} />
+              <TextField select label="Categoría" value={form.categoria}
+                onChange={(e) => setForm((p) => ({ ...p, categoria: e.target.value }))}
+                SelectProps={{ native: true }} sx={{ width: 170 }}>
+                <option value="CUERPO">Cuerpo</option>
+                <option value="CALENTAMIENTO">Calentamiento</option>
+              </TextField>
+            </Box>
 
             <Autocomplete
               options={opcionesAnim}

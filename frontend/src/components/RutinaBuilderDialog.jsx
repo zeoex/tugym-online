@@ -43,6 +43,16 @@ export default function RutinaBuilderDialog({ abierta, onCerrar, onGuardada, rut
     }
   }, [abierta, rutina, esPlantilla]);
 
+  // En plantillas de precalentamiento, los ejercicios de calentamiento van primero
+  const opcionesOrdenadas = [...ejercicios].sort((a, b) => {
+    if (tipo === 'PRECALENTAMIENTO') {
+      const pa = a.categoria === 'CALENTAMIENTO' ? 0 : 1;
+      const pb = b.categoria === 'CALENTAMIENTO' ? 0 : 1;
+      if (pa !== pb) return pa - pb;
+    }
+    return a.nombre.localeCompare(b.nombre);
+  });
+
   const setItem = (i, campo, valor) => {
     setItems((prev) => prev.map((it, idx) => (idx === i ? { ...it, [campo]: valor } : it)));
   };
@@ -113,7 +123,7 @@ export default function RutinaBuilderDialog({ abierta, onCerrar, onGuardada, rut
                 sx={{ p: 1, borderRadius: 2, bgcolor: 'rgba(18,22,13,0.03)' }}>
                 <Typography sx={{ color: 'text.disabled', width: 20, fontSize: 13, fontWeight: 700 }}>{i + 1}</Typography>
                 <Autocomplete
-                  options={ejercicios}
+                  options={opcionesOrdenadas}
                   value={elegido}
                   onChange={(_e, v) => setItem(i, 'ejercicioId', v?.id ?? null)}
                   getOptionLabel={(e) => e.nombre}
@@ -121,9 +131,12 @@ export default function RutinaBuilderDialog({ abierta, onCerrar, onGuardada, rut
                   renderOption={(props, e) => (
                     <li {...props} key={e.id}>
                       <Box display="flex" alignItems="center" gap={1} width="100%">
-                        <Typography flex={1} fontSize={14}>{e.nombre}</Typography>
-                        {e.media?.gif && <FitnessCenterIcon sx={{ fontSize: 14, color: 'success.main' }} />}
-                        <Typography variant="caption" color="text.secondary">{e.musculo}</Typography>
+                        <Typography flex={1} fontSize={14} noWrap>{e.nombre}</Typography>
+                        {e.categoria === 'CALENTAMIENTO' && (
+                          <Typography variant="caption" sx={{ color: 'warning.main', fontWeight: 700, flexShrink: 0 }}>calent.</Typography>
+                        )}
+                        {e.media?.gif && <FitnessCenterIcon sx={{ fontSize: 14, color: 'success.main', flexShrink: 0 }} />}
+                        <Typography variant="caption" color="text.secondary" flexShrink={0}>{e.musculo}</Typography>
                       </Box>
                     </li>
                   )}

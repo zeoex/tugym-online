@@ -20,7 +20,7 @@ const asistenciasRoutes = require('./routes/asistencias');
 const configRoutes    = require('./routes/config');
 const ejerciciosRoutes = require('./routes/ejercicios');
 const rutinasBibliotecaRoutes = require('./routes/rutinasBiblioteca');
-const { sembrarBiblioteca } = require('./services/bibliotecaService');
+const { sembrarBiblioteca, importarCatalogoCompleto, servirGif } = require('./services/bibliotecaService');
 const auth            = require('./middleware/auth');
 require('./jobs/vencimientosJob');
 
@@ -41,6 +41,12 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use('/uploads', express.static(uploadsDir));
+
+// GIFs de ejercicios bajo demanda: fuera de /api para que no cuenten en el
+// rate limit; el primero que lo mira dispara la descarga al volumen.
+app.get('/media/anim/:key.gif', (req, res, next) => {
+  servirGif(req.params.key, res).catch(next);
+});
 
 // Solo sobre /api: montado global tambien contaba cada chunk de JS y cada
 // imagen de ejercicio del frontend, y una sola visita al portal quemaba el cupo.
@@ -81,6 +87,8 @@ if (process.env.NODE_ENV === 'production') {
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log(`TuGymOnLine backend corriendo en http://localhost:${PORT}`);
-  // Siembra la biblioteca de ejercicios/rutinas la primera vez (idempotente).
-  sembrarBiblioteca().catch((e) => console.error('[Biblioteca] Error en seed:', e.message));
+  // Siembra la biblioteca la primera vez y completa el catálogo (idempotente).
+  sembrarBiblioteca()
+    .then(() => importarCatalogoCompleto())
+    .catch((e) => console.error('[Biblioteca] Error en seed:', e.message));
 });

@@ -1,5 +1,6 @@
 const prisma = require('../config/database');
 const { resolverMedia, asegurarGif, DATASET, GIFS_INCLUIDOS } = require('../services/bibliotecaService');
+const IMPORTADOS = require('../data/ejerciciosImportados.json');
 
 const RAW_BASE = 'https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/main/';
 
@@ -21,6 +22,7 @@ exports.listar = async (req, res, next) => {
       nombre: e.nombre,
       musculo: e.musculo,
       mediaKey: e.mediaKey,
+      categoria: e.categoria,
       usos: e._count.items,
       media: resolverMedia(e.mediaKey),
     })));
@@ -34,11 +36,13 @@ exports.catalogo = async (req, res, next) => {
     if (!q || q.length < 2) return res.json([]);
     const resultados = [];
     for (const [key, info] of Object.entries(DATASET)) {
-      if (norm(info.nombreEn).includes(q) || norm(info.musculo).includes(q)) {
+      const es = IMPORTADOS[key];
+      if (norm(info.nombreEn).includes(q) || norm(es?.nombre).includes(q) || norm(es?.musculo).includes(q)) {
         resultados.push({
           key,
           nombreEn: info.nombreEn,
-          musculo: info.musculo,
+          nombre: es?.nombre || info.nombreEn,
+          musculo: es?.musculo || info.musculo,
           equipo: info.equipo,
           // Para previsualizar: local si ya está, si no directo de GitHub (solo admin)
           gifPreview: GIFS_INCLUIDOS.has(key) ? `/anim/${key}.gif` : RAW_BASE + info.archivo,
@@ -52,13 +56,18 @@ exports.catalogo = async (req, res, next) => {
 
 exports.crear = async (req, res, next) => {
   try {
-    const { nombre, musculo, mediaKey } = req.body;
+    const { nombre, musculo, mediaKey, categoria } = req.body;
     if (!String(nombre || '').trim()) return res.status(400).json({ error: 'El nombre es obligatorio' });
     if (mediaKey && !DATASET[mediaKey]) return res.status(400).json({ error: 'Animación inválida' });
 
     if (mediaKey) await asegurarGif(mediaKey);
     const ejercicio = await prisma.ejercicio.create({
-      data: { nombre: String(nombre).trim(), musculo: musculo ? String(musculo).trim() : null, mediaKey: mediaKey || null },
+      data: {
+        nombre: String(nombre).trim(),
+        musculo: musculo ? String(musculo).trim() : null,
+        mediaKey: mediaKey || null,
+        categoria: categoria === 'CALENTAMIENTO' ? 'CALENTAMIENTO' : 'CUERPO',
+      },
     });
     res.status(201).json({ ...ejercicio, media: resolverMedia(ejercicio.mediaKey) });
   } catch (err) { next(err); }
@@ -67,8 +76,11 @@ exports.crear = async (req, res, next) => {
 exports.actualizar = async (req, res, next) => {
   try {
     const id = parseInt(req.params.id, 10);
-    const { nombre, musculo, mediaKey } = req.body;
+    const { nombre, musculo, mediaKey, categoria } = req.body;
     const data = {};
+    if (categoria !== undefined) {
+      data.categoria = categoria === 'CALENTAMIENTO' ? 'CALENTAMIENTO' : 'CUERPO';
+    }
     if (nombre !== undefined) {
       if (!String(nombre).trim()) return res.status(400).json({ error: 'El nombre no puede quedar vacío' });
       data.nombre = String(nombre).trim();
