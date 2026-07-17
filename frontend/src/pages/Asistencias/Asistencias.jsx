@@ -11,6 +11,8 @@ import QueryStatsIcon from '@mui/icons-material/QueryStats';
 import PersonOffIcon from '@mui/icons-material/PersonOff';
 import AddTaskIcon from '@mui/icons-material/AddTask';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import api from '../../services/api';
 import SocioAvatar from '../../components/SocioAvatar';
 import { ACENTO, INK } from '../../theme';
@@ -19,6 +21,18 @@ import { whatsappUrl, MSG_RECUPERACION_DEFAULT } from '../../utils/whatsapp';
 const fmtHora = (f) => new Date(f).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
 const fmtFecha = (f) => new Date(f).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' });
 const DIAS = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+
+// Fechas como YYYY-MM-DD en hora LOCAL (toISOString correría el día)
+const aISO = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+const hoyISO = () => aISO(new Date());
+const sumarDias = (iso, n) => {
+  const [y, m, d] = iso.split('-').map(Number);
+  return aISO(new Date(y, m - 1, d + n));
+};
+const fechaLarga = (iso) => {
+  const [y, m, d] = iso.split('-').map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' });
+};
 
 /* Barras simples sin librerías: livianas y de la marca */
 function GraficoBarras({ datos, alto = 120 }) {
@@ -54,6 +68,7 @@ export default function Asistencias() {
   const [tab, setTab] = useState(0);
 
   const [hoy, setHoy] = useState(null);
+  const [fecha, setFecha] = useState(hoyISO());
   const [stats, setStats] = useState(null);
   const [inactivos, setInactivos] = useState(null);
 
@@ -64,11 +79,13 @@ export default function Asistencias() {
   const [msgRecuperacion, setMsgRecuperacion] = useState(MSG_RECUPERACION_DEFAULT);
 
   const cargarHoy = useCallback(() => {
-    api.get('/asistencias/hoy').then((r) => setHoy(r.data)).catch(() => {});
-  }, []);
+    setHoy(null);
+    api.get('/asistencias/hoy', { params: { fecha } }).then((r) => setHoy(r.data)).catch(() => {});
+  }, [fecha]);
+
+  useEffect(() => { cargarHoy(); }, [cargarHoy]);
 
   useEffect(() => {
-    cargarHoy();
     api.get('/config')
       .then((r) => { if (r.data.msgRecuperacion) setMsgRecuperacion(r.data.msgRecuperacion); })
       .catch(() => {});
@@ -77,7 +94,7 @@ export default function Asistencias() {
     api.get('/socios', { params: { estado: 'ACTIVO', limit: 1000 } })
       .then((r) => setSocios(r.data.datos || []))
       .catch(() => {});
-  }, [cargarHoy]);
+  }, []);
 
   const registrarManual = async () => {
     if (!socioSel) return;
@@ -142,18 +159,51 @@ export default function Asistencias() {
       </Paper>
 
       <Tabs value={tab} onChange={(_e, v) => setTab(v)} sx={{ mb: 2 }}>
-        <Tab icon={<WhereToVoteIcon sx={{ fontSize: 18 }} />} iconPosition="start" label={`Hoy${hoy ? ` (${hoy.asistencias.length})` : ''}`} />
+        <Tab icon={<WhereToVoteIcon sx={{ fontSize: 18 }} />} iconPosition="start"
+          label={`${fecha === hoyISO() ? 'Hoy' : 'Historial'}${hoy ? ` (${hoy.asistencias.length})` : ''}`} />
         <Tab icon={<QueryStatsIcon sx={{ fontSize: 18 }} />} iconPosition="start" label="Estadísticas" />
         <Tab icon={<PersonOffIcon sx={{ fontSize: 18 }} />} iconPosition="start" label={`Dejaron de venir${inactivos ? ` (${inactivos.length})` : ''}`} />
       </Tabs>
 
-      {/* ── HOY ── */}
-      {tab === 0 && (
-        !hoy ? <Box display="flex" justifyContent="center" py={6}><CircularProgress /></Box> :
+      {/* ── POR DÍA (hoy o historial) ── */}
+      {tab === 0 && (<>
+        {/* Navegador de fecha */}
+        <Paper sx={{ p: 1.25, mb: 2, display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
+          <Tooltip title="Día anterior">
+            <IconButton size="small" onClick={() => setFecha((f) => sumarDias(f, -1))}>
+              <ChevronLeftIcon />
+            </IconButton>
+          </Tooltip>
+          <TextField
+            type="date"
+            size="small"
+            value={fecha}
+            onChange={(e) => e.target.value && setFecha(e.target.value)}
+            inputProps={{ max: hoyISO() }}
+            sx={{ width: 170 }}
+          />
+          <Tooltip title="Día siguiente">
+            <span>
+              <IconButton size="small" onClick={() => setFecha((f) => sumarDias(f, 1))} disabled={fecha >= hoyISO()}>
+                <ChevronRightIcon />
+              </IconButton>
+            </span>
+          </Tooltip>
+          <Typography variant="body2" color="text.secondary" sx={{ textTransform: 'capitalize', flex: 1 }}>
+            {fechaLarga(fecha)}
+          </Typography>
+          {fecha !== hoyISO() && (
+            <Button size="small" variant="outlined" onClick={() => setFecha(hoyISO())}>Hoy</Button>
+          )}
+        </Paper>
+
+        {!hoy ? <Box display="flex" justifyContent="center" py={6}><CircularProgress /></Box> :
         hoy.asistencias.length === 0 ? (
           <Paper sx={{ p: 4, textAlign: 'center' }}>
             <WhereToVoteIcon sx={{ fontSize: 40, color: 'text.disabled', mb: 1 }} />
-            <Typography color="text.secondary">Todavía no hay check-ins hoy.</Typography>
+            <Typography color="text.secondary">
+              {fecha === hoyISO() ? 'Todavía no hay check-ins hoy.' : 'No hubo check-ins ese día.'}
+            </Typography>
             <Typography variant="caption" color="text.secondary">
               Los socios hacen check-in desde su celular al llegar al gym.
             </Typography>
@@ -201,8 +251,8 @@ export default function Asistencias() {
               </TableBody>
             </Table>
           </Paper>
-        )
-      )}
+        )}
+      </>)}
 
       {/* ── ESTADÍSTICAS ── */}
       {tab === 1 && (

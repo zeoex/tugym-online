@@ -13,10 +13,22 @@ function inicioDia(offsetDias = 0) {
   return d;
 }
 
-exports.hoy = async (_req, res, next) => {
+// Sin ?fecha devuelve hoy; con ?fecha=YYYY-MM-DD, el historial de ese día.
+exports.hoy = async (req, res, next) => {
   try {
+    const { fecha } = req.query;
+    let inicio, fin;
+    if (fecha && /^\d{4}-\d{2}-\d{2}$/.test(fecha)) {
+      // Parse manual: new Date('YYYY-MM-DD') interpreta UTC y correría el día
+      const [y, m, d] = fecha.split('-').map(Number);
+      inicio = new Date(y, m - 1, d);
+      fin = new Date(y, m - 1, d + 1);
+    } else {
+      inicio = inicioDia();
+      fin = inicioDia(1);
+    }
     const asistencias = await prisma.asistencia.findMany({
-      where: { fecha: { gte: inicioDia() } },
+      where: { fecha: { gte: inicio, lt: fin } },
       orderBy: { fecha: 'desc' },
       include: {
         socio: { select: { id: true, nombre: true, apellido: true, foto: true, telefono: true } },
