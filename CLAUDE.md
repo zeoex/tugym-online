@@ -95,6 +95,15 @@ Copy `backend/.env.example` to `backend/.env` and fill in values before running 
 - `POST /api/pagos` computes the surcharge itself — the UI can only waive it (`aplicarRecargo: false`); a manual `monto` override skips the automatic surcharge. `GET /api/pagos/recargo-info?planId=` returns today's suggested breakdown
 - `Pago.recargo` stores the surcharge portion for reporting; `monto` is always the total charged
 
+### Exercise animations
+- `frontend/public/anim/*.gif` (79 files, ~7 MB) + `frontend/src/data/ejercicioAnimaciones.json` map Spanish exercise names to animated GIFs and Spanish step-by-step instructions, imported from github.com/hasaneyldrm/exercises-dataset (1,324 exercises)
+- The import pipeline lives outside the repo (one-shot scripts); matching was auto + hand-curated. 31 exercises without a decent equivalent intentionally keep their static image — never show a wrong GIF
+- `EjercicioDemoModal` prefers GIF + numbered steps, falls back to the static image + handwritten description
+
+### Check-in guards
+- If the member already checked in today, the portal home shows a "Ya entrenaste hoy" state instead of the button (`checkinHoy` from `/api/portal/cuenta/:dni`)
+- Each phone sends a `deviceId` (UUID in localStorage); the server rejects a check-in for a DIFFERENT socio from the same device within the configured window (`checkinVentanaHs`). Clearing browser data resets the id — proportional barrier, not cryptography
+
 ### Theming
 - `frontend/src/theme.js` holds both MUI themes and brand tokens (LIMA/INK/NOCHE): `portalTheme` (dark, lime-on-black) and `adminTheme` (light, ink + lime). `App.jsx` mounts one shell per route tree — only one CssBaseline is active at a time
 - Fonts are bundled locally via `@fontsource-variable` (Space Grotesk for headings, Inter for body) — no CDN
