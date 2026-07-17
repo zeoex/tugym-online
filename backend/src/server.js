@@ -18,6 +18,9 @@ const portalRoutes    = require('./routes/portal');
 const anunciosRoutes  = require('./routes/anuncios');
 const asistenciasRoutes = require('./routes/asistencias');
 const configRoutes    = require('./routes/config');
+const ejerciciosRoutes = require('./routes/ejercicios');
+const rutinasBibliotecaRoutes = require('./routes/rutinasBiblioteca');
+const { sembrarBiblioteca } = require('./services/bibliotecaService');
 const auth            = require('./middleware/auth');
 require('./jobs/vencimientosJob');
 
@@ -61,6 +64,8 @@ app.use('/api/caja',      cajaRoutes);
 app.use('/api/anuncios',  auth, anunciosRoutes);
 app.use('/api/asistencias', auth, asistenciasRoutes);
 app.use('/api/config',    auth, configRoutes);
+app.use('/api/ejercicios', auth, ejerciciosRoutes);
+app.use('/api/rutinas-biblioteca', auth, rutinasBibliotecaRoutes);
 
 app.use(errorHandler);
 
@@ -74,4 +79,8 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => console.log(`TuGymOnLine backend corriendo en http://localhost:${PORT}`));
+app.listen(PORT, () => {
+  console.log(`TuGymOnLine backend corriendo en http://localhost:${PORT}`);
+  // Siembra la biblioteca de ejercicios/rutinas la primera vez (idempotente).
+  sembrarBiblioteca().catch((e) => console.error('[Biblioteca] Error en seed:', e.message));
+});

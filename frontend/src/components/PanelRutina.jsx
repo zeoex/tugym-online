@@ -27,7 +27,7 @@ export default function PanelRutina({ rutina, onRegenerar, onEditar, onQr, regen
   if (!rutina) return null;
   const meta = TIPO_META[rutina.tipo];
 
-  const abrirDemo = (e) => setDemo({ nombre: e.nombre, musculo: e.musculo });
+  const abrirDemo = (e) => setDemo({ nombre: e.nombre, musculo: e.musculo, media: e.media });
 
   return (
     <Paper sx={{ overflow: 'hidden', height: '100%', display: 'flex', flexDirection: 'column' }}>
@@ -156,6 +156,7 @@ export default function PanelRutina({ rutina, onRegenerar, onEditar, onQr, regen
           open
           nombre={demo.nombre}
           musculo={demo.musculo}
+          media={demo.media}
           metaColor={meta.color}
           metaBg={meta.bg}
           onClose={() => setDemo(null)}

@@ -1,24 +1,83 @@
 import { useEffect, useState } from 'react';
 import {
-  Box, Typography, CircularProgress, Paper, Button, Fade, Divider,
+  Box, Typography, CircularProgress, Paper, Button, Fade, Divider, Chip,
 } from '@mui/material';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import ManIcon from '@mui/icons-material/Man';
 import WomanIcon from '@mui/icons-material/Woman';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import WarmupIcon from '@mui/icons-material/DirectionsRun';
-import { ACENTO, VIOLETA } from '../../theme';
-import { portalApi } from './portalApi';
+import StarIcon from '@mui/icons-material/Star';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import { ACENTO, VIOLETA, INK } from '../../theme';
+import { portalApi, dniGuardado } from './portalApi';
 import PanelRutina from '../../components/PanelRutina';
+import EjercicioDemoModal from '../../components/EjercicioDemoModal';
+
+/* La rutina que el coach le armó/asignó a ESTE socio, con sus animaciones. */
+function MiRutina({ rutina }) {
+  const [demo, setDemo] = useState(null);
+  return (
+    <Box mb={3}>
+      <Box display="flex" alignItems="center" gap={1} mb={1.5}>
+        <StarIcon sx={{ color: ACENTO, fontSize: 20 }} />
+        <Typography fontWeight={700} fontSize={15}>Tu rutina — {rutina.nombre}</Typography>
+        {rutina.personalizada && (
+          <Chip label="Personalizada" size="small" sx={{ ml: 'auto', bgcolor: ACENTO, color: INK, fontWeight: 800, fontSize: 10.5 }} />
+        )}
+      </Box>
+      <Paper sx={{ overflow: 'hidden' }}>
+        {rutina.ejercicios.map((e, i) => (
+          <Box key={i} sx={{
+            px: 2, py: 1.25, display: 'flex', alignItems: 'center', gap: 1.5,
+            borderBottom: i < rutina.ejercicios.length - 1 ? '1px solid rgba(242,245,234,0.07)' : 'none',
+          }}>
+            <Typography sx={{ color: 'text.disabled', fontSize: 12, width: 18 }}>{i + 1}</Typography>
+            <Box flex={1} minWidth={0}>
+              <Typography fontWeight={600} fontSize={13.5} noWrap>{e.nombre}</Typography>
+              <Typography variant="caption" color="text.secondary">
+                {e.musculo ? `${e.musculo} · ` : ''}{e.series}×{e.reps} · {e.descanso}
+              </Typography>
+            </Box>
+            <Button
+              size="small"
+              onClick={() => setDemo(e)}
+              startIcon={<VisibilityIcon sx={{ fontSize: 16 }} />}
+              sx={{ color: ACENTO, flexShrink: 0, minWidth: 0 }}
+            >
+              Ver
+            </Button>
+          </Box>
+        ))}
+      </Paper>
+      {demo && (
+        <EjercicioDemoModal
+          open
+          nombre={demo.nombre}
+          musculo={demo.musculo}
+          media={demo.media}
+          onClose={() => setDemo(null)}
+        />
+      )}
+    </Box>
+  );
+}
 
 export default function PortalRutina() {
   const [rutinasDia, setRutinasDia] = useState(null); // { HOMBRE, MUJER, PRECALENTAMIENTO }
+  const [miRutina, setMiRutina] = useState(null);
   const [cargando, setCargando] = useState(true);
   const [genero, setGenero] = useState(null);
 
   useEffect(() => {
-    portalApi.get('/rutina-dia')
-      .then((r) => setRutinasDia(r.data))
+    const pedidos = [portalApi.get('/rutina-dia')];
+    const dni = dniGuardado.get();
+    if (dni) pedidos.push(portalApi.get(`/mi-rutina/${encodeURIComponent(dni)}`));
+    Promise.allSettled(pedidos)
+      .then(([dia, mia]) => {
+        if (dia.status === 'fulfilled') setRutinasDia(dia.value.data);
+        if (mia?.status === 'fulfilled') setMiRutina(mia.value.data.rutina);
+      })
       .finally(() => setCargando(false));
   }, []);
 
@@ -32,6 +91,8 @@ export default function PortalRutina() {
   if (!genero) {
     return (
       <Fade in>
+        <Box>
+        {miRutina && <MiRutina rutina={miRutina} />}
         <Paper sx={{ p: { xs: 3, sm: 4 }, textAlign: 'center' }}>
           <FitnessCenterIcon sx={{ color: ACENTO, fontSize: 40, mb: 1.5 }} />
           <Typography variant="h6" fontSize={18} mb={0.5}>
@@ -71,6 +132,7 @@ export default function PortalRutina() {
             ))}
           </Box>
         </Paper>
+        </Box>
       </Fade>
     );
   }

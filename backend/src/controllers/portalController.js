@@ -10,6 +10,7 @@ const {
   buscarSocioPorDni,
 } = require('../services/asistenciaService');
 const { distanciaMetros } = require('../utils/geo');
+const { enriquecerSnapshot, conMedia } = require('../services/bibliotecaService');
 
 function inicioDia() {
   const h = new Date();
@@ -51,8 +52,34 @@ exports.rutinaDia = async (req, res, next) => {
     }
 
     const map = {};
-    for (const r of rutinas) map[r.tipo] = { ...r, ejercicios: JSON.parse(r.ejercicios) };
+    for (const r of rutinas) {
+      const ejercicios = await enriquecerSnapshot(JSON.parse(r.ejercicios));
+      map[r.tipo] = { ...r, ejercicios };
+    }
     res.json(map);
+  } catch (err) { next(err); }
+};
+
+// La rutina asignada del socio (plantilla o personal), con media resuelta.
+exports.miRutina = async (req, res, next) => {
+  try {
+    const socio = await buscarSocioPorDni(req.params.dni);
+    if (!socio) return res.status(404).json({ error: 'No encontramos un socio con ese DNI.' });
+    if (!socio.rutinaId) return res.json({ rutina: null });
+
+    const rutina = await prisma.rutina.findFirst({
+      where: { id: socio.rutinaId, activo: true },
+      include: { items: { include: { ejercicio: true }, orderBy: { orden: 'asc' } } },
+    });
+    if (!rutina) return res.json({ rutina: null });
+
+    res.json({
+      rutina: {
+        nombre: rutina.nombre,
+        personalizada: rutina.socioId != null,
+        ejercicios: conMedia(rutina.items),
+      },
+    });
   } catch (err) { next(err); }
 };
 
@@ -99,7 +126,7 @@ exports.obtenerSocio = async (req, res, next) => {
 
     let rutina = null;
     if (socio.rutinaAsignada && socio.tipoRutina) {
-      const found = obtenerRutinaPorNombre(socio.tipoRutina, socio.rutinaAsignada);
+      const found = await obtenerRutinaPorNombre(socio.tipoRutina, socio.rutinaAsignada);
       if (found) {
         rutina = {
           tipo: socio.tipoRutina,
@@ -116,7 +143,7 @@ exports.obtenerSocio = async (req, res, next) => {
 exports.listarRutinas = async (req, res, next) => {
   try {
     const tipo = (req.params.tipo || '').toUpperCase();
-    const nombres = listarRutinasPorTipo(tipo);
+    const nombres = await listarRutinasPorTipo(tipo);
     res.json(nombres);
   } catch (err) { next(err); }
 };
@@ -125,9 +152,10 @@ exports.obtenerRutina = async (req, res, next) => {
   try {
     const tipo   = (req.params.tipo  || '').toUpperCase();
     const nombre = decodeURIComponent(req.params.nombre || '');
-    const rutina = obtenerRutinaPorNombre(tipo, nombre);
+    const rutina = await obtenerRutinaPorNombre(tipo, nombre);
     if (!rutina) return res.status(404).json({ error: 'Rutina no encontrada' });
-    res.json({ tipo, nombre: rutina.nombre, ejercicios: rutina.ejercicios });
+    const ejercicios = await enriquecerSnapshot(rutina.ejercicios);
+    res.json({ tipo, nombre: rutina.nombre, ejercicios });
   } catch (err) { next(err); }
 };
 

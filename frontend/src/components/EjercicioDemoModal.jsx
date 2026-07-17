@@ -11,15 +11,16 @@ import CloseIcon from '@mui/icons-material/Close';
 import { getImagen, getDescripcion, getYoutubeUrl } from '../data/ejercicioDemos';
 import ANIMACIONES from '../data/ejercicioAnimaciones.json';
 
-export default function EjercicioDemoModal({ nombre, musculo, metaColor, metaBg, open, onClose }) {
+export default function EjercicioDemoModal({ nombre, musculo, media, metaColor, metaBg, open, onClose }) {
   const [imgError, setImgError] = useState(false);
   const [gifError, setGifError] = useState(false);
   const theme    = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-  // GIF animado del dataset si existe; si falla, cae a la imagen estática de siempre.
-  const anim   = ANIMACIONES[nombre];
-  const gifUrl = !gifError && anim ? anim.gif : null;
+  // Media resuelta por el servidor (por mediaKey, sobrevive renombres);
+  // si no viene, cae a la búsqueda por nombre y por último a la imagen estática.
+  const anim   = media || ANIMACIONES[nombre];
+  const gifUrl = !gifError && anim?.gif ? anim.gif : null;
   const imgUrl = getImagen(nombre);
   const color  = metaColor || '#0ea5e9';
   const bg     = metaBg    || '#e0f2fe';

@@ -1,5 +1,6 @@
 const prisma = require('../config/database');
 const { generarEjercicios } = require('../services/ejerciciosService');
+const { enriquecerSnapshot } = require('../services/bibliotecaService');
 
 function inicioDia(fecha = new Date()) {
   return new Date(fecha.getFullYear(), fecha.getMonth(), fecha.getDate());
@@ -8,8 +9,8 @@ function finDia(fecha = new Date()) {
   return new Date(fecha.getFullYear(), fecha.getMonth(), fecha.getDate() + 1);
 }
 
-function mapear(r) {
-  return { ...r, ejercicios: JSON.parse(r.ejercicios) };
+async function mapear(r) {
+  return { ...r, ejercicios: await enriquecerSnapshot(JSON.parse(r.ejercicios)) };
 }
 
 exports.hoy = async (req, res, next) => {
@@ -45,14 +46,14 @@ exports.hoy = async (req, res, next) => {
       rutinas = await prisma.rutinaDia.findMany({ where: { fecha: { gte: inicio, lt: fin } } });
     }
 
-    res.json(rutinas.map(mapear));
+    res.json(await Promise.all(rutinas.map(mapear)));
   } catch (err) { next(err); }
 };
 
 exports.obtener = async (req, res, next) => {
   try {
     const r = await prisma.rutinaDia.findUniqueOrThrow({ where: { id: parseInt(req.params.id) } });
-    res.json(mapear(r));
+    res.json(await mapear(r));
   } catch (err) { next(err); }
 };
 
@@ -63,7 +64,7 @@ exports.actualizar = async (req, res, next) => {
       where: { id: parseInt(req.params.id) },
       data: { ejercicios: JSON.stringify(ejercicios), editada: true },
     });
-    res.json(mapear(r));
+    res.json(await mapear(r));
   } catch (err) { next(err); }
 };
 
@@ -75,6 +76,6 @@ exports.regenerar = async (req, res, next) => {
       where: { id: r.id },
       data: { nombre, ejercicios: JSON.stringify(ejercicios), editada: false },
     });
-    res.json(mapear(actualizado));
+    res.json(await mapear(actualizado));
   } catch (err) { next(err); }
 };

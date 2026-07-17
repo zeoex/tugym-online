@@ -2,8 +2,11 @@ import { useEffect, useState } from 'react';
 import {
   Box, Typography, Paper, CircularProgress,
   IconButton, Button, Dialog, DialogTitle, DialogContent, DialogActions,
-  TextField, Tooltip, Alert, Grid, useTheme, useMediaQuery,
+  TextField, Tooltip, Alert, Grid, useTheme, useMediaQuery, Tabs, Tab,
 } from '@mui/material';
+import TodayIcon from '@mui/icons-material/Today';
+import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
+import PlantillasTab from './PlantillasTab';
 import QrCode2Icon from '@mui/icons-material/QrCode2';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -41,6 +44,7 @@ export default function Rutinas() {
   const [qrData, setQrData]     = useState(null);
   const [regenerando, setRegen] = useState(null);
   const [error, setError]       = useState('');
+  const [tab, setTab]           = useState(0);
 
   const cargar = async () => {
     setLoading(true);
@@ -120,6 +124,13 @@ export default function Rutinas() {
       </Box>
 
       {error && <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError('')}>{error}</Alert>}
+
+      <Tabs value={tab} onChange={(_e, v) => setTab(v)} sx={{ mb: 2.5 }}>
+        <Tab icon={<TodayIcon sx={{ fontSize: 18 }} />} iconPosition="start" label="Del día" />
+        <Tab icon={<LibraryBooksIcon sx={{ fontSize: 18 }} />} iconPosition="start" label="Plantillas" />
+      </Tabs>
+
+      {tab === 1 ? <PlantillasTab /> : (<>
 
       {/* Botones QR */}
       {(hombre || mujer) && (
@@ -291,6 +302,7 @@ export default function Rutinas() {
           </DialogActions>
         </Dialog>
       )}
+      </>)}
     </Box>
   );
 }

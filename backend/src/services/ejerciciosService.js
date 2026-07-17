@@ -267,31 +267,73 @@ const RUTINAS_PRECALENTAMIENTO = [
   },
 ];
 
+/* Los arrays de arriba son SOLO la semilla inicial de la biblioteca.
+   Desde que existe la tabla `rutinas`, todo se lee de la base:
+   el gym edita sus plantillas sin tocar código. */
+const CATALOGO = {
+  HOMBRE: RUTINAS_HOMBRE,
+  MUJER: RUTINAS_MUJER,
+  PRECALENTAMIENTO: RUTINAS_PRECALENTAMIENTO,
+};
+
+const prisma = require('../config/database');
+
 function randomItem(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-async function generarEjercicios(tipo) {
-  let rutina;
-  if (tipo === 'HOMBRE')           rutina = randomItem(RUTINAS_HOMBRE);
-  else if (tipo === 'MUJER')       rutina = randomItem(RUTINAS_MUJER);
-  else                             rutina = randomItem(RUTINAS_PRECALENTAMIENTO);
+// Snapshot de una plantilla para la rutina del día. Incluye mediaKey para que
+// renombrar un ejercicio después no rompa el GIF de los snapshots nuevos.
+function aSnapshot(rutina) {
+  return {
+    nombre: rutina.nombre,
+    ejercicios: rutina.items
+      .sort((a, b) => a.orden - b.orden)
+      .map((it) => ({
+        nombre: it.ejercicio.nombre,
+        musculo: it.ejercicio.musculo,
+        series: it.series,
+        reps: it.reps,
+        descanso: it.descanso,
+        mediaKey: it.ejercicio.mediaKey || undefined,
+      })),
+  };
+}
 
+async function plantillasDeTipo(tipo) {
+  return prisma.rutina.findMany({
+    where: { tipo, socioId: null, activo: true },
+    include: { items: { include: { ejercicio: true } } },
+    orderBy: { id: 'asc' },
+  });
+}
+
+async function generarEjercicios(tipo) {
+  const plantillas = await plantillasDeTipo(tipo);
+  if (plantillas.length) {
+    const elegida = randomItem(plantillas);
+    return aSnapshot(elegida);
+  }
+  // Fallback si la biblioteca todavía no se sembró
+  const lista = CATALOGO[tipo] || RUTINAS_PRECALENTAMIENTO;
+  const rutina = randomItem(lista);
   return { nombre: rutina.nombre, ejercicios: rutina.ejercicios };
 }
 
-function obtenerRutinaPorNombre(tipo, nombre) {
-  const lista = tipo === 'HOMBRE' ? RUTINAS_HOMBRE
-    : tipo === 'MUJER' ? RUTINAS_MUJER
-    : RUTINAS_PRECALENTAMIENTO;
-  return lista.find(r => r.nombre === nombre) ?? null;
+async function obtenerRutinaPorNombre(tipo, nombre) {
+  const rutina = await prisma.rutina.findFirst({
+    where: { tipo, nombre, socioId: null, activo: true },
+    include: { items: { include: { ejercicio: true } } },
+  });
+  if (rutina) return aSnapshot(rutina);
+  const lista = CATALOGO[tipo] || [];
+  return lista.find((r) => r.nombre === nombre) ?? null;
 }
 
-function listarRutinasPorTipo(tipo) {
-  if (tipo === 'HOMBRE')           return RUTINAS_HOMBRE.map(r => r.nombre);
-  if (tipo === 'MUJER')            return RUTINAS_MUJER.map(r => r.nombre);
-  if (tipo === 'PRECALENTAMIENTO') return RUTINAS_PRECALENTAMIENTO.map(r => r.nombre);
-  return [];
+async function listarRutinasPorTipo(tipo) {
+  const plantillas = await plantillasDeTipo(tipo);
+  if (plantillas.length) return plantillas.map((r) => r.nombre);
+  return (CATALOGO[tipo] || []).map((r) => r.nombre);
 }
 
-module.exports = { generarEjercicios, obtenerRutinaPorNombre, listarRutinasPorTipo };
+module.exports = { generarEjercicios, obtenerRutinaPorNombre, listarRutinasPorTipo, CATALOGO };

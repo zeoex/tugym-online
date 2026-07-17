@@ -4,6 +4,7 @@ import PaymentIcon from '@mui/icons-material/Payment';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import StyleIcon from '@mui/icons-material/Style';
 import DirectionsRunIcon from '@mui/icons-material/DirectionsRun';
+import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
 import CampaignIcon from '@mui/icons-material/Campaign';
 import WhereToVoteIcon from '@mui/icons-material/WhereToVote';
@@ -31,6 +32,7 @@ export const NAV_GROUPS = [
     items: [
       { label: 'Asistencias',  icon: <WhereToVoteIcon />,   path: '/asistencias'  },
       { label: 'Rutinas',      icon: <DirectionsRunIcon />, path: '/rutinas'      },
+      { label: 'Ejercicios',   icon: <FitnessCenterIcon />, path: '/ejercicios'   },
       { label: 'Anuncios',     icon: <CampaignIcon />,      path: '/anuncios'     },
       { label: 'Caja',         icon: <PointOfSaleIcon />,   path: '/caja'         },
     ],

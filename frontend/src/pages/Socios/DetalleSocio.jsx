@@ -13,21 +13,9 @@ import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import SaveIcon from '@mui/icons-material/Save';
 import api from '../../services/api';
 import SocioAvatar from '../../components/SocioAvatar';
+import RutinaBuilderDialog from '../../components/RutinaBuilderDialog';
 
-const RUTINAS_HOMBRE = [
-  'Pecho & Tríceps', 'Espalda & Bíceps', 'Piernas & Glúteos', 'Hombros & Abdomen',
-  'Full Body Potencia', 'Push Day (Empuje)', 'Pull Day (Jalón)', 'Upper Body Completo',
-];
-const RUTINAS_MUJER = [
-  'Glúteos & Piernas Intensivo', 'Abdomen & Core Total', 'Brazos & Hombros Tonificados',
-  'Full Body Femenino', 'Cardio & Tonificación', 'Piernas Completo',
-  'Upper Body Femenino', 'Cuerpo Completo Funcional',
-];
-const RUTINAS_PRECALENTAMIENTO = [
-  'Movilidad Articular Completa', 'Activación Cardiovascular',
-  'Estiramiento Dinámico', 'Activación Neuromuscular',
-];
-const RUTINAS_POR_TIPO = { HOMBRE: RUTINAS_HOMBRE, MUJER: RUTINAS_MUJER, PRECALENTAMIENTO: RUTINAS_PRECALENTAMIENTO };
+const TIPO_LABEL = { HOMBRE: 'Hombres', MUJER: 'Mujeres', PRECALENTAMIENTO: 'Precal.', GENERAL: 'General' };
 
 const ESTADO_COLOR      = { ACTIVO: 'success', VENCIDO: 'error', INACTIVO: 'default' };
 const ESTADO_PAGO_COLOR = { ACTIVO: 'success', VENCIDO: 'error', CANCELADO: 'default' };
@@ -44,22 +32,34 @@ export default function DetalleSocio() {
   const [saving,    setSaving]    = useState(false);
   const [error,     setError]     = useState('');
 
-  const [tipoRutina,     setTipoRutina]     = useState('');
-  const [rutinaAsignada, setRutinaAsignada] = useState('');
+  const [rutinas,        setRutinas]        = useState([]);
+  const [rutinaSel,      setRutinaSel]      = useState('');
   const [savingRutina,   setSavingRutina]   = useState(false);
   const [rutinaOk,       setRutinaOk]       = useState(false);
+  const [builderAbierto, setBuilderAbierto] = useState(false);
+
+  const cargarRutinas = useCallback(async () => {
+    const [plantillas, personales] = await Promise.all([
+      api.get('/rutinas-biblioteca'),
+      api.get('/rutinas-biblioteca', { params: { socioId: id } }),
+    ]);
+    setRutinas([
+      ...personales.data.map((r) => ({ ...r, grupo: 'Personales de este socio' })),
+      ...plantillas.data.map((r) => ({ ...r, grupo: 'Plantillas del gym' })),
+    ]);
+  }, [id]);
 
   const cargar = useCallback(async () => {
     setLoading(true);
     try {
       const { data } = await api.get(`/socios/${id}`);
       setSocio(data);
-      setTipoRutina(data.tipoRutina || '');
-      setRutinaAsignada(data.rutinaAsignada || '');
+      setRutinaSel(data.rutinaId || '');
+      await cargarRutinas();
     } finally {
       setLoading(false);
     }
-  }, [id]);
+  }, [id, cargarRutinas]);
 
   useEffect(() => { cargar(); }, [cargar]);
 
@@ -78,7 +78,7 @@ export default function DetalleSocio() {
   const guardarRutina = async () => {
     setSavingRutina(true); setRutinaOk(false);
     try {
-      await api.put(`/socios/${id}`, { tipoRutina: tipoRutina || null, rutinaAsignada: rutinaAsignada || null });
+      await api.put(`/socios/${id}`, { rutinaId: rutinaSel || null });
       setRutinaOk(true);
       setTimeout(() => setRutinaOk(false), 2500);
     } finally { setSavingRutina(false); }
@@ -203,30 +203,20 @@ export default function DetalleSocio() {
             <Typography variant="subtitle1" fontWeight={700}>Rutina asignada (portal del socio)</Typography>
           </Box>
           {rutinaOk && <Alert severity="success" sx={{ mb: 1.5 }}>Rutina guardada correctamente</Alert>}
-          <Box display="flex" flexDirection={{ xs: 'column', sm: 'row' }} gap={2} alignItems={{ sm: 'flex-end' }}>
-            <FormControl size="small" sx={{ minWidth: 180 }}>
-              <InputLabel>Tipo de rutina</InputLabel>
+          <Box display="flex" flexDirection={{ xs: 'column', sm: 'row' }} gap={2} alignItems={{ sm: 'center' }}>
+            <FormControl size="small" sx={{ flex: 1, minWidth: 240 }}>
+              <InputLabel>Rutina</InputLabel>
               <Select
-                label="Tipo de rutina"
-                value={tipoRutina}
-                onChange={e => { setTipoRutina(e.target.value); setRutinaAsignada(''); }}
+                label="Rutina"
+                value={rutinaSel}
+                onChange={e => setRutinaSel(e.target.value)}
               >
                 <MenuItem value=""><em>Sin asignar</em></MenuItem>
-                <MenuItem value="HOMBRE">Hombres</MenuItem>
-                <MenuItem value="MUJER">Mujeres</MenuItem>
-                <MenuItem value="PRECALENTAMIENTO">Precalentamiento</MenuItem>
-              </Select>
-            </FormControl>
-            <FormControl size="small" sx={{ flex: 1, minWidth: 200 }} disabled={!tipoRutina}>
-              <InputLabel>Rutina específica</InputLabel>
-              <Select
-                label="Rutina específica"
-                value={rutinaAsignada}
-                onChange={e => setRutinaAsignada(e.target.value)}
-              >
-                <MenuItem value=""><em>Seleccioná una rutina</em></MenuItem>
-                {(RUTINAS_POR_TIPO[tipoRutina] || []).map(r => (
-                  <MenuItem key={r} value={r}>{r}</MenuItem>
+                {rutinas.map(r => (
+                  <MenuItem key={r.id} value={r.id}>
+                    {r.grupo === 'Personales de este socio' ? '★ ' : ''}{r.nombre}
+                    {'  '}({TIPO_LABEL[r.tipo] || r.tipo} · {r.items.length} ej.)
+                  </MenuItem>
                 ))}
               </Select>
             </FormControl>
@@ -240,14 +230,24 @@ export default function DetalleSocio() {
             >
               Guardar
             </Button>
+            <Button variant="outlined" size="small" startIcon={<AddIcon />} onClick={() => setBuilderAbierto(true)} sx={{ height: 40, flexShrink: 0 }}>
+              Crear rutina personal
+            </Button>
           </Box>
-          {tipoRutina && rutinaAsignada && (
+          {rutinaSel && (
             <Typography variant="caption" color="text.secondary" display="block" mt={1}>
-              El socio verá esta rutina en <strong>{window.location.host}/portal</strong>
+              El socio la ve con sus animaciones en <strong>{window.location.host}/portal</strong> → Rutina
             </Typography>
           )}
         </CardContent>
       </Card>
+
+      <RutinaBuilderDialog
+        abierta={builderAbierto}
+        socioId={parseInt(id, 10)}
+        onCerrar={() => setBuilderAbierto(false)}
+        onGuardada={async (r) => { await cargarRutinas(); setRutinaSel(r.id); setRutinaOk(true); setTimeout(() => setRutinaOk(false), 2500); }}
+      />
 
       {/* Historial de pagos */}
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>

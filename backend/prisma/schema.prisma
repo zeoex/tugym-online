@@ -38,13 +38,66 @@ model Socio {
   createdAt      DateTime @default(now()) @map("created_at")
   updatedAt      DateTime @updatedAt @map("updated_at")
 
+  rutinaId       Int?     @map("rutina_asignada_id")
+
   pagos          Pago[]
   notificaciones Notificacion[]
   asistencias    Asistencia[]
+  rutinaAsignadaRef Rutina? @relation("RutinaAsignada", fields: [rutinaId], references: [id], onDelete: SetNull)
+  rutinasPersonales Rutina[] @relation("RutinasPersonales")
 
   @@index([apellido, nombre])
   @@index([estado])
   @@map("socios")
+}
+
+model Ejercicio {
+  id        Int      @id @default(autoincrement())
+  nombre    String
+  musculo   String?
+  mediaKey  String?  @map("media_key")
+  activo    Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  items     RutinaItem[]
+
+  @@index([nombre])
+  @@map("ejercicios")
+}
+
+model Rutina {
+  id        Int      @id @default(autoincrement())
+  nombre    String
+  tipo      String   @default("GENERAL")
+  socioId   Int?     @map("socio_id")
+  activo    Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  socio     Socio?   @relation("RutinasPersonales", fields: [socioId], references: [id], onDelete: Cascade)
+  asignadaA Socio[]  @relation("RutinaAsignada")
+  items     RutinaItem[]
+
+  @@index([socioId])
+  @@index([tipo])
+  @@map("rutinas")
+}
+
+model RutinaItem {
+  id          Int    @id @default(autoincrement())
+  rutinaId    Int    @map("rutina_id")
+  ejercicioId Int    @map("ejercicio_id")
+  orden       Int    @default(0)
+  series      Int    @default(3)
+  reps        String @default("10-12")
+  descanso    String @default("60 seg")
+
+  rutina      Rutina    @relation(fields: [rutinaId], references: [id], onDelete: Cascade)
+  ejercicio   Ejercicio @relation(fields: [ejercicioId], references: [id])
+
+  @@index([rutinaId])
+  @@map("rutina_items")
 }
 
 model Plan {

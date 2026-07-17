@@ -15,6 +15,7 @@ import Rutinas from './pages/Rutinas/Rutinas';
 import Caja from './pages/Caja/Caja';
 import GestionAnuncios from './pages/Anuncios/GestionAnuncios';
 import Asistencias from './pages/Asistencias/Asistencias';
+import Ejercicios from './pages/Ejercicios/Ejercicios';
 import Configuracion from './pages/Configuracion/Configuracion';
 import PortalLayout from './pages/Portal/PortalLayout';
 import PortalHome from './pages/Portal/PortalHome';
@@ -72,6 +73,7 @@ export default function App() {
           <Route path="vencimientos"       element={<Vencimientos />} />
           <Route path="asistencias"        element={<Asistencias />} />
           <Route path="rutinas"            element={<Rutinas />} />
+          <Route path="ejercicios"         element={<Ejercicios />} />
           <Route path="caja"               element={<Caja />} />
           <Route path="anuncios"           element={<GestionAnuncios />} />
           <Route path="configuracion"      element={<Configuracion />} />
