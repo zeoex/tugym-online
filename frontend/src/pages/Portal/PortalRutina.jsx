@@ -10,7 +10,7 @@ import WarmupIcon from '@mui/icons-material/DirectionsRun';
 import StarIcon from '@mui/icons-material/Star';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { ACENTO, VIOLETA, INK } from '../../theme';
-import { portalApi, dniGuardado } from './portalApi';
+import { portalApi, sesionSocio } from './portalApi';
 import PanelRutina from '../../components/PanelRutina';
 import EjercicioDemoModal from '../../components/EjercicioDemoModal';
 
@@ -71,8 +71,7 @@ export default function PortalRutina() {
 
   useEffect(() => {
     const pedidos = [portalApi.get('/rutina-dia')];
-    const dni = dniGuardado.get();
-    if (dni) pedidos.push(portalApi.get(`/mi-rutina/${encodeURIComponent(dni)}`));
+    if (sesionSocio.activa()) pedidos.push(portalApi.get('/mi-rutina'));
     Promise.allSettled(pedidos)
       .then(([dia, mia]) => {
         if (dia.status === 'fulfilled') setRutinasDia(dia.value.data);

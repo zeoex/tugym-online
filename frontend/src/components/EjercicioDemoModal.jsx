@@ -119,7 +119,9 @@ export default function EjercicioDemoModal({ nombre, musculo, media, metaColor, 
         <Button
           startIcon={<YouTubeIcon />}
           component="a"
-          href={getYoutubeUrl(nombre)}
+          href={anim?.nombreEn
+            ? `https://www.youtube.com/results?search_query=${encodeURIComponent(`${anim.nombreEn} exercise proper form`)}`
+            : getYoutubeUrl(nombre)}
           target="_blank"
           rel="noopener noreferrer"
           sx={{ color: '#ff0000', mr: 'auto' }}

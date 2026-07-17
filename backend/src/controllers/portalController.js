@@ -11,6 +11,46 @@ const {
 } = require('../services/asistenciaService');
 const { distanciaMetros } = require('../utils/geo');
 const { enriquecerSnapshot, conMedia } = require('../services/bibliotecaService');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
+const firmarSesion = (socio) => jwt.sign(
+  { socioId: socio.id, nombre: socio.nombre, rol: 'SOCIO' },
+  process.env.JWT_SECRET,
+  { expiresIn: '30d' }
+);
+
+// ── Login del socio: DNI + contraseña. La primera vez crea la suya. ──
+exports.login = async (req, res, next) => {
+  try {
+    const { dni, password } = req.body;
+    const socio = await buscarSocioPorDni(dni);
+    if (!socio) return res.status(404).json({ error: 'No encontramos un socio con ese DNI. Consultá en recepción.' });
+    if (!socio.pinHash) return res.json({ necesitaActivacion: true });
+
+    const ok = await bcrypt.compare(String(password || ''), socio.pinHash);
+    if (!ok) return res.status(401).json({ error: 'Contraseña incorrecta' });
+
+    res.json({ token: firmarSesion(socio), socio: { nombre: socio.nombre, apellido: socio.apellido } });
+  } catch (err) { next(err); }
+};
+
+exports.activar = async (req, res, next) => {
+  try {
+    const { dni, password } = req.body;
+    if (String(password || '').length < 4) {
+      return res.status(400).json({ error: 'La contraseña debe tener al menos 4 caracteres' });
+    }
+    const socio = await buscarSocioPorDni(dni);
+    if (!socio) return res.status(404).json({ error: 'No encontramos un socio con ese DNI. Consultá en recepción.' });
+    if (socio.pinHash) {
+      return res.status(409).json({ error: 'Ese DNI ya tiene contraseña. Si la olvidaste, pedí en recepción que te la reseteen.' });
+    }
+    const pinHash = await bcrypt.hash(String(password), 10);
+    await prisma.socio.update({ where: { id: socio.id }, data: { pinHash } });
+    res.status(201).json({ token: firmarSesion(socio), socio: { nombre: socio.nombre, apellido: socio.apellido } });
+  } catch (err) { next(err); }
+};
 
 function inicioDia() {
   const h = new Date();
@@ -60,11 +100,11 @@ exports.rutinaDia = async (req, res, next) => {
   } catch (err) { next(err); }
 };
 
-// La rutina asignada del socio (plantilla o personal), con media resuelta.
+// La rutina asignada del socio logueado (plantilla o personal), con media resuelta.
 exports.miRutina = async (req, res, next) => {
   try {
-    const socio = await buscarSocioPorDni(req.params.dni);
-    if (!socio) return res.status(404).json({ error: 'No encontramos un socio con ese DNI.' });
+    const socio = await prisma.socio.findUnique({ where: { id: req.socioId } });
+    if (!socio) return res.status(401).json({ error: 'Sesión inválida' });
     if (!socio.rutinaId) return res.json({ rutina: null });
 
     const rutina = await prisma.rutina.findFirst({
@@ -177,13 +217,11 @@ exports.info = async (_req, res, next) => {
   } catch (err) { next(err); }
 };
 
-// Estado de membresía del socio, consultado por DNI desde su celular.
+// Estado de membresía del socio logueado.
 exports.miCuenta = async (req, res, next) => {
   try {
-    const socio = await buscarSocioPorDni(req.params.dni);
-    if (!socio) {
-      return res.status(404).json({ error: 'No encontramos un socio con ese DNI. Consultá en recepción.' });
-    }
+    const socio = await prisma.socio.findUnique({ where: { id: req.socioId } });
+    if (!socio) return res.status(401).json({ error: 'Sesión inválida' });
 
     const desde30 = new Date();
     desde30.setDate(desde30.getDate() - 30);
@@ -207,6 +245,7 @@ exports.miCuenta = async (req, res, next) => {
         id: socio.id,
         nombre: socio.nombre,
         apellido: socio.apellido,
+        dni: socio.dni,
         foto: socio.foto,
         estado: socio.estado,
         fechaAlta: socio.fechaAlta,
@@ -223,7 +262,7 @@ exports.miCuenta = async (req, res, next) => {
 // Check-in por geolocalización: la distancia se valida SIEMPRE en el servidor.
 exports.checkin = async (req, res, next) => {
   try {
-    const { dni, lat, lng, accuracy, deviceId } = req.body;
+    const { lat, lng, accuracy, deviceId } = req.body;
 
     const config = await obtenerConfig();
     if (config.latitud == null || config.longitud == null) {
@@ -240,10 +279,8 @@ exports.checkin = async (req, res, next) => {
       return res.status(422).json({ error: 'La señal de GPS es muy imprecisa. Movete a un lugar abierto y probá de nuevo.' });
     }
 
-    const socio = await buscarSocioPorDni(dni);
-    if (!socio) {
-      return res.status(404).json({ error: 'No encontramos un socio con ese DNI. Consultá en recepción.' });
-    }
+    const socio = await prisma.socio.findUnique({ where: { id: req.socioId } });
+    if (!socio) return res.status(401).json({ error: 'Sesión inválida' });
 
     // Un mismo teléfono no puede registrar a varios socios en cadena.
     const idDispositivo = deviceId ? String(deviceId).slice(0, 64) : null;

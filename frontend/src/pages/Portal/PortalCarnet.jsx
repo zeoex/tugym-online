@@ -1,78 +1,50 @@
 import { useEffect, useState } from 'react';
-import { useOutletContext } from 'react-router-dom';
+import { useOutletContext, useNavigate } from 'react-router-dom';
 import {
   Box, Typography, Paper, Button, TextField, CircularProgress, Chip, Fade,
   Skeleton,
 } from '@mui/material';
 import { QRCodeSVG } from 'qrcode.react';
 import BadgeIcon from '@mui/icons-material/Badge';
+import LogoutIcon from '@mui/icons-material/Logout';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import { ACENTO, INK } from '../../theme';
-import { portalApi, dniGuardado } from './portalApi';
+import { portalApi, sesionSocio } from './portalApi';
 
 const fmtFecha = (f) => new Date(f).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' });
 const fmtHora  = (f) => new Date(f).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
 
 export default function PortalCarnet() {
   const { info } = useOutletContext();
-  const [dni, setDni] = useState(dniGuardado.get());
-  const [dniInput, setDniInput] = useState('');
+  const navigate = useNavigate();
   const [cuenta, setCuenta] = useState(null);
-  const [cargando, setCargando] = useState(false);
+  const [cargando, setCargando] = useState(true);
   const [error, setError] = useState('');
 
-  const cargarCuenta = (valor) => {
-    setCargando(true);
-    setError('');
-    portalApi.get(`/cuenta/${encodeURIComponent(valor)}`)
-      .then((r) => setCuenta(r.data))
-      .catch((e) => {
-        setError(e.response?.data?.error || 'No pudimos cargar tu cuenta.');
-        setCuenta(null);
-      })
-      .finally(() => setCargando(false));
-  };
-
   useEffect(() => {
-    if (dni) cargarCuenta(dni);
-  }, [dni]);
+    if (!sesionSocio.activa()) { setCargando(false); return; }
+    portalApi.get('/cuenta')
+      .then((r) => setCuenta(r.data))
+      .catch((e) => setError(e.response?.data?.error || 'No pudimos cargar tu cuenta.'))
+      .finally(() => setCargando(false));
+  }, []);
 
-  const confirmarDni = () => {
-    const valor = dniInput.trim();
-    if (!valor) return;
-    dniGuardado.set(valor);
-    setDni(valor);
+  const cerrarSesion = () => {
+    sesionSocio.clear();
+    navigate('/portal');
   };
 
-  const cambiarDni = () => {
-    dniGuardado.clear();
-    setDni('');
-    setDniInput('');
-    setCuenta(null);
-  };
-
-  if (!dni) {
+  if (!sesionSocio.activa()) {
     return (
       <Paper sx={{ p: 3, textAlign: 'center' }}>
         <BadgeIcon sx={{ color: ACENTO, fontSize: 40, mb: 1 }} />
         <Typography variant="h6" fontSize={17} mb={0.5}>Tu carnet digital</Typography>
         <Typography variant="body2" color="text.secondary" mb={2.5}>
-          Ingresá tu DNI para ver tu credencial, tu cuota y tus asistencias.
+          Ingresá con tu DNI y contraseña para ver tu credencial, tu cuota y tus asistencias.
         </Typography>
-        <Box display="flex" gap={1} justifyContent="center">
-          <TextField
-            placeholder="Tu DNI"
-            value={dniInput}
-            onChange={(e) => setDniInput(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && confirmarDni()}
-            inputProps={{ inputMode: 'numeric', style: { textAlign: 'center', fontWeight: 700, letterSpacing: 1 } }}
-            sx={{ maxWidth: 190 }}
-          />
-          <Button variant="contained" onClick={confirmarDni} disabled={!dniInput.trim()}>Ver</Button>
-        </Box>
-        {error && <Typography variant="body2" sx={{ color: '#F87171', mt: 1.5 }}>{error}</Typography>}
+        <Button variant="contained" onClick={() => navigate('/portal')}>Ingresar</Button>
       </Paper>
     );
   }
@@ -94,7 +66,7 @@ export default function PortalCarnet() {
     return (
       <Paper sx={{ p: 3, textAlign: 'center' }}>
         <Typography variant="body2" sx={{ color: '#F87171' }} mb={2}>{error || 'No pudimos cargar tu cuenta.'}</Typography>
-        <Button variant="outlined" onClick={cambiarDni}>Probar con otro DNI</Button>
+        <Button variant="outlined" onClick={cerrarSesion}>Ingresar de nuevo</Button>
       </Paper>
     );
   }
@@ -158,7 +130,7 @@ export default function PortalCarnet() {
               )}
             </Box>
             <Box sx={{ bgcolor: '#fff', p: 1, borderRadius: 2.5, flexShrink: 0, lineHeight: 0 }}>
-              <QRCodeSVG value={String(dni)} size={86} level="M" />
+              <QRCodeSVG value={String(cuenta.socio.dni || cuenta.socio.id)} size={86} level="M" />
             </Box>
           </Box>
         </Box>
@@ -210,8 +182,9 @@ export default function PortalCarnet() {
           </Paper>
         )}
 
-        <Button onClick={cambiarDni} size="small" sx={{ color: 'text.secondary', mt: 2 }}>
-          Usar otro DNI
+        <Button onClick={cerrarSesion} size="small" startIcon={<LogoutIcon sx={{ fontSize: 16 }} />}
+          sx={{ color: 'text.secondary', mt: 2 }}>
+          Cerrar sesión
         </Button>
       </Box>
     </Fade>

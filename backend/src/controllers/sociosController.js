@@ -1,5 +1,12 @@
 const prisma = require('../config/database');
 
+// Nunca devolver el hash de la contraseña del portal
+function sinPin(socio) {
+  if (!socio) return socio;
+  const { pinHash, ...resto } = socio;
+  return { ...resto, portalActivado: Boolean(pinHash) };
+}
+
 exports.listar = async (req, res, next) => {
   try {
     const { q = '', estado, page = 1, limit = 20, planId, venceProximo, fechaAltaDesde, fechaAltaHasta } = req.query;
@@ -54,7 +61,7 @@ exports.listar = async (req, res, next) => {
       }),
       prisma.socio.count({ where }),
     ]);
-    res.json({ datos: socios, total, page: parseInt(page), pages: Math.ceil(total / parseInt(limit)) });
+    res.json({ datos: socios.map(sinPin), total, page: parseInt(page), pages: Math.ceil(total / parseInt(limit)) });
   } catch (err) { next(err); }
 };
 
@@ -64,7 +71,7 @@ exports.obtener = async (req, res, next) => {
       where: { id: parseInt(req.params.id) },
       include: { pagos: { include: { plan: true }, orderBy: { fechaPago: 'desc' } } },
     });
-    res.json(socio);
+    res.json(sinPin(socio));
   } catch (err) { next(err); }
 };
 
@@ -77,11 +84,23 @@ exports.crear = async (req, res, next) => {
 
 exports.actualizar = async (req, res, next) => {
   try {
+    const { pinHash: _ignorar, portalActivado: _tampoco, ...data } = req.body;
     const socio = await prisma.socio.update({
       where: { id: parseInt(req.params.id) },
-      data: req.body,
+      data,
     });
-    res.json(socio);
+    res.json(sinPin(socio));
+  } catch (err) { next(err); }
+};
+
+// Recepción resetea el acceso al portal: el socio crea contraseña nueva al entrar.
+exports.resetearPortal = async (req, res, next) => {
+  try {
+    await prisma.socio.update({
+      where: { id: parseInt(req.params.id) },
+      data: { pinHash: null },
+    });
+    res.json({ mensaje: 'Acceso reseteado: el socio creará su contraseña la próxima vez que entre al portal' });
   } catch (err) { next(err); }
 };
 

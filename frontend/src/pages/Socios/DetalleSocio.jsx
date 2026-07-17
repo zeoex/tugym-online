@@ -234,6 +234,29 @@ export default function DetalleSocio() {
               Crear rutina personal
             </Button>
           </Box>
+          <Box display="flex" alignItems="center" gap={1.5} mt={2}>
+            <Chip
+              size="small"
+              label={socio.portalActivado ? 'Portal: cuenta activada' : 'Portal: sin activar'}
+              color={socio.portalActivado ? 'success' : 'default'}
+              variant={socio.portalActivado ? 'filled' : 'outlined'}
+              sx={{ fontWeight: 700 }}
+            />
+            {socio.portalActivado && (
+              <Button size="small" color="warning" onClick={async () => {
+                if (!window.confirm('¿Resetear el acceso al portal? El socio creará una contraseña nueva la próxima vez que entre.')) return;
+                await api.put(`/socios/${id}/portal-reset`);
+                cargar();
+              }}>
+                Resetear contraseña del portal
+              </Button>
+            )}
+            {!socio.portalActivado && (
+              <Typography variant="caption" color="text.secondary">
+                El socio crea su contraseña la primera vez que entra al portal con su DNI
+              </Typography>
+            )}
+          </Box>
           {rutinaSel && (
             <Typography variant="caption" color="text.secondary" display="block" mt={1}>
               El socio la ve con sus animaciones en <strong>{window.location.host}/portal</strong> → Rutina

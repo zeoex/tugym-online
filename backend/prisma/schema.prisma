@@ -39,6 +39,7 @@ model Socio {
   updatedAt      DateTime @updatedAt @map("updated_at")
 
   rutinaId       Int?     @map("rutina_asignada_id")
+  pinHash        String?  @map("pin_hash")
 
   pagos          Pago[]
   notificaciones Notificacion[]
