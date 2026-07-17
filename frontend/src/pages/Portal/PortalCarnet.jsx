@@ -107,13 +107,13 @@ export default function PortalCarnet() {
 
         {/* ══ CARNET ══ */}
         <Box sx={{
-          p: '1.5px', borderRadius: 5, mb: 2,
+          p: '1.5px', borderRadius: 3.5, mb: 2,
           background: `linear-gradient(135deg, rgba(200,241,63,0.55), rgba(139,92,246,0.3) 45%, rgba(200,241,63,0.12))`,
           boxShadow: '0 18px 50px rgba(0,0,0,0.55)',
           animation: 'sube 0.45s ease-out both',
         }}>
           <Box sx={{
-            borderRadius: 4.7, p: 2.25, position: 'relative', overflow: 'hidden',
+            borderRadius: 3.3, p: 2.25, position: 'relative', overflow: 'hidden',
             background: 'linear-gradient(150deg, #1B2310 0%, #0B0F06 55%, #141B0A 100%)',
           }}>
             {/* marca de agua */}
@@ -146,8 +146,8 @@ export default function PortalCarnet() {
                 {iniciales}
               </Avatar>
               <Box minWidth={0} flex={1}>
-                <Typography variant="h5" fontSize={25} lineHeight={1.05} noWrap
-                  sx={{ textTransform: 'uppercase', letterSpacing: '1px' }}>
+                <Typography variant="h5" fontSize={24} lineHeight={1.08}
+                  sx={{ textTransform: 'uppercase', letterSpacing: '0.5px', wordBreak: 'break-word' }}>
                   {socio.nombre} {socio.apellido}
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
@@ -189,11 +189,11 @@ export default function PortalCarnet() {
               </Box>
               <Box sx={{ textAlign: 'center', flexShrink: 0, maxWidth: 104, ml: 'auto' }}>
                 <Box sx={{
-                  bgcolor: '#fff', p: 0.8, borderRadius: 2, lineHeight: 0,
+                  bgcolor: '#fff', p: 0.7, borderRadius: '6px', lineHeight: 0,
                   display: 'inline-block',
                   boxShadow: '0 4px 18px rgba(0,0,0,0.45)',
                 }}>
-                  <QRCodeSVG value={String(socio.dni || socio.id)} size={76} level="M" />
+                  <QRCodeSVG value={String(socio.dni || socio.id)} size={78} level="M" />
                 </Box>
                 <Typography sx={{
                   fontSize: 8.5, color: 'rgba(242,245,234,0.4)', mt: 0.5,
