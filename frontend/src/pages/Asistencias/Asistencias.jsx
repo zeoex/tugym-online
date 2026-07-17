@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from 'react';
 import {
   Box, Typography, Paper, Tabs, Tab, CircularProgress, Chip, Button,
   Autocomplete, TextField, Table, TableHead, TableBody, TableRow, TableCell,
-  useTheme, useMediaQuery, Tooltip,
+  useTheme, useMediaQuery, Tooltip, IconButton,
 } from '@mui/material';
 import WhereToVoteIcon from '@mui/icons-material/WhereToVote';
 import GroupsIcon from '@mui/icons-material/Groups';
