@@ -95,6 +95,14 @@ Copy `backend/.env.example` to `backend/.env` and fill in values before running 
 - `POST /api/pagos` computes the surcharge itself — the UI can only waive it (`aplicarRecargo: false`); a manual `monto` override skips the automatic surcharge. `GET /api/pagos/recargo-info?planId=` returns today's suggested breakdown
 - `Pago.recargo` stores the surcharge portion for reporting; `monto` is always the total charged
 
+### Exercise library & routines (DB-driven)
+- `Ejercicio` (editable nombre + stable `mediaKey`), `Rutina` (gym templates when `socioId` null, personal routines otherwise), `RutinaItem` (ejercicioId + series/reps/descanso/orden), `Socio.rutinaId` = assigned routine
+- **Identity is the ID, never the display name**: renaming an exercise keeps its GIF/steps bound via `mediaKey`. This was a deliberate modeling fix — do not reintroduce name-keyed lookups
+- `bibliotecaService.sembrarBiblioteca()` runs at boot, idempotent: seeds ~104 exercises + 20 templates from the hardcoded catalog in `ejerciciosService.js` (which is now SEED DATA ONLY — runtime reads DB, with catalog fallback if empty)
+- Media resolution is server-side (`resolverMedia`): 79 bundled GIFs in `frontend/public/anim/`, anything else downloads on first use from the dataset's GitHub raw into the volume (`/uploads/anim/`). `animacionesDataset.json` (backend) indexes all 1,324 with Spanish steps
+- Admin: Ejercicios page (rename + animation picker over the full catalog), Rutinas → Plantillas tab (builder), DetalleSocio assigns a template or builds a personal routine
+- Portal: `GET /api/portal/mi-rutina/:dni` → "Tu rutina" section shows first in the Rutina tab
+
 ### Exercise animations
 - `frontend/public/anim/*.gif` (79 files, ~7 MB) + `frontend/src/data/ejercicioAnimaciones.json` map Spanish exercise names to animated GIFs and Spanish step-by-step instructions, imported from github.com/hasaneyldrm/exercises-dataset (1,324 exercises)
 - The import pipeline lives outside the repo (one-shot scripts); matching was auto + hand-curated. 31 exercises without a decent equivalent intentionally keep their static image — never show a wrong GIF
