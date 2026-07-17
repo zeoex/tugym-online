@@ -133,25 +133,7 @@ export default function PortalCarnet() {
               animation: 'brillo-carnet 6s ease-in-out infinite',
             }} />
 
-            {/* fila: gym + estado */}
-            <Box display="flex" alignItems="center" gap={0.75} mb={2}>
-              <Box sx={{
-                width: 22, height: 22, borderRadius: 1.25, bgcolor: ACENTO, flexShrink: 0,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-              }}>
-                <FitnessCenterIcon sx={{ color: INK, fontSize: 13 }} />
-              </Box>
-              <Typography fontSize={10.5} fontWeight={800} letterSpacing={2.2} noWrap
-                sx={{ color: 'rgba(242,245,234,0.55)', textTransform: 'uppercase' }}>
-                {info?.nombreGym || 'TuGymOnLine'}
-              </Typography>
-              <Chip label={estadoCuota.texto} size="small" sx={{
-                ml: 'auto', bgcolor: estadoCuota.bg, color: estadoCuota.color,
-                fontWeight: 900, fontSize: 10.5, height: 22, letterSpacing: 0.3, flexShrink: 0,
-              }} />
-            </Box>
-
-            {/* socio */}
+            {/* socio + estado (el nombre del gym ya está en el header de la app) */}
             <Box display="flex" alignItems="center" gap={1.5} mb={2}>
               <Avatar
                 src={socio.foto || undefined}
@@ -163,7 +145,7 @@ export default function PortalCarnet() {
               >
                 {iniciales}
               </Avatar>
-              <Box minWidth={0}>
+              <Box minWidth={0} flex={1}>
                 <Typography variant="h5" fontSize={25} lineHeight={1.05} noWrap
                   sx={{ textTransform: 'uppercase', letterSpacing: '1px' }}>
                   {socio.nombre} {socio.apellido}
@@ -172,6 +154,10 @@ export default function PortalCarnet() {
                   Socio desde {fmtFecha(socio.fechaAlta)}
                 </Typography>
               </Box>
+              <Chip label={estadoCuota.texto} size="small" sx={{
+                bgcolor: estadoCuota.bg, color: estadoCuota.color, alignSelf: 'flex-start',
+                fontWeight: 900, fontSize: 10.5, height: 22, letterSpacing: 0.3, flexShrink: 0,
+              }} />
             </Box>
 
             {/* plan + QR: el bloque del QR está acotado para que NUNCA
