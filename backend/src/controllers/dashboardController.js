@@ -1,10 +1,13 @@
 const prisma = require('../config/database');
+const { obtenerConfig } = require('./configController');
 
 exports.stats = async (req, res, next) => {
   try {
+    const config = await obtenerConfig();
     const hoy = new Date();
     const inicioDia = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
-    const en3dias = new Date(); en3dias.setDate(hoy.getDate() + 3);
+    // Días de anticipación configurables desde el centro de configuración.
+    const enXdias = new Date(); enXdias.setDate(hoy.getDate() + (config.diasAviso || 3));
 
     const [sociosActivos, sociosVencidos, pagosHoy, proximosVencer, vencidosHoy] = await Promise.all([
       prisma.socio.count({ where: { estado: 'ACTIVO' } }),
@@ -28,7 +31,7 @@ exports.stats = async (req, res, next) => {
         _count: true,
       }),
       prisma.pago.count({
-        where: { estado: 'ACTIVO', fechaVencimiento: { lte: en3dias, gte: hoy } },
+        where: { estado: 'ACTIVO', fechaVencimiento: { lte: enXdias, gte: hoy } },
       }),
       prisma.pago.count({
         where: { estado: 'ACTIVO', fechaVencimiento: { lt: hoy } },
@@ -42,6 +45,7 @@ exports.stats = async (req, res, next) => {
       pagosDia: pagosHoy._count,
       proximosVencer,
       vencidosHoy,
+      diasAviso: config.diasAviso || 3,
     });
   } catch (err) { next(err); }
 };

@@ -10,3 +10,14 @@ export const dniGuardado = {
   set: (v) => localStorage.setItem('portal_dni', String(v).trim()),
   clear: () => localStorage.removeItem('portal_dni'),
 };
+
+// Identificador estable de este teléfono: el servidor lo usa para que un
+// mismo dispositivo no registre check-ins en cadena para varios socios.
+export function deviceId() {
+  let id = localStorage.getItem('portal_device');
+  if (!id) {
+    id = (crypto.randomUUID && crypto.randomUUID()) || `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    localStorage.setItem('portal_device', id);
+  }
+  return id;
+}

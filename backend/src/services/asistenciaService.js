@@ -1,7 +1,5 @@
 const prisma = require('../config/database');
-
-// Un check-in cuenta una sola vez dentro de esta ventana.
-const DEDUPE_HORAS = 3;
+const { obtenerConfig } = require('../controllers/configController');
 
 function claveDia(d) {
   return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
@@ -46,8 +44,11 @@ async function estadoCuota(socioId) {
 }
 
 // Registra la asistencia salvo que ya haya una reciente (idempotente).
-async function registrarAsistencia(socioId, { metodo, distanciaM = null, cuotaVencida = false }) {
-  const hace = new Date(Date.now() - DEDUPE_HORAS * 60 * 60 * 1000);
+// La ventana entre check-ins es configurable por el gym.
+async function registrarAsistencia(socioId, { metodo, distanciaM = null, cuotaVencida = false, deviceId = null }) {
+  const config = await obtenerConfig();
+  const ventanaHs = config.checkinVentanaHs || 3;
+  const hace = new Date(Date.now() - ventanaHs * 60 * 60 * 1000);
   const reciente = await prisma.asistencia.findFirst({
     where: { socioId, fecha: { gte: hace } },
     orderBy: { fecha: 'desc' },
@@ -55,9 +56,22 @@ async function registrarAsistencia(socioId, { metodo, distanciaM = null, cuotaVe
   if (reciente) return { asistencia: reciente, yaRegistrado: true };
 
   const asistencia = await prisma.asistencia.create({
-    data: { socioId, metodo, distanciaM, cuotaVencida },
+    data: { socioId, metodo, distanciaM, cuotaVencida, deviceId },
   });
   return { asistencia, yaRegistrado: false };
+}
+
+// ¿Este dispositivo ya registró a OTRO socio hace poco? Frena que un celular
+// haga check-in en cadena para los amigos que no vinieron.
+async function dispositivoOcupado(deviceId, socioId) {
+  if (!deviceId) return false;
+  const config = await obtenerConfig();
+  const hace = new Date(Date.now() - (config.checkinVentanaHs || 3) * 60 * 60 * 1000);
+  const otro = await prisma.asistencia.findFirst({
+    where: { deviceId, fecha: { gte: hace }, NOT: { socioId } },
+    select: { id: true },
+  });
+  return Boolean(otro);
 }
 
 // Socios distintos que registraron asistencia en las últimas 2 horas.
@@ -87,7 +101,7 @@ module.exports = {
   calcularRacha,
   estadoCuota,
   registrarAsistencia,
+  dispositivoOcupado,
   entrenandoAhora,
   buscarSocioPorDni,
-  DEDUPE_HORAS,
 };

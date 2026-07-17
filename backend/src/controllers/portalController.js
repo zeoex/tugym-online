@@ -5,6 +5,7 @@ const {
   calcularRacha,
   estadoCuota,
   registrarAsistencia,
+  dispositivoOcupado,
   entrenandoAhora,
   buscarSocioPorDni,
 } = require('../services/asistenciaService');
@@ -137,6 +138,8 @@ exports.info = async (_req, res, next) => {
     res.json({
       nombreGym: config.nombreGym,
       telefono: config.telefono,
+      instagram: config.instagram,
+      horarios: config.horarios,
       checkinDisponible: config.latitud != null && config.longitud != null,
       entrenandoAhora: await entrenandoAhora(),
       ventanaPago: config.recargoActivo
@@ -156,7 +159,9 @@ exports.miCuenta = async (req, res, next) => {
 
     const desde30 = new Date();
     desde30.setDate(desde30.getDate() - 30);
-    const [cuota, racha, visitas30, ultimas] = await Promise.all([
+    const hoy0 = new Date();
+    hoy0.setHours(0, 0, 0, 0);
+    const [cuota, racha, visitas30, ultimas, checkinHoy] = await Promise.all([
       estadoCuota(socio.id),
       calcularRacha(socio.id),
       prisma.asistencia.count({ where: { socioId: socio.id, fecha: { gte: desde30 } } }),
@@ -166,6 +171,7 @@ exports.miCuenta = async (req, res, next) => {
         take: 5,
         select: { fecha: true, metodo: true },
       }),
+      prisma.asistencia.count({ where: { socioId: socio.id, fecha: { gte: hoy0 } } }),
     ]);
 
     res.json({
@@ -181,6 +187,7 @@ exports.miCuenta = async (req, res, next) => {
       racha,
       visitas30,
       ultimas,
+      checkinHoy: checkinHoy > 0,
     });
   } catch (err) { next(err); }
 };
@@ -188,7 +195,7 @@ exports.miCuenta = async (req, res, next) => {
 // Check-in por geolocalización: la distancia se valida SIEMPRE en el servidor.
 exports.checkin = async (req, res, next) => {
   try {
-    const { dni, lat, lng, accuracy } = req.body;
+    const { dni, lat, lng, accuracy, deviceId } = req.body;
 
     const config = await obtenerConfig();
     if (config.latitud == null || config.longitud == null) {
@@ -210,6 +217,14 @@ exports.checkin = async (req, res, next) => {
       return res.status(404).json({ error: 'No encontramos un socio con ese DNI. Consultá en recepción.' });
     }
 
+    // Un mismo teléfono no puede registrar a varios socios en cadena.
+    const idDispositivo = deviceId ? String(deviceId).slice(0, 64) : null;
+    if (await dispositivoOcupado(idDispositivo, socio.id)) {
+      return res.status(429).json({
+        error: 'Desde este teléfono ya se registró un check-in hace un rato. Cada socio hace su check-in desde su propio celular.',
+      });
+    }
+
     const distancia = distanciaMetros(latN, lngN, config.latitud, config.longitud);
     // Tolerancia por imprecisión del GPS, con techo para que no se pueda abusar.
     const efectiva = Math.max(0, distancia - Math.min(precision, 80));
@@ -225,6 +240,7 @@ exports.checkin = async (req, res, next) => {
       metodo: 'GEO',
       distanciaM: distancia,
       cuotaVencida: !cuota.vigente,
+      deviceId: idDispositivo,
     });
 
     res.status(yaRegistrado ? 200 : 201).json({

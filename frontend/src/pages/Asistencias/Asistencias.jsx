@@ -14,19 +14,11 @@ import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import api from '../../services/api';
 import SocioAvatar from '../../components/SocioAvatar';
 import { ACENTO, INK } from '../../theme';
+import { whatsappUrl, MSG_RECUPERACION_DEFAULT } from '../../utils/whatsapp';
 
 const fmtHora = (f) => new Date(f).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
 const fmtFecha = (f) => new Date(f).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit' });
 const DIAS = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
-
-function whatsappRecuperar(telefono, nombre, dias) {
-  const num = telefono.replace(/\D/g, '');
-  const intl = num.startsWith('54') ? num : `54${num}`;
-  const msg = encodeURIComponent(
-    `¡Hola ${nombre}! Hace ${dias} días que no te vemos por el gym y te extrañamos 💪 ¿Todo bien? Te esperamos esta semana. ¡Abrazo!`
-  );
-  return `https://wa.me/${intl}?text=${msg}`;
-}
 
 /* Barras simples sin librerías: livianas y de la marca */
 function GraficoBarras({ datos, alto = 120 }) {
@@ -69,6 +61,7 @@ export default function Asistencias() {
   const [socioSel, setSocioSel] = useState(null);
   const [registrando, setRegistrando] = useState(false);
   const [aviso, setAviso] = useState(null);
+  const [msgRecuperacion, setMsgRecuperacion] = useState(MSG_RECUPERACION_DEFAULT);
 
   const cargarHoy = useCallback(() => {
     api.get('/asistencias/hoy').then((r) => setHoy(r.data)).catch(() => {});
@@ -76,6 +69,9 @@ export default function Asistencias() {
 
   useEffect(() => {
     cargarHoy();
+    api.get('/config')
+      .then((r) => { if (r.data.msgRecuperacion) setMsgRecuperacion(r.data.msgRecuperacion); })
+      .catch(() => {});
     api.get('/asistencias/stats').then((r) => setStats(r.data)).catch(() => {});
     api.get('/asistencias/inactivos').then((r) => setInactivos(r.data)).catch(() => {});
     api.get('/socios', { params: { estado: 'ACTIVO', limit: 1000 } })
@@ -283,7 +279,7 @@ export default function Asistencias() {
                 <Chip size="small" label={`${s.diasSinVenir} días`} color={s.diasSinVenir > 30 ? 'error' : 'warning'} sx={{ fontWeight: 700 }} />
                 {s.telefono && (
                   <Button size="small" variant="contained" startIcon={<WhatsAppIcon />}
-                    component="a" href={whatsappRecuperar(s.telefono, s.nombre, s.diasSinVenir)} target="_blank" rel="noopener noreferrer"
+                    component="a" href={whatsappUrl(s.telefono, msgRecuperacion, { nombre: s.nombre, dias: s.diasSinVenir })} target="_blank" rel="noopener noreferrer"
                     sx={{ bgcolor: '#25D366', '&:hover': { bgcolor: '#1da851' }, flexShrink: 0 }}>
                     {isMobile ? '' : 'Recuperar'}
                   </Button>

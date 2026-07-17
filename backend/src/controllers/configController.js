@@ -20,6 +20,7 @@ exports.actualizar = async (req, res, next) => {
     const {
       nombreGym, telefono, direccion, latitud, longitud, radioCheckin,
       diaPagoDesde, diaPagoHasta, recargoActivo, recargoTipo, recargoValor,
+      instagram, horarios, checkinVentanaHs, diasAviso, msgMoroso, msgRecuperacion,
     } = req.body;
     const config = await obtenerConfig();
     const data = {};
@@ -32,6 +33,26 @@ exports.actualizar = async (req, res, next) => {
     }
     if (telefono !== undefined) data.telefono = telefono ? String(telefono).trim() : null;
     if (direccion !== undefined) data.direccion = direccion ? String(direccion).trim() : null;
+    if (instagram !== undefined) data.instagram = instagram ? String(instagram).trim().replace(/^@/, '') : null;
+    if (horarios !== undefined) data.horarios = horarios ? String(horarios).trim() : null;
+    if (msgMoroso !== undefined) data.msgMoroso = msgMoroso ? String(msgMoroso).trim() : null;
+    if (msgRecuperacion !== undefined) data.msgRecuperacion = msgRecuperacion ? String(msgRecuperacion).trim() : null;
+
+    if (checkinVentanaHs !== undefined) {
+      const hs = parseInt(checkinVentanaHs, 10);
+      if (!Number.isInteger(hs) || hs < 1 || hs > 24) {
+        return res.status(400).json({ error: 'La ventana entre check-ins debe estar entre 1 y 24 horas' });
+      }
+      data.checkinVentanaHs = hs;
+    }
+
+    if (diasAviso !== undefined) {
+      const dias = parseInt(diasAviso, 10);
+      if (!Number.isInteger(dias) || dias < 1 || dias > 30) {
+        return res.status(400).json({ error: 'Los días de aviso deben estar entre 1 y 30' });
+      }
+      data.diasAviso = dias;
+    }
 
     if (latitud !== undefined || longitud !== undefined) {
       const lat = latitud === null || latitud === '' ? null : Number(latitud);

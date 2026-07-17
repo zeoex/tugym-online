@@ -9,12 +9,17 @@ import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import ImageNotSupportedIcon from '@mui/icons-material/ImageNotSupported';
 import CloseIcon from '@mui/icons-material/Close';
 import { getImagen, getDescripcion, getYoutubeUrl } from '../data/ejercicioDemos';
+import ANIMACIONES from '../data/ejercicioAnimaciones.json';
 
 export default function EjercicioDemoModal({ nombre, musculo, metaColor, metaBg, open, onClose }) {
   const [imgError, setImgError] = useState(false);
+  const [gifError, setGifError] = useState(false);
   const theme    = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
+  // GIF animado del dataset si existe; si falla, cae a la imagen estática de siempre.
+  const anim   = ANIMACIONES[nombre];
+  const gifUrl = !gifError && anim ? anim.gif : null;
   const imgUrl = getImagen(nombre);
   const color  = metaColor || '#0ea5e9';
   const bg     = metaBg    || '#e0f2fe';
@@ -44,13 +49,40 @@ export default function EjercicioDemoModal({ nombre, musculo, metaColor, metaBg,
           />
         )}
 
-        <Typography variant="body2" color="text.secondary" lineHeight={1.75} mb={2}>
-          {getDescripcion(nombre)}
-        </Typography>
+        {anim?.pasos?.length ? (
+          <Box component="ol" sx={{ pl: 2.5, m: 0, mb: 2 }}>
+            {anim.pasos.map((paso, i) => (
+              <Typography key={i} component="li" variant="body2" color="text.secondary" lineHeight={1.7} mb={0.5}>
+                {paso}
+              </Typography>
+            ))}
+          </Box>
+        ) : (
+          <Typography variant="body2" color="text.secondary" lineHeight={1.75} mb={2}>
+            {getDescripcion(nombre)}
+          </Typography>
+        )}
 
         <Divider sx={{ mb: 2 }} />
 
-        {imgUrl && !imgError ? (
+        {gifUrl ? (
+          <Box
+            component="img"
+            src={gifUrl}
+            alt={`Demostración animada: ${nombre}`}
+            onError={() => setGifError(true)}
+            sx={{
+              display: 'block',
+              width: '100%',
+              maxHeight: isMobile ? 280 : 340,
+              objectFit: 'contain',
+              borderRadius: 2,
+              bgcolor: '#fff',
+              border: '1px solid',
+              borderColor: 'divider',
+            }}
+          />
+        ) : imgUrl && !imgError ? (
           <Box
             component="img"
             src={imgUrl}

@@ -11,8 +11,11 @@ import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import GroupsIcon from '@mui/icons-material/Groups';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import ScheduleIcon from '@mui/icons-material/Schedule';
+import InstagramIcon from '@mui/icons-material/Instagram';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { ACENTO, VIOLETA, INK } from '../../theme';
-import { portalApi, dniGuardado } from './portalApi';
+import { portalApi, dniGuardado, deviceId } from './portalApi';
 
 function obtenerUbicacion() {
   return new Promise((resolve, reject) => {
@@ -66,6 +69,7 @@ export default function PortalHome() {
   const [dniInput, setDniInput] = useState('');
   const [validandoDni, setValidandoDni] = useState(false);
   const [nombre, setNombre] = useState('');
+  const [miDia, setMiDia] = useState(null); // { checkinHoy, racha } del socio guardado
   const [anuncios, setAnuncios] = useState([]);
 
   // idle | ubicando | enviando | exito | error
@@ -80,7 +84,10 @@ export default function PortalHome() {
   useEffect(() => {
     if (!dni) return;
     portalApi.get(`/cuenta/${encodeURIComponent(dni)}`)
-      .then((r) => setNombre(r.data.socio.nombre))
+      .then((r) => {
+        setNombre(r.data.socio.nombre);
+        setMiDia({ checkinHoy: r.data.checkinHoy, racha: r.data.racha });
+      })
       .catch(() => {});
   }, [dni]);
 
@@ -112,9 +119,11 @@ export default function PortalHome() {
         lat: coords.latitude,
         lng: coords.longitude,
         accuracy: coords.accuracy,
+        deviceId: deviceId(),
       });
       setResultado(data);
       setFase('exito');
+      setMiDia({ checkinHoy: true, racha: data.racha });
       refrescarInfo();
     } catch (e) {
       setError(e.message && !e.response ? e.message : (e.response?.data?.error || 'No se pudo registrar el check-in.'));
@@ -225,6 +234,26 @@ export default function PortalHome() {
               El gimnasio todavía no habilitó el check-in desde el celular.
             </Typography>
           </Box>
+        ) : miDia?.checkinHoy && fase === 'idle' ? (
+          /* Ya vino hoy: nada de ofrecerle el botón de nuevo */
+          <Box py={1}>
+            <Box sx={{
+              width: 74, height: 74, borderRadius: '50%', mx: 'auto', mb: 1.5,
+              bgcolor: 'rgba(78,159,255,0.12)', border: `2px solid ${ACENTO}`,
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}>
+              <CheckCircleIcon sx={{ color: ACENTO, fontSize: 40 }} />
+            </Box>
+            <Typography variant="h6" fontSize={18} mb={0.5}>¡Ya entrenaste hoy!</Typography>
+            <Typography variant="body2" color="text.secondary" mb={1.5}>
+              Tu asistencia quedó registrada. Nos vemos mañana 💪
+            </Typography>
+            <Chip
+              icon={<LocalFireDepartmentIcon sx={{ fontSize: 18 }} />}
+              label={`Racha: ${miDia.racha} ${miDia.racha === 1 ? 'día' : 'días'}`}
+              sx={{ bgcolor: 'rgba(78,159,255,0.14)', color: ACENTO, fontWeight: 800, '& .MuiChip-icon': { color: '#FBBF24' } }}
+            />
+          </Box>
         ) : !dni ? (
           <Box>
             <Typography variant="h6" fontSize={17} mb={0.5}>Activá tu check-in</Typography>
@@ -312,6 +341,31 @@ export default function PortalHome() {
         </Box>
         <ChevronRightIcon sx={{ color: 'text.secondary' }} />
       </Paper>
+
+      {/* Info del gym: horarios e Instagram (configurables por el gimnasio) */}
+      {(info?.horarios || info?.instagram) && (
+        <Paper sx={{ p: 1.75, mb: 2, display: 'flex', flexDirection: 'column', gap: 1, animation: 'sube 0.45s 0.15s ease-out both' }}>
+          {info.horarios && (
+            <Box display="flex" gap={1} alignItems="flex-start">
+              <ScheduleIcon sx={{ fontSize: 17, color: ACENTO, mt: 0.2 }} />
+              <Typography fontSize={12.5} color="text.secondary">{info.horarios}</Typography>
+            </Box>
+          )}
+          {info.instagram && (
+            <Box
+              component="a"
+              href={`https://instagram.com/${info.instagram}`}
+              target="_blank" rel="noopener noreferrer"
+              sx={{ display: 'flex', gap: 1, alignItems: 'center', textDecoration: 'none' }}
+            >
+              <InstagramIcon sx={{ fontSize: 17, color: '#E1306C' }} />
+              <Typography fontSize={12.5} fontWeight={600} sx={{ color: ACENTO }}>
+                @{info.instagram}
+              </Typography>
+            </Box>
+          )}
+        </Paper>
+      )}
 
       {/* Anuncios */}
       {anuncios.length > 0 && (

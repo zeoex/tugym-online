@@ -16,6 +16,7 @@ import WhereToVoteIcon from '@mui/icons-material/WhereToVote';
 import { QRCodeSVG } from 'qrcode.react';
 import api from '../services/api';
 import SocioAvatar from '../components/SocioAvatar';
+import { whatsappUrl, MSG_MOROSO_DEFAULT } from '../utils/whatsapp';
 
 const TURNOS = [
   { label: 'Turno Mañana',  range: '6:00 – 12:00',  desde: 360,  hasta: 720,  color: '#f59e0b', bg: '#fffbeb', icon: <WbSunnyIcon />    },
@@ -30,14 +31,6 @@ function getTurnoActual() {
   return TURNOS.find(t => mins >= t.desde && mins < t.hasta) ?? null;
 }
 
-function whatsappUrl(telefono, nombre) {
-  const num = telefono.replace(/\D/g, '');
-  const intl = num.startsWith('54') ? num : `54${num}`;
-  const msg = encodeURIComponent(
-    `Hola ${nombre}! Te contactamos del gimnasio para avisarte que tu membresía se encuentra vencida. Por favor, acercate a renovarla cuando puedas. ¡Te esperamos!`
-  );
-  return `https://wa.me/${intl}?text=${msg}`;
-}
 
 function buildSeccion(rutina) {
   const labels = { HOMBRE: 'HOMBRES', MUJER: 'MUJERES', PRECALENTAMIENTO: 'PRECALENTAMIENTO' };
@@ -83,8 +76,12 @@ export default function Dashboard() {
   const [loadingStats, setLoadingStats] = useState(true);
   const [loadingMorosos, setLoadingMorosos] = useState(true);
   const [qrData, setQrData]             = useState(null);
+  const [msgMoroso, setMsgMoroso]       = useState(MSG_MOROSO_DEFAULT);
 
   useEffect(() => {
+    api.get('/config')
+      .then(r => { if (r.data.msgMoroso) setMsgMoroso(r.data.msgMoroso); })
+      .catch(() => {});
     api.get('/dashboard/stats')
       .then(r => setStats(r.data))
       .finally(() => setLoadingStats(false));
@@ -283,7 +280,7 @@ export default function Dashboard() {
                   </Box>
                   {s.telefono ? (
                     <Button variant="contained" size="small" startIcon={<WhatsAppIcon />}
-                      component="a" href={whatsappUrl(s.telefono, s.nombre)} target="_blank" rel="noopener noreferrer"
+                      component="a" href={whatsappUrl(s.telefono, msgMoroso, { nombre: s.nombre })} target="_blank" rel="noopener noreferrer"
                       sx={{ bgcolor: '#25D366', '&:hover': { bgcolor: '#1da851' }, flexShrink: 0, minWidth: 0, px: 1.5 }}>
                       Avisar
                     </Button>
@@ -314,7 +311,7 @@ export default function Dashboard() {
                     <TableCell align="right">
                       {s.telefono ? (
                         <Button variant="contained" size="small" startIcon={<WhatsAppIcon />}
-                          component="a" href={whatsappUrl(s.telefono, s.nombre)} target="_blank" rel="noopener noreferrer"
+                          component="a" href={whatsappUrl(s.telefono, msgMoroso, { nombre: s.nombre })} target="_blank" rel="noopener noreferrer"
                           sx={{ bgcolor: '#25D366', '&:hover': { bgcolor: '#1da851' } }}>
                           Avisar
                         </Button>

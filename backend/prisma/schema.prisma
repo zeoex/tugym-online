@@ -125,19 +125,25 @@ model Anuncio {
 }
 
 model Configuracion {
-  id            Int      @id @default(autoincrement())
-  nombreGym     String   @default("TuGymOnLine") @map("nombre_gym")
-  telefono      String?
-  direccion     String?
-  latitud       Float?
-  longitud      Float?
-  radioCheckin  Int      @default(150) @map("radio_checkin_m")
-  diaPagoDesde  Int      @default(1) @map("dia_pago_desde")
-  diaPagoHasta  Int      @default(10) @map("dia_pago_hasta")
-  recargoActivo Boolean  @default(false) @map("recargo_activo")
-  recargoTipo   String   @default("PORCENTAJE") @map("recargo_tipo")
-  recargoValor  Float    @default(10) @map("recargo_valor")
-  updatedAt     DateTime @updatedAt @map("updated_at")
+  id               Int      @id @default(autoincrement())
+  nombreGym        String   @default("TuGymOnLine") @map("nombre_gym")
+  telefono         String?
+  direccion        String?
+  instagram        String?
+  horarios         String?
+  latitud          Float?
+  longitud         Float?
+  radioCheckin     Int      @default(150) @map("radio_checkin_m")
+  checkinVentanaHs Int      @default(3) @map("checkin_ventana_hs")
+  diaPagoDesde     Int      @default(1) @map("dia_pago_desde")
+  diaPagoHasta     Int      @default(10) @map("dia_pago_hasta")
+  recargoActivo    Boolean  @default(false) @map("recargo_activo")
+  recargoTipo      String   @default("PORCENTAJE") @map("recargo_tipo")
+  recargoValor     Float    @default(10) @map("recargo_valor")
+  diasAviso        Int      @default(3) @map("dias_aviso_vencimiento")
+  msgMoroso        String?  @map("msg_moroso")
+  msgRecuperacion  String?  @map("msg_recuperacion")
+  updatedAt        DateTime @updatedAt @map("updated_at")
 
   @@map("configuracion")
 }
@@ -149,11 +155,13 @@ model Asistencia {
   metodo       String   @default("GEO")
   distanciaM   Int?     @map("distancia_m")
   cuotaVencida Boolean  @default(false) @map("cuota_vencida")
+  deviceId     String?  @map("device_id")
 
   socio        Socio    @relation(fields: [socioId], references: [id], onDelete: Cascade)
 
   @@index([socioId])
   @@index([fecha])
+  @@index([deviceId])
   @@map("asistencias")
 }
 
