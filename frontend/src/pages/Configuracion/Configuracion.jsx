@@ -16,6 +16,48 @@ import api from '../../services/api';
 import { ACENTO, INK } from '../../theme';
 import { MSG_MOROSO_DEFAULT, MSG_RECUPERACION_DEFAULT } from '../../utils/whatsapp';
 
+/* Plantilla editable con restaurar y vista previa estilo WhatsApp,
+   con las variables reemplazadas por datos de ejemplo. */
+function PlantillaWhatsApp({ label, valor, onChange, onRestaurar, esEstandar, ayuda, vars }) {
+  const preview = Object.entries(vars).reduce(
+    (t, [k, v]) => t.replaceAll(`{${k}}`, String(v)),
+    valor || ''
+  );
+  return (
+    <Box mb={3}>
+      <TextField
+        label={label}
+        value={valor}
+        onChange={onChange}
+        multiline minRows={3} fullWidth
+        helperText={ayuda}
+      />
+      <Box display="flex" alignItems="flex-start" gap={1.5} mt={1}>
+        {preview && (
+          <Box sx={{
+            flex: 1,
+            bgcolor: '#DCF8C6',
+            border: '1px solid rgba(0,0,0,0.06)',
+            borderRadius: '10px 10px 10px 2px',
+            px: 1.5, py: 1,
+            maxWidth: 480,
+          }}>
+            <Typography fontSize={12.5} sx={{ color: '#111', whiteSpace: 'pre-line', lineHeight: 1.5 }}>
+              {preview}
+            </Typography>
+            <Typography fontSize={10} sx={{ color: 'rgba(0,0,0,0.4)', textAlign: 'right', mt: 0.25 }}>
+              Vista previa · así le llega al socio
+            </Typography>
+          </Box>
+        )}
+        <Button size="small" onClick={onRestaurar} disabled={esEstandar} sx={{ flexShrink: 0, color: 'text.secondary' }}>
+          Restaurar estándar
+        </Button>
+      </Box>
+    </Box>
+  );
+}
+
 export default function Configuracion() {
   const [form, setForm] = useState(null);
   const [tab, setTab] = useState(0);
@@ -24,7 +66,14 @@ export default function Configuracion() {
   const [aviso, setAviso] = useState(null);
 
   useEffect(() => {
-    api.get('/config').then((r) => setForm(r.data)).catch(() => {
+    api.get('/config').then((r) => {
+      // Las plantillas llegan precargadas con el texto vigente, listas para editar
+      setForm({
+        ...r.data,
+        msgMoroso: r.data.msgMoroso ?? MSG_MOROSO_DEFAULT,
+        msgRecuperacion: r.data.msgRecuperacion ?? MSG_RECUPERACION_DEFAULT,
+      });
+    }).catch(() => {
       setAviso({ tipo: 'error', texto: 'No se pudo cargar la configuración' });
     });
   }, []);
@@ -302,21 +351,23 @@ export default function Configuracion() {
             Usá <strong>{'{nombre}'}</strong> y <strong>{'{dias}'}</strong> donde quieras que aparezcan los datos del socio.
           </Typography>
 
-          <TextField
+          <PlantillaWhatsApp
             label="Aviso de cuota vencida (morosos)"
-            value={form.msgMoroso ?? ''}
+            valor={form.msgMoroso ?? ''}
             onChange={set('msgMoroso')}
-            placeholder={MSG_MOROSO_DEFAULT}
-            multiline rows={3} fullWidth sx={{ mb: 2.5 }}
-            helperText="Vacío = usa el mensaje estándar. Variable disponible: {nombre}"
+            onRestaurar={() => setForm((p) => ({ ...p, msgMoroso: MSG_MOROSO_DEFAULT }))}
+            esEstandar={(form.msgMoroso ?? '') === MSG_MOROSO_DEFAULT}
+            ayuda="Variable disponible: {nombre}"
+            vars={{ nombre: 'María', dias: 15 }}
           />
-          <TextField
+          <PlantillaWhatsApp
             label="Recuperación de socios que dejaron de venir"
-            value={form.msgRecuperacion ?? ''}
+            valor={form.msgRecuperacion ?? ''}
             onChange={set('msgRecuperacion')}
-            placeholder={MSG_RECUPERACION_DEFAULT}
-            multiline rows={3} fullWidth sx={{ mb: 2.5 }}
-            helperText="Vacío = usa el mensaje estándar. Variables: {nombre} y {dias} (días sin venir)"
+            onRestaurar={() => setForm((p) => ({ ...p, msgRecuperacion: MSG_RECUPERACION_DEFAULT }))}
+            esEstandar={(form.msgRecuperacion ?? '') === MSG_RECUPERACION_DEFAULT}
+            ayuda="Variables: {nombre} y {dias} (días sin venir)"
+            vars={{ nombre: 'María', dias: 15 }}
           />
 
           <Divider sx={{ mb: 2.5 }} />
