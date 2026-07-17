@@ -112,14 +112,14 @@ export default function PortalCarnet() {
         {/* ── Carnet ── */}
         <Box sx={{
           p: 2.5, mb: 2, borderRadius: 5,
-          background: `linear-gradient(140deg, #101B2E 0%, #0A1120 55%, #101828 100%)`,
-          border: '1px solid rgba(78,159,255,0.25)',
-          boxShadow: '0 12px 40px rgba(0,0,0,0.4), inset 0 0 60px rgba(78,159,255,0.04)',
+          background: `linear-gradient(140deg, #1B2113 0%, #10130A 55%, #171C0E 100%)`,
+          border: '1px solid rgba(200,241,63,0.25)',
+          boxShadow: '0 12px 40px rgba(0,0,0,0.4), inset 0 0 60px rgba(200,241,63,0.04)',
           position: 'relative', overflow: 'hidden',
         }}>
           <Box sx={{
             position: 'absolute', top: -50, right: -50, width: 170, height: 170, borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(78,159,255,0.14) 0%, transparent 70%)',
+            background: 'radial-gradient(circle, rgba(200,241,63,0.14) 0%, transparent 70%)',
           }} />
 
           <Box display="flex" alignItems="center" gap={1} mb={2}>
@@ -129,7 +129,7 @@ export default function PortalCarnet() {
             }}>
               <FitnessCenterIcon sx={{ color: INK, fontSize: 15 }} />
             </Box>
-            <Typography fontSize={11} fontWeight={700} letterSpacing={2} sx={{ color: 'rgba(237,241,249,0.5)' }}>
+            <Typography fontSize={11} fontWeight={700} letterSpacing={2} sx={{ color: 'rgba(242,245,234,0.5)' }}>
               CARNET DE SOCIO
             </Typography>
             <Chip label={estadoCuota.texto} size="small" sx={{
@@ -167,8 +167,8 @@ export default function PortalCarnet() {
         {info?.ventanaPago && cuota.plan && (
           <Paper sx={{
             p: 1.5, mb: 2, display: 'flex', gap: 1, alignItems: 'center',
-            bgcolor: cuota.vigente ? 'rgba(78,159,255,0.05)' : 'rgba(251,191,36,0.08)',
-            border: `1px solid ${cuota.vigente ? 'rgba(78,159,255,0.18)' : 'rgba(251,191,36,0.3)'}`,
+            bgcolor: cuota.vigente ? 'rgba(200,241,63,0.05)' : 'rgba(251,191,36,0.08)',
+            border: `1px solid ${cuota.vigente ? 'rgba(200,241,63,0.18)' : 'rgba(251,191,36,0.3)'}`,
           }}>
             <EventAvailableIcon sx={{ fontSize: 18, color: cuota.vigente ? ACENTO : '#FBBF24' }} />
             <Typography fontSize={12.5} color="text.secondary">
@@ -200,7 +200,7 @@ export default function PortalCarnet() {
             <Typography fontWeight={700} fontSize={14} mb={1.5}>Últimas visitas</Typography>
             {ultimas.map((a, i) => (
               <Box key={i} display="flex" justifyContent="space-between" py={0.75}
-                sx={{ borderBottom: i < ultimas.length - 1 ? '1px solid rgba(237,241,249,0.06)' : 'none' }}>
+                sx={{ borderBottom: i < ultimas.length - 1 ? '1px solid rgba(242,245,234,0.06)' : 'none' }}>
                 <Typography fontSize={13.5}>{fmtFecha(a.fecha)}</Typography>
                 <Typography fontSize={13.5} color="text.secondary">
                   {fmtHora(a.fecha)} hs {a.metodo === 'MANUAL' ? '· recepción' : ''}

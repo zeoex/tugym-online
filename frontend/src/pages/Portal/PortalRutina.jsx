@@ -95,7 +95,7 @@ export default function PortalRutina() {
                 Precalentamiento — {precalenta.nombre}
               </Typography>
             </Box>
-            <Box sx={{ borderRadius: 4, overflow: 'hidden', border: '1px solid rgba(237,241,249,0.08)' }}>
+            <Box sx={{ borderRadius: 4, overflow: 'hidden', border: '1px solid rgba(242,245,234,0.08)' }}>
               <PanelRutina rutina={precalenta} />
             </Box>
           </Box>
@@ -110,13 +110,13 @@ export default function PortalRutina() {
               <Typography fontWeight={700} fontSize={15}>
                 Rutina del día — {rutinaGenero.nombre}
               </Typography>
-              <Box sx={{ ml: 'auto', px: 1.5, py: 0.4, borderRadius: 10, bgcolor: 'rgba(78,159,255,0.12)' }}>
+              <Box sx={{ ml: 'auto', px: 1.5, py: 0.4, borderRadius: 10, bgcolor: 'rgba(200,241,63,0.12)' }}>
                 <Typography fontSize={12} fontWeight={700} sx={{ color: ACENTO }}>
                   {genero === 'HOMBRE' ? 'Varones' : 'Mujeres'}
                 </Typography>
               </Box>
             </Box>
-            <Box sx={{ borderRadius: 4, overflow: 'hidden', border: '1px solid rgba(237,241,249,0.08)' }}>
+            <Box sx={{ borderRadius: 4, overflow: 'hidden', border: '1px solid rgba(242,245,234,0.08)' }}>
               <PanelRutina rutina={rutinaGenero} />
             </Box>
           </Box>

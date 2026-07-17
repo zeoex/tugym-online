@@ -15,8 +15,8 @@ const svgMarca = (tamano, { redondeado = true, escala = 1 } = {}) => {
   const g = (1 - escala) * s / 2;
   return Buffer.from(`
 <svg width="${tamano}" height="${tamano}" viewBox="0 0 ${s} ${s}" xmlns="http://www.w3.org/2000/svg">
-  <rect width="${s}" height="${s}" rx="${redondeado ? 112 : 0}" fill="#4E9FFF"/>
-  <g transform="translate(${g} ${g}) scale(${escala})" fill="#0D1424">
+  <rect width="${s}" height="${s}" rx="${redondeado ? 112 : 0}" fill="#C8F13F"/>
+  <g transform="translate(${g} ${g}) scale(${escala})" fill="#12160D">
     <rect x="140" y="242" width="232" height="28" rx="14"/>
     <rect x="96"  y="176" width="46"  height="160" rx="20"/>
     <rect x="152" y="200" width="38"  height="112" rx="16"/>

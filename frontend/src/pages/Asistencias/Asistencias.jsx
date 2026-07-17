@@ -35,7 +35,7 @@ function GraficoBarras({ datos, alto = 120 }) {
               width: '100%', maxWidth: 30,
               height: Math.max((d.valor / max) * alto, d.valor ? 5 : 2),
               borderRadius: '5px 5px 2px 2px',
-              bgcolor: d.valor ? (d.destacada ? ACENTO : 'rgba(13,20,36,0.75)') : 'rgba(13,20,36,0.08)',
+              bgcolor: d.valor ? (d.destacada ? ACENTO : 'rgba(18,22,13,0.75)') : 'rgba(18,22,13,0.08)',
               transition: 'height 0.4s ease',
             }} />
             <Typography variant="caption" fontSize={9.5} color="text.secondary" noWrap>
@@ -188,7 +188,7 @@ export default function Asistencias() {
                     {!isMobile && (
                       <TableCell>
                         <Chip size="small" label={a.metodo === 'GEO' ? `GPS${a.distanciaM != null ? ` · ${a.distanciaM} m` : ''}` : 'Recepción'}
-                          sx={{ bgcolor: a.metodo === 'GEO' ? 'rgba(78,159,255,0.25)' : 'rgba(13,20,36,0.08)', fontWeight: 700, fontSize: 11 }} />
+                          sx={{ bgcolor: a.metodo === 'GEO' ? 'rgba(200,241,63,0.25)' : 'rgba(18,22,13,0.08)', fontWeight: 700, fontSize: 11 }} />
                       </TableCell>
                     )}
                     <TableCell>

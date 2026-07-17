@@ -1,16 +1,15 @@
 import { createTheme } from '@mui/material';
 
 /* ── Marca TuGymOnLine ─────────────────────────────────────────────
-   Azul eléctrico sobre azul-negro para el socio, tinta + azul para el
+   Lima eléctrica sobre verde-negro para el socio, tinta + lima para el
    admin. Un solo lugar para tocar la identidad de toda la app.       */
-export const ACENTO        = '#4E9FFF';
-export const ACENTO_HOVER  = '#2F88F2';
-export const ACENTO_SUAVE  = 'rgba(78,159,255,0.12)';
+export const ACENTO        = '#C8F13F';
+export const ACENTO_HOVER  = '#B9E32C';
+export const ACENTO_SUAVE  = 'rgba(200,241,63,0.12)';
 export const VIOLETA       = '#8B5CF6';
-export const CIAN          = '#22D3EE';  // apoyo secundario
-export const INK           = '#0D1424';  // azul-tinta profundo
-export const NOCHE         = '#070B14';  // fondo del portal
-export const NOCHE_PAPEL   = '#0E1524';
+export const INK           = '#12160D';  // negro con tinte verde
+export const NOCHE         = '#0B0D08';  // fondo del portal
+export const NOCHE_PAPEL   = '#151A0F';
 
 
 /* Barlow Condensed: la tipografía atlética por excelencia (recomendación
@@ -50,13 +49,13 @@ export const adminTheme = createTheme({
     mode: 'light',
     primary:    { main: INK, contrastText: '#FFFFFF' },
     secondary:  { main: ACENTO, contrastText: INK },
-    background: { default: '#F5F7FA', paper: '#FFFFFF' },
+    background: { default: '#F5F7F2', paper: '#FFFFFF' },
     error:      { main: '#DC2626' },
     warning:    { main: '#D97706' },
     success:    { main: '#16A34A' },
     info:       { main: '#2563EB' },
-    text:       { primary: '#161B26', secondary: '#5A6372' },
-    divider:    'rgba(22,27,38,0.1)',
+    text:       { primary: '#191E13', secondary: '#5B6152' },
+    divider:    'rgba(25,30,19,0.1)',
   },
   typography: tipografia,
   shape: { borderRadius: 12 },
@@ -67,18 +66,18 @@ export const adminTheme = createTheme({
         root: { borderRadius: 10, fontWeight: 700 },
         contained: {
           boxShadow: 'none',
-          '&:hover': { boxShadow: '0 6px 16px rgba(13,20,36,0.25)' },
+          '&:hover': { boxShadow: '0 6px 16px rgba(18,22,13,0.25)' },
         },
         containedPrimary: {
-          '&:hover': { backgroundColor: '#1A2438' },
+          '&:hover': { backgroundColor: '#242B1A' },
         },
       },
     },
     MuiCard: {
       styleOverrides: {
         root: {
-          boxShadow: '0 1px 3px rgba(13,20,36,0.05), 0 6px 20px rgba(13,20,36,0.04)',
-          border: '1px solid rgba(13,20,36,0.07)',
+          boxShadow: '0 1px 3px rgba(18,22,13,0.05), 0 6px 20px rgba(18,22,13,0.04)',
+          border: '1px solid rgba(18,22,13,0.07)',
           borderRadius: 14,
         },
       },
@@ -86,7 +85,7 @@ export const adminTheme = createTheme({
     MuiPaper: {
       styleOverrides: {
         root: { borderRadius: 14 },
-        elevation1: { boxShadow: '0 1px 3px rgba(13,20,36,0.05), 0 6px 20px rgba(13,20,36,0.04)' },
+        elevation1: { boxShadow: '0 1px 3px rgba(18,22,13,0.05), 0 6px 20px rgba(18,22,13,0.04)' },
       },
     },
     MuiAppBar: {
@@ -103,8 +102,8 @@ export const adminTheme = createTheme({
       styleOverrides: {
         root: {
           '& .MuiTableCell-head': {
-            backgroundColor: '#EEF1F6',
-            color: '#49515F',
+            backgroundColor: '#EFF2EA',
+            color: '#4B5142',
             fontWeight: 700,
             fontSize: 12,
             textTransform: 'uppercase',
@@ -124,8 +123,8 @@ export const adminTheme = createTheme({
     MuiTableContainer: {
       styleOverrides: {
         root: {
-          boxShadow: '0 1px 3px rgba(13,20,36,0.05), 0 6px 20px rgba(13,20,36,0.04)',
-          border: '1px solid rgba(13,20,36,0.07)',
+          boxShadow: '0 1px 3px rgba(18,22,13,0.05), 0 6px 20px rgba(18,22,13,0.04)',
+          border: '1px solid rgba(18,22,13,0.07)',
           borderRadius: 14,
         },
       },
@@ -140,15 +139,15 @@ export const adminTheme = createTheme({
 export const portalTheme = createTheme({
   palette: {
     mode: 'dark',
-    primary:    { main: ACENTO, contrastText: '#051023' },
+    primary:    { main: ACENTO, contrastText: '#111503' },
     secondary:  { main: VIOLETA, contrastText: '#FFFFFF' },
     background: { default: NOCHE, paper: NOCHE_PAPEL },
     error:      { main: '#F87171' },
     warning:    { main: '#FBBF24' },
     success:    { main: '#4ADE80' },
     info:       { main: '#60A5FA' },
-    text:       { primary: '#EDF1F9', secondary: 'rgba(237,241,249,0.55)' },
-    divider:    'rgba(237,241,249,0.09)',
+    text:       { primary: '#F2F5EA', secondary: 'rgba(242,245,234,0.55)' },
+    divider:    'rgba(242,245,234,0.09)',
   },
   typography: tipografia,
   shape: { borderRadius: 16 },
@@ -157,7 +156,7 @@ export const portalTheme = createTheme({
       styleOverrides: {
         ...reducedMotion,
         body: {
-          backgroundImage: `radial-gradient(ellipse 80% 45% at 50% -10%, rgba(78,159,255,0.09), transparent),
+          backgroundImage: `radial-gradient(ellipse 80% 45% at 50% -10%, rgba(200,241,63,0.09), transparent),
                             radial-gradient(ellipse 60% 40% at 100% 110%, rgba(139,92,246,0.07), transparent)`,
           backgroundAttachment: 'fixed',
         },
@@ -167,8 +166,8 @@ export const portalTheme = createTheme({
       styleOverrides: {
         root: { borderRadius: 12, fontWeight: 700 },
         containedPrimary: {
-          boxShadow: '0 0 24px rgba(78,159,255,0.25)',
-          '&:hover': { backgroundColor: ACENTO_HOVER, boxShadow: '0 0 32px rgba(78,159,255,0.4)' },
+          boxShadow: '0 0 24px rgba(200,241,63,0.25)',
+          '&:hover': { backgroundColor: ACENTO_HOVER, boxShadow: '0 0 32px rgba(200,241,63,0.4)' },
         },
       },
     },
@@ -176,19 +175,19 @@ export const portalTheme = createTheme({
       styleOverrides: {
         root: {
           backgroundImage: 'none',
-          border: '1px solid rgba(237,241,249,0.07)',
+          border: '1px solid rgba(242,245,234,0.07)',
         },
       },
     },
     MuiBottomNavigation: {
       styleOverrides: {
-        root: { backgroundColor: 'rgba(10,15,26,0.92)', backdropFilter: 'blur(14px)' },
+        root: { backgroundColor: 'rgba(16,19,11,0.92)', backdropFilter: 'blur(14px)' },
       },
     },
     MuiBottomNavigationAction: {
       styleOverrides: {
         root: {
-          color: 'rgba(237,241,249,0.4)',
+          color: 'rgba(242,245,234,0.4)',
           '&.Mui-selected': { color: ACENTO },
         },
       },

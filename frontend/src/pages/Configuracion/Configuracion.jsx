@@ -150,8 +150,8 @@ export default function Configuracion() {
               size="small"
               label={checkinActivo ? 'Activo' : 'Sin configurar'}
               sx={checkinActivo
-                ? { bgcolor: ACENTO, color: '#fff', fontWeight: 800 }
-                : { bgcolor: 'rgba(13,20,36,0.08)', fontWeight: 700 }}
+                ? { bgcolor: ACENTO, color: INK, fontWeight: 800 }
+                : { bgcolor: 'rgba(18,22,13,0.08)', fontWeight: 700 }}
             />
           </Box>
           <Typography variant="body2" color="text.secondary" mb={2.5}>
@@ -215,8 +215,8 @@ export default function Configuracion() {
               size="small"
               label={form.recargoActivo ? 'Activo' : 'Desactivado'}
               sx={form.recargoActivo
-                ? { bgcolor: ACENTO, color: '#fff', fontWeight: 800 }
-                : { bgcolor: 'rgba(13,20,36,0.08)', fontWeight: 700 }}
+                ? { bgcolor: ACENTO, color: INK, fontWeight: 800 }
+                : { bgcolor: 'rgba(18,22,13,0.08)', fontWeight: 700 }}
             />
           </Box>
           <Typography variant="body2" color="text.secondary" mb={2}>

@@ -100,10 +100,10 @@ export default function Navbar({ onMenuClick }) {
                 borderRadius: 2.5,
                 cursor: 'pointer',
                 whiteSpace: 'nowrap',
-                color: activo ? ACENTO : 'rgba(237,241,249,0.6)',
-                bgcolor: activo ? 'rgba(78,159,255,0.12)' : abierto ? 'rgba(237,241,249,0.07)' : 'transparent',
+                color: activo ? ACENTO : 'rgba(242,245,234,0.6)',
+                bgcolor: activo ? 'rgba(200,241,63,0.12)' : abierto ? 'rgba(242,245,234,0.07)' : 'transparent',
                 transition: 'all 0.15s',
-                '&:hover': { color: activo ? ACENTO : '#fff', bgcolor: activo ? 'rgba(78,159,255,0.14)' : 'rgba(237,241,249,0.06)' },
+                '&:hover': { color: activo ? ACENTO : '#fff', bgcolor: activo ? 'rgba(200,241,63,0.14)' : 'rgba(242,245,234,0.06)' },
                 '&:active': { transform: 'scale(0.96)' },
               };
 
