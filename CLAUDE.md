@@ -81,6 +81,13 @@ Copy `backend/.env.example` to `backend/.env` and fill in values before running 
 3. Backend `middleware/auth.js` verifies the JWT on every protected route
 4. Vite dev proxy forwards `/api` and `/uploads` to `http://localhost:4000`
 
+### Member portal auth
+- Members log in with **DNI + password**: first visit triggers activation (`POST /api/portal/activar` creates their password; only works while `Socio.pinHash` is null). `POST /api/portal/login` returns a 30-day JWT with `rol: 'SOCIO'`
+- `/api/portal/cuenta`, `/mi-rutina` and `/checkin` require the member token (`authSocio` middleware) — never accept a raw DNI for personal data
+- Reception resets access via `PUT /api/socios/:id/portal-reset` (clears pinHash → member re-activates); the socio card shows `portalActivado`
+- `pinHash` must NEVER appear in API responses (`sinPin` in sociosController) nor be accepted in update bodies
+- Announcements carousel (`AnunciosDestacados`) renders with or without session — gym news always visible
+
 ### Member portal & GPS check-in
 - The portal (`/portal`) is a public PWA (installable; manifest + `sw.js` in `frontend/public/`) with bottom-nav tabs: Inicio (GPS check-in), Rutina, Carnet (QR credential)
 - Members identify by DNI, remembered in `localStorage` (`portal_dni`); lookup ignores dots/dashes via raw SQL `regexp_replace`
