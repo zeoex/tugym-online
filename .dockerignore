@@ -1,0 +1,24 @@
+# Sin esto, COPY . . mete node_modules de Windows (binarios nativos incompatibles
+# con Linux) y el build viejo del frontend.
+node_modules
+**/node_modules
+frontend/dist
+.git
+.github
+
+# Secretos y entorno local
+.env
+.env.*
+
+# Base SQLite de desarrollo — producción usa Postgres
+backend/prisma/gymapp.db
+**/*.db
+**/*.db-journal
+
+# Material que no va a la imagen
+docs
+*.md
+*.ps1
+*.bat
+*.log
+railway.json
