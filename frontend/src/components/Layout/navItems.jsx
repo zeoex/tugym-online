@@ -1,5 +1,6 @@
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import PeopleIcon from '@mui/icons-material/People';
+import HowToRegIcon from '@mui/icons-material/HowToReg';
 import PaymentIcon from '@mui/icons-material/Payment';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
 import StyleIcon from '@mui/icons-material/Style';
@@ -22,7 +23,9 @@ export const NAV_GROUPS = [
     label: 'Gestión',
     items: [
       { label: 'Socios',       icon: <PeopleIcon />,        path: '/socios'       },
-      { label: 'Planes',       icon: <StyleIcon />,         path: '/planes'       },
+      /* badge: clave dentro del objeto `badges` que reciben Navbar y Sidebar */
+      { label: 'Solicitudes',  icon: <HowToRegIcon />,      path: '/solicitudes', badge: 'solicitudes' },
+      { label: 'Planes',      icon: <StyleIcon />,         path: '/planes'       },
       { label: 'Pagos',        icon: <PaymentIcon />,       path: '/pagos'        },
       { label: 'Vencimientos', icon: <WarningAmberIcon />,  path: '/vencimientos' },
     ],

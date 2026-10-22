@@ -6,7 +6,7 @@ import { NAV_GROUPS } from './navItems';
 
 const DEFAULT_CLR = 'rgba(242,245,234,0.45)';
 
-export default function Sidebar() {
+export default function Sidebar({ badges = {} }) {
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
@@ -54,8 +54,9 @@ export default function Sidebar() {
               </Typography>
             )}
             <List disablePadding>
-              {group.items.map(({ label, icon, path }) => {
+              {group.items.map(({ label, icon, path, badge }) => {
                 const active = pathname === path || pathname.startsWith(path + '/');
+                const contador = badge ? badges[badge] || 0 : 0;
                 return (
                   <ListItemButton
                     key={path}
@@ -78,6 +79,20 @@ export default function Sidebar() {
                         color: active ? ACENTO : DEFAULT_CLR,
                       }}
                     />
+                    {contador > 0 && (
+                      <Box
+                        component="span"
+                        sx={{
+                          minWidth: 20, height: 20, px: 0.75, ml: 1,
+                          borderRadius: 10,
+                          display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                          fontSize: 11, fontWeight: 800, lineHeight: 1,
+                          bgcolor: ACENTO, color: INK, flexShrink: 0,
+                        }}
+                      >
+                        {contador > 99 ? '99+' : contador}
+                      </Box>
+                    )}
                   </ListItemButton>
                 );
               })}

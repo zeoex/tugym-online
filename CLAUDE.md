@@ -74,6 +74,7 @@ Copy `backend/.env.example` to `backend/.env` and fill in values before running 
 - **Notificacion** — Audit log of emails sent for expiring memberships
 - **Configuracion** — Singleton (lazy-created on first GET): gym name, phone, address, latitude/longitude and check-in radius. Editable from the admin Configuración page; never hardcode gym data
 - **Asistencia** — Member check-ins (GEO from the portal or MANUAL from reception), with distance and whether the membership was expired at the time; cascade-deleted with its Socio
+- **SolicitudSocio** — Public sign-up request from the landing page (personal data + `pinHash` of the password the visitor chose); `estado` PENDIENTE|APROBADA|RECHAZADA, `socioId` set when approved (SetNull if the Socio is deleted)
 
 ### API & Auth Flow
 1. `POST /api/auth/login` returns a JWT; frontend stores it in localStorage via `AuthContext`
@@ -87,6 +88,9 @@ Copy `backend/.env.example` to `backend/.env` and fill in values before running 
 - Reception resets access via `PUT /api/socios/:id/portal-reset` (clears pinHash → member re-activates); the socio card shows `portalActivado`
 - `pinHash` must NEVER appear in API responses (`sinPin` in sociosController) nor be accepted in update bodies
 - Announcements carousel (`AnunciosDestacados`) renders with or without session — gym news always visible
+- **Sign-up requests**: a visitor posts `POST /api/portal/solicitudes` (public, own rate limit 5/h per IP) with their data + chosen password; it is stored as `SolicitudSocio` with the password already bcrypt-hashed. If the DNI is already a Socio → 409 `yaSocio`; a second request while one is PENDIENTE is idempotent (`yaPendiente`)
+- Admin reviews them under `/api/solicitudes` (admin JWT): `aprobar` creates the Socio in a transaction copying the `pinHash`, so the member logs in right away with DNI + the password they chose; `rechazar` stores `motivoRechazo`. Controller: `solicitudesController.js`
+- Routines require a member session: `/rutina-dia`, `/rutinas/:tipo` and `/rutina/:tipo/:nombre` go through `authSocio`. Only `/info`, `/anuncios`, `/login`, `/activar` and `/solicitudes` stay public
 
 ### Member portal & GPS check-in
 - The portal (`/portal`) is a public PWA (installable; manifest + `sw.js` in `frontend/public/`) with bottom-nav tabs: Inicio (GPS check-in), Rutina, Carnet (QR credential)

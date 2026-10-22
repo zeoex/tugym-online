@@ -17,7 +17,29 @@ import { ACENTO, INK } from '../../theme';
 
 const PASS_INIT = { passwordActual: '', passwordNuevo: '', passwordConfirm: '' };
 
-export default function Navbar({ onMenuClick }) {
+/* Pastilla con el contador de un ítem del menú (ej. solicitudes pendientes).
+   No se renderiza cuando el total es 0. */
+function ContadorNav({ valor, oscuro = false }) {
+  if (!valor) return null;
+  return (
+    <Box
+      component="span"
+      sx={{
+        minWidth: 20, height: 20, px: 0.75,
+        borderRadius: 10,
+        display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+        fontSize: 11, fontWeight: 800, lineHeight: 1,
+        bgcolor: oscuro ? ACENTO : INK,
+        color: oscuro ? INK : ACENTO,
+        flexShrink: 0,
+      }}
+    >
+      {valor > 99 ? '99+' : valor}
+    </Box>
+  );
+}
+
+export default function Navbar({ onMenuClick, badges = {} }) {
   const { usuario, logout } = useAuth();
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -94,6 +116,7 @@ export default function Navbar({ onMenuClick }) {
               const esGrupo = grupo.items.length > 1;
               const activo = grupo.items.some(({ path }) => pathname === path || pathname.startsWith(path + '/'));
               const abierto = menuGrupo?.label === (grupo.label || grupo.items[0].label);
+              const contadorGrupo = grupo.items.reduce((acc, it) => acc + (it.badge ? badges[it.badge] || 0 : 0), 0);
               const estiloPill = {
                 display: 'flex', alignItems: 'center', gap: 0.75,
                 px: 1.5, py: 0.8,
@@ -113,6 +136,7 @@ export default function Navbar({ onMenuClick }) {
                   <Box key={path} onClick={() => navigate(path)} sx={estiloPill}>
                     <Box sx={{ display: 'flex', '& svg': { fontSize: 19 } }}>{icon}</Box>
                     <Typography fontSize={13.5} fontWeight={activo ? 700 : 500}>{label}</Typography>
+                    <ContadorNav valor={contadorGrupo} oscuro />
                   </Box>
                 );
               }
@@ -124,6 +148,7 @@ export default function Navbar({ onMenuClick }) {
                   sx={estiloPill}
                 >
                   <Typography fontSize={13.5} fontWeight={activo ? 700 : 500}>{grupo.label}</Typography>
+                  <ContadorNav valor={contadorGrupo} oscuro />
                   <ExpandMoreIcon sx={{
                     fontSize: 17, transition: 'transform 0.2s',
                     transform: abierto ? 'rotate(180deg)' : 'none',
@@ -142,7 +167,7 @@ export default function Navbar({ onMenuClick }) {
             sx={{ mt: 1 }}
             slotProps={{ paper: { sx: { minWidth: 190, borderRadius: 3 } } }}
           >
-            {(NAV_GROUPS.find((g) => g.label === menuGrupo?.label)?.items || []).map(({ label, icon, path }) => {
+            {(NAV_GROUPS.find((g) => g.label === menuGrupo?.label)?.items || []).map(({ label, icon, path, badge }) => {
               const activo = pathname === path || pathname.startsWith(path + '/');
               return (
                 <MenuItem
@@ -154,7 +179,8 @@ export default function Navbar({ onMenuClick }) {
                   <Box sx={{ display: 'flex', color: activo ? 'primary.main' : 'text.secondary', '& svg': { fontSize: 20 } }}>
                     {icon}
                   </Box>
-                  {label}
+                  <Box component="span" sx={{ flexGrow: 1 }}>{label}</Box>
+                  <ContadorNav valor={badge ? badges[badge] : 0} />
                 </MenuItem>
               );
             })}

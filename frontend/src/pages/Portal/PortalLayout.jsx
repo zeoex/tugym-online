@@ -1,11 +1,11 @@
 import { useEffect, useState, useCallback } from 'react';
-import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { Outlet, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { Box, Typography, BottomNavigation, BottomNavigationAction, Paper } from '@mui/material';
 import BoltIcon from '@mui/icons-material/Bolt';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import BadgeIcon from '@mui/icons-material/Badge';
 import { ACENTO, INK } from '../../theme';
-import { portalApi } from './portalApi';
+import { portalApi, sesionSocio } from './portalApi';
 
 const TABS = [
   { valor: '/portal',        label: 'Inicio', icon: <BoltIcon /> },
@@ -23,6 +23,10 @@ export default function PortalLayout() {
   }, []);
 
   useEffect(() => { refrescarInfo(); }, [refrescarInfo]);
+
+  // Sin sesión no hay portal: rutinas, carnet y check-in son del socio.
+  // La portada abre el ingreso y vuelve acá cuando entra.
+  if (!sesionSocio.activa()) return <Navigate to="/?ingresar=1" replace />;
 
   const tabActiva = TABS.reduce(
     (mejor, t) => (pathname === t.valor || (t.valor !== '/portal' && pathname.startsWith(t.valor)) ? t.valor : mejor),

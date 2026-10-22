@@ -3,17 +3,22 @@ import { Outlet, useLocation } from 'react-router-dom';
 import { Box, Drawer } from '@mui/material';
 import Navbar from './Navbar';
 import Sidebar from './Sidebar';
+import useSolicitudesPendientes from './useSolicitudesPendientes';
 
 /* Navegación principal arriba; el drawer lateral queda solo para mobile. */
 export default function Layout() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { pathname } = useLocation();
+  /* Contadores que se muestran como badge en el menú (ver `badge` en navItems).
+     Se consultan una sola vez acá y se reparten a ambas navegaciones. */
+  const solicitudesPendientes = useSolicitudesPendientes();
+  const badges = { solicitudes: solicitudesPendientes };
 
   useEffect(() => { setMobileOpen(false); }, [pathname]);
 
   return (
     <Box sx={{ minHeight: '100vh' }}>
-      <Navbar onMenuClick={() => setMobileOpen(true)} />
+      <Navbar onMenuClick={() => setMobileOpen(true)} badges={badges} />
 
       <Drawer
         open={mobileOpen}
@@ -21,7 +26,7 @@ export default function Layout() {
         variant="temporary"
         sx={{ display: { md: 'none' }, '& .MuiDrawer-paper': { width: 250 } }}
       >
-        <Sidebar />
+        <Sidebar badges={badges} />
       </Drawer>
 
       <Box component="main" sx={{

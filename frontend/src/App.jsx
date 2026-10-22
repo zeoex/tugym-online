@@ -8,6 +8,7 @@ import Dashboard from './pages/Dashboard';
 import ListaSocios from './pages/Socios/ListaSocios';
 import FormSocio from './pages/Socios/FormSocio';
 import DetalleSocio from './pages/Socios/DetalleSocio';
+import Solicitudes from './pages/Solicitudes/Solicitudes';
 import GestionPagos from './pages/Pagos/GestionPagos';
 import Vencimientos from './pages/Vencimientos/Vencimientos';
 import GestionPlanes from './pages/Planes/GestionPlanes';
@@ -21,6 +22,7 @@ import PortalLayout from './pages/Portal/PortalLayout';
 import PortalHome from './pages/Portal/PortalHome';
 import PortalRutina from './pages/Portal/PortalRutina';
 import PortalCarnet from './pages/Portal/PortalCarnet';
+import Landing from './pages/Portal/Landing';
 
 function ProtectedRoute({ children }) {
   const { usuario, cargando } = useAuth();
@@ -51,7 +53,9 @@ function PortalShell() {
 export default function App() {
   return (
     <Routes>
+      {/* La portada es la del socio: landing con ingreso arriba. El admin vive en /login y /dashboard. */}
       <Route element={<PortalShell />}>
+        <Route path="/" element={<Landing />} />
         <Route path="/portal" element={<PortalLayout />}>
           <Route index element={<PortalHome />} />
           <Route path="rutina" element={<PortalRutina />} />
@@ -61,13 +65,13 @@ export default function App() {
 
       <Route element={<AdminShell />}>
         <Route path="/login" element={<Login />} />
-        <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
-          <Route index element={<Navigate to="/dashboard" replace />} />
+        <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
           <Route path="dashboard"          element={<Dashboard />} />
           <Route path="socios"             element={<ListaSocios />} />
           <Route path="socios/nuevo"       element={<FormSocio />} />
           <Route path="socios/:id/detalle" element={<DetalleSocio />} />
           <Route path="socios/:id"         element={<FormSocio />} />
+          <Route path="solicitudes"        element={<Solicitudes />} />
           <Route path="planes"             element={<GestionPlanes />} />
           <Route path="pagos"              element={<GestionPagos />} />
           <Route path="vencimientos"       element={<Vencimientos />} />
@@ -80,7 +84,7 @@ export default function App() {
         </Route>
       </Route>
 
-      <Route path="*" element={<Navigate to="/dashboard" replace />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }
