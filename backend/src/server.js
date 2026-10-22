@@ -52,7 +52,9 @@ app.use(cors({
   },
 }));
 app.use(express.json());
-app.use('/uploads', express.static(uploadsDir));
+// Un archivo que no existe tiene que ser 404, no el index.html de la SPA
+// (si no, una imagen borrada "carga" como HTML y el <img> queda roto en silencio).
+app.use('/uploads', express.static(uploadsDir), (_req, res) => res.status(404).json({ error: 'Archivo no encontrado' }));
 
 // GIFs de ejercicios bajo demanda: fuera de /api para que no cuenten en el
 // rate limit; el primero que lo mira dispara la descarga al volumen.
