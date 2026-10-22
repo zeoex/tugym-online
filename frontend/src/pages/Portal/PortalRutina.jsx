@@ -9,7 +9,9 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import WarmupIcon from '@mui/icons-material/DirectionsRun';
 import StarIcon from '@mui/icons-material/Star';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { ACENTO, VIOLETA, INK } from '../../theme';
+import { ACENTO, ACENTO_SUAVE, ACERO, INK, CROMO, FUENTE_MARCA } from '../../theme';
+
+const tituloSeccion = { fontFamily: FUENTE_MARCA, fontWeight: 700, fontSize: 14, letterSpacing: '0.03em' };
 import { portalApi, sesionSocio } from './portalApi';
 import PanelRutina from '../../components/PanelRutina';
 import EjercicioDemoModal from '../../components/EjercicioDemoModal';
@@ -21,16 +23,16 @@ function MiRutina({ rutina }) {
     <Box mb={3}>
       <Box display="flex" alignItems="center" gap={1} mb={1.5}>
         <StarIcon sx={{ color: ACENTO, fontSize: 20 }} />
-        <Typography fontWeight={700} fontSize={15}>Tu rutina — {rutina.nombre}</Typography>
+        <Typography sx={tituloSeccion}>Tu rutina — {rutina.nombre}</Typography>
         {rutina.personalizada && (
-          <Chip label="Personalizada" size="small" sx={{ ml: 'auto', bgcolor: ACENTO, color: INK, fontWeight: 800, fontSize: 10.5 }} />
+          <Chip label="Personalizada" size="small" sx={{ ml: 'auto', background: CROMO, color: INK, fontWeight: 800, fontSize: 10.5 }} />
         )}
       </Box>
       <Paper sx={{ overflow: 'hidden' }}>
         {rutina.ejercicios.map((e, i) => (
           <Box key={i} sx={{
             px: 2, py: 1.25, display: 'flex', alignItems: 'center', gap: 1.5,
-            borderBottom: i < rutina.ejercicios.length - 1 ? '1px solid rgba(242,245,234,0.07)' : 'none',
+            borderBottom: i < rutina.ejercicios.length - 1 ? '1px solid rgba(244,244,242,0.07)' : 'none',
           }}>
             <Typography sx={{ color: 'text.disabled', fontSize: 12, width: 18 }}>{i + 1}</Typography>
             <Box flex={1} minWidth={0}>
@@ -94,7 +96,7 @@ export default function PortalRutina() {
         {miRutina && <MiRutina rutina={miRutina} />}
         <Paper sx={{ p: { xs: 3, sm: 4 }, textAlign: 'center' }}>
           <FitnessCenterIcon sx={{ color: ACENTO, fontSize: 40, mb: 1.5 }} />
-          <Typography variant="h6" fontSize={18} mb={0.5}>
+          <Typography variant="h6" fontSize={18} mb={0.5} sx={{ fontFamily: FUENTE_MARCA, letterSpacing: '0.03em' }}>
             ¿Cuál es tu rutina de hoy?
           </Typography>
           <Typography variant="body2" color="text.secondary" mb={3}>
@@ -104,7 +106,7 @@ export default function PortalRutina() {
           <Box display="flex" gap={1.5} justifyContent="center">
             {[
               { key: 'HOMBRE', label: 'Varón', icon: <ManIcon sx={{ fontSize: 26 }} />, color: ACENTO },
-              { key: 'MUJER',  label: 'Mujer', icon: <WomanIcon sx={{ fontSize: 26 }} />, color: VIOLETA },
+              { key: 'MUJER',  label: 'Mujer', icon: <WomanIcon sx={{ fontSize: 26 }} />, color: ACERO },
             ].map((g) => (
               <Box
                 key={g.key}
@@ -152,11 +154,11 @@ export default function PortalRutina() {
           <Box mb={3}>
             <Box display="flex" alignItems="center" gap={1} mb={1.5}>
               <WarmupIcon sx={{ color: '#FBBF24', fontSize: 20 }} />
-              <Typography fontWeight={700} fontSize={15}>
+              <Typography sx={tituloSeccion}>
                 Precalentamiento — {precalenta.nombre}
               </Typography>
             </Box>
-            <Box sx={{ borderRadius: 4, overflow: 'hidden', border: '1px solid rgba(242,245,234,0.08)' }}>
+            <Box sx={{ borderRadius: 4, overflow: 'hidden', border: '1px solid rgba(244,244,242,0.08)' }}>
               <PanelRutina rutina={precalenta} />
             </Box>
           </Box>
@@ -168,16 +170,16 @@ export default function PortalRutina() {
           <Box>
             <Box display="flex" alignItems="center" gap={1} mb={1.5}>
               <FitnessCenterIcon sx={{ color: ACENTO, fontSize: 20 }} />
-              <Typography fontWeight={700} fontSize={15}>
+              <Typography sx={tituloSeccion}>
                 Rutina del día — {rutinaGenero.nombre}
               </Typography>
-              <Box sx={{ ml: 'auto', px: 1.5, py: 0.4, borderRadius: 10, bgcolor: 'rgba(200,241,63,0.12)' }}>
+              <Box sx={{ ml: 'auto', px: 1.5, py: 0.4, borderRadius: 10, bgcolor: ACENTO_SUAVE, flexShrink: 0 }}>
                 <Typography fontSize={12} fontWeight={700} sx={{ color: ACENTO }}>
                   {genero === 'HOMBRE' ? 'Varones' : 'Mujeres'}
                 </Typography>
               </Box>
             </Box>
-            <Box sx={{ borderRadius: 4, overflow: 'hidden', border: '1px solid rgba(242,245,234,0.08)' }}>
+            <Box sx={{ borderRadius: 4, overflow: 'hidden', border: '1px solid rgba(244,244,242,0.08)' }}>
               <PanelRutina rutina={rutinaGenero} />
             </Box>
           </Box>

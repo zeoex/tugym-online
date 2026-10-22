@@ -12,6 +12,10 @@ import WhatsAppIcon from '@mui/icons-material/WhatsApp';
 import BlockIcon from '@mui/icons-material/Block';
 import PeopleIcon from '@mui/icons-material/People';
 import api from '../../services/api';
+import { INK } from '../../theme';
+
+/* jsPDF quiere el negro de la marca como terna RGB */
+const TINTA = [1, 3, 5].map((i) => parseInt(INK.slice(i, i + 2), 16));
 
 const fmt = (n) => `$${Number(n ?? 0).toLocaleString('es-AR', { minimumFractionDigits: 2 })}`;
 
@@ -23,11 +27,11 @@ async function generarPDF(resumen) {
   const fecha = new Date(resumen.caja.fecha).toLocaleDateString('es-AR', {
     weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
   });
-  const HEAD = { fillColor: [30, 58, 95], textColor: 255, fontStyle: 'bold' };
+  const HEAD = { fillColor: TINTA, textColor: 255, fontStyle: 'bold' };
 
   doc.setFontSize(18);
   doc.setFont('helvetica', 'bold');
-  doc.text('TuGymOnLine — Resumen de Caja', 14, 20);
+  doc.text('Torino Fitness — Resumen de Caja', 14, 20);
 
   doc.setFontSize(11);
   doc.setFont('helvetica', 'normal');

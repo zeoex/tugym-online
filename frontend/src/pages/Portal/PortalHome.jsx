@@ -13,7 +13,7 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import { ACENTO, VIOLETA, INK } from '../../theme';
+import { ACENTO, ACENTO_SUAVE, ACERO, INK, HUESO, CROMO, BRILLO, FUENTE_MARCA } from '../../theme';
 import { portalApi, deviceId, sesionSocio } from './portalApi';
 import AnunciosDestacados from './AnunciosDestacados';
 import LoginSocio from './LoginSocio';
@@ -42,7 +42,7 @@ function Festejo() {
     return {
       x: Math.cos(angulo) * (70 + (i % 3) * 26),
       y: Math.sin(angulo) * (58 + ((i + 1) % 3) * 24),
-      color: [ACENTO, VIOLETA, '#F2F5EA'][i % 3],
+      color: [ACENTO, ACERO, HUESO][i % 3],
       delay: (i % 4) * 0.05,
     };
   });
@@ -118,8 +118,8 @@ export default function PortalHome() {
           '100%': { transform: 'translate(var(--fx), var(--fy)) scale(0.4)', opacity: 0 },
         },
         '@keyframes latido': {
-          '0%,100%': { boxShadow: '0 0 0 0 rgba(200,241,63,0.35)' },
-          '50%':     { boxShadow: '0 0 0 16px rgba(200,241,63,0)' },
+          '0%,100%': { boxShadow: '0 1px 0 rgba(255,255,255,0.55) inset, 0 14px 40px rgba(0,0,0,0.5), 0 0 0 0 rgba(255,255,255,0.32)' },
+          '50%':     { boxShadow: '0 1px 0 rgba(255,255,255,0.55) inset, 0 14px 40px rgba(0,0,0,0.5), 0 0 0 18px rgba(255,255,255,0)' },
         },
         '@keyframes sube': {
           from: { opacity: 0, transform: 'translateY(14px)' },
@@ -131,7 +131,7 @@ export default function PortalHome() {
       <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}
         sx={{ animation: 'sube 0.45s ease-out both' }}>
         <Box>
-          <Typography variant="h4" fontSize={30}>
+          <Typography variant="h4" fontSize={26} sx={{ fontFamily: FUENTE_MARCA, letterSpacing: '0.03em' }}>
             {sesion && nombre ? `Hola, ${nombre} 👋` : 'Hola 👋'}
           </Typography>
           <Typography variant="body2" color="text.secondary">
@@ -143,7 +143,7 @@ export default function PortalHome() {
             icon={<GroupsIcon sx={{ fontSize: 16 }} />}
             label={`${info.entrenandoAhora} entrenando`}
             size="small"
-            sx={{ bgcolor: 'rgba(200,241,63,0.12)', color: ACENTO, fontWeight: 700, '& .MuiChip-icon': { color: ACENTO } }}
+            sx={{ bgcolor: ACENTO_SUAVE, color: ACENTO, fontWeight: 700, '& .MuiChip-icon': { color: ACENTO } }}
           />
         )}
       </Box>
@@ -162,8 +162,8 @@ export default function PortalHome() {
                 <Festejo />
                 <Box sx={{
                   width: 84, height: 84, borderRadius: '50%', mx: 'auto', mb: 2,
-                  bgcolor: ACENTO, display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  boxShadow: '0 0 40px rgba(200,241,63,0.5)',
+                  background: CROMO, display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  boxShadow: `0 1px 0 rgba(255,255,255,0.55) inset, 0 0 44px rgba(255,255,255,0.22), ${BRILLO}`,
                 }}>
                   <WhereToVoteIcon sx={{ color: INK, fontSize: 44 }} />
                 </Box>
@@ -178,13 +178,13 @@ export default function PortalHome() {
                   <Chip
                     icon={<LocalFireDepartmentIcon sx={{ fontSize: 18 }} />}
                     label={`Racha: ${resultado.racha} ${resultado.racha === 1 ? 'día' : 'días'}`}
-                    sx={{ bgcolor: 'rgba(200,241,63,0.14)', color: ACENTO, fontWeight: 800, '& .MuiChip-icon': { color: '#FBBF24' } }}
+                    sx={{ bgcolor: ACENTO_SUAVE, color: ACENTO, fontWeight: 800, '& .MuiChip-icon': { color: '#FBBF24' } }}
                   />
                   {resultado.entrenandoAhora > 1 && (
                     <Chip
                       icon={<GroupsIcon sx={{ fontSize: 16 }} />}
                       label={`${resultado.entrenandoAhora} entrenando ahora`}
-                      sx={{ bgcolor: 'rgba(139,92,246,0.14)', color: '#C4B5FD', fontWeight: 700, '& .MuiChip-icon': { color: '#C4B5FD' } }}
+                      sx={{ bgcolor: 'rgba(154,163,178,0.16)', color: ACERO, fontWeight: 700, '& .MuiChip-icon': { color: ACERO } }}
                     />
                   )}
                 </Box>
@@ -215,7 +215,7 @@ export default function PortalHome() {
             <Box py={1}>
               <Box sx={{
                 width: 74, height: 74, borderRadius: '50%', mx: 'auto', mb: 1.5,
-                bgcolor: 'rgba(200,241,63,0.12)', border: `2px solid ${ACENTO}`,
+                bgcolor: ACENTO_SUAVE, border: `2px solid ${ACENTO}`, boxShadow: BRILLO,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}>
                 <CheckCircleIcon sx={{ color: ACENTO, fontSize: 40 }} />
@@ -227,7 +227,7 @@ export default function PortalHome() {
               <Chip
                 icon={<LocalFireDepartmentIcon sx={{ fontSize: 18 }} />}
                 label={`Racha: ${miDia.racha} ${miDia.racha === 1 ? 'día' : 'días'}`}
-                sx={{ bgcolor: 'rgba(200,241,63,0.14)', color: ACENTO, fontWeight: 800, '& .MuiChip-icon': { color: '#FBBF24' } }}
+                sx={{ bgcolor: ACENTO_SUAVE, color: ACENTO, fontWeight: 800, '& .MuiChip-icon': { color: '#FBBF24' } }}
               />
             </Box>
           ) : (
@@ -238,9 +238,11 @@ export default function PortalHome() {
                   width: 148, height: 148, borderRadius: '50%', mx: 'auto', mb: 2,
                   display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 0.5,
                   cursor: ocupado ? 'default' : 'pointer',
-                  bgcolor: ACENTO,
+                  background: CROMO,
+                  boxShadow: `0 1px 0 rgba(255,255,255,0.55) inset, 0 14px 40px rgba(0,0,0,0.5), ${BRILLO}`,
                   animation: ocupado ? 'none' : 'latido 2.4s ease-out infinite',
-                  transition: 'transform 0.12s',
+                  transition: 'transform 0.12s, filter 0.15s',
+                  '&:hover': { filter: ocupado ? 'none' : 'brightness(1.05)' },
                   '&:active': { transform: ocupado ? 'none' : 'scale(0.95)' },
                   userSelect: 'none',
                 }}
@@ -250,7 +252,7 @@ export default function PortalHome() {
                 ) : (
                   <>
                     <WhereToVoteIcon sx={{ color: INK, fontSize: 46 }} />
-                    <Typography fontWeight={800} sx={{ color: INK }} fontSize={16} lineHeight={1}>
+                    <Typography fontWeight={800} sx={{ color: INK, letterSpacing: '0.06em' }} fontSize={15} lineHeight={1}>
                       CHECK-IN
                     </Typography>
                   </>
@@ -278,13 +280,14 @@ export default function PortalHome() {
           p: 2, mb: 2, display: 'flex', alignItems: 'center', gap: 1.5, cursor: 'pointer',
           transition: 'border-color 0.15s, transform 0.12s',
           animation: 'sube 0.45s 0.12s ease-out both',
-          '&:hover': { borderColor: 'rgba(200,241,63,0.4)' },
+          '&:hover': { borderColor: 'rgba(215,218,223,0.4)' },
           '&:active': { transform: 'scale(0.98)' },
         }}
       >
         <Box sx={{
           width: 42, height: 42, borderRadius: 3, flexShrink: 0,
-          background: `linear-gradient(135deg, ${ACENTO} 0%, #9BC426 100%)`,
+          background: CROMO,
+          boxShadow: '0 1px 0 rgba(255,255,255,0.5) inset, 0 6px 16px rgba(0,0,0,0.45)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}>
           <FitnessCenterIcon sx={{ color: INK, fontSize: 22 }} />

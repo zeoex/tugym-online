@@ -32,7 +32,7 @@ function buildQrCombinado(rutinas) {
   const fecha = rutinas[0]
     ? new Date(rutinas[0].fecha).toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long' })
     : '';
-  return [`TuGymOnLine — Rutinas del dia (${fecha})`, '', rutinas.map(buildSeccion).join('\n\n')].join('\n');
+  return [`Torino Fitness — Rutinas del dia (${fecha})`, '', rutinas.map(buildSeccion).join('\n\n')].join('\n');
 }
 
 export default function Rutinas() {

@@ -15,7 +15,7 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import api from '../../services/api';
 import SocioAvatar from '../../components/SocioAvatar';
-import { ACENTO, INK } from '../../theme';
+import { ACENTO, ACERO, INK } from '../../theme';
 import { whatsappUrl, MSG_RECUPERACION_DEFAULT } from '../../utils/whatsapp';
 
 const fmtHora = (f) => new Date(f).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
@@ -49,7 +49,7 @@ function GraficoBarras({ datos, alto = 120 }) {
               width: '100%', maxWidth: 30,
               height: Math.max((d.valor / max) * alto, d.valor ? 5 : 2),
               borderRadius: '5px 5px 2px 2px',
-              bgcolor: d.valor ? (d.destacada ? ACENTO : 'rgba(18,22,13,0.75)') : 'rgba(18,22,13,0.08)',
+              bgcolor: d.valor ? (d.destacada ? ACERO : 'rgba(14,14,16,0.75)') : 'rgba(14,14,16,0.08)',
               transition: 'height 0.4s ease',
             }} />
             <Typography variant="caption" fontSize={9.5} color="text.secondary" noWrap>
@@ -238,7 +238,7 @@ export default function Asistencias() {
                     {!isMobile && (
                       <TableCell>
                         <Chip size="small" label={a.metodo === 'GEO' ? `GPS${a.distanciaM != null ? ` · ${a.distanciaM} m` : ''}` : 'Recepción'}
-                          sx={{ bgcolor: a.metodo === 'GEO' ? 'rgba(200,241,63,0.25)' : 'rgba(18,22,13,0.08)', fontWeight: 700, fontSize: 11 }} />
+                          sx={{ bgcolor: a.metodo === 'GEO' ? ACENTO : 'rgba(14,14,16,0.08)', color: INK, fontWeight: 700, fontSize: 11 }} />
                       </TableCell>
                     )}
                     <TableCell>

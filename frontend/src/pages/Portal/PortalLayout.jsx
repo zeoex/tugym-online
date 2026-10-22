@@ -4,7 +4,7 @@ import { Box, Typography, BottomNavigation, BottomNavigationAction, Paper } from
 import BoltIcon from '@mui/icons-material/Bolt';
 import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import BadgeIcon from '@mui/icons-material/Badge';
-import { ACENTO, INK } from '../../theme';
+import { FUENTE_MARCA } from '../../theme';
 import { portalApi, sesionSocio } from './portalApi';
 
 const TABS = [
@@ -41,22 +41,14 @@ export default function PortalLayout() {
         px: 2.5, py: 1.75,
         display: 'flex', alignItems: 'center', gap: 1.5,
         position: 'sticky', top: 0, zIndex: 20,
-        bgcolor: 'rgba(11,13,8,0.85)',
+        bgcolor: 'rgba(7,7,8,0.85)',
         backdropFilter: 'blur(14px)',
-        borderBottom: '1px solid rgba(242,245,234,0.07)',
+        borderBottom: '1px solid rgba(244,244,242,0.07)',
       }}>
-        <Box sx={{
-          width: 36, height: 36, borderRadius: 2.5,
-          bgcolor: ACENTO,
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          boxShadow: '0 0 18px rgba(200,241,63,0.35)',
-          flexShrink: 0,
-        }}>
-          <FitnessCenterIcon sx={{ color: INK, fontSize: 20 }} />
-        </Box>
+        <Box component="img" src="/marca/toro.png" alt="" sx={{ height: 30, width: 'auto', flexShrink: 0 }} />
         <Box sx={{ minWidth: 0 }}>
-          <Typography variant="h6" fontSize={16} lineHeight={1.15} noWrap>
-            {info?.nombreGym || 'TuGymOnLine'}
+          <Typography sx={{ fontFamily: FUENTE_MARCA, fontWeight: 700, fontSize: 15, letterSpacing: '0.08em', textTransform: 'uppercase', lineHeight: 1.15 }} noWrap>
+            {info?.nombreGym || 'Torino Fitness'}
           </Typography>
           <Typography variant="caption" color="text.secondary" fontSize={10.5} lineHeight={1}>
             Tu entrenamiento, en tu bolsillo
@@ -70,7 +62,7 @@ export default function PortalLayout() {
       </Box>
 
       {/* Footer */}
-      <Typography variant="caption" sx={{ textAlign: 'center', color: 'rgba(242,245,234,0.18)', fontSize: 10, pb: 10 }}>
+      <Typography variant="caption" sx={{ textAlign: 'center', color: 'rgba(244,244,242,0.18)', fontSize: 10, pb: 10 }}>
         &copy; ZeoDev 2026
       </Typography>
 
@@ -78,7 +70,7 @@ export default function PortalLayout() {
       <Paper sx={{
         position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 30,
         borderRadius: 0, border: 'none',
-        borderTop: '1px solid rgba(242,245,234,0.08)',
+        borderTop: '1px solid rgba(244,244,242,0.08)',
         pb: 'env(safe-area-inset-bottom)',
       }} elevation={0}>
         <BottomNavigation
@@ -95,7 +87,7 @@ export default function PortalLayout() {
               icon={t.icon}
               sx={{
                 '& .MuiBottomNavigationAction-label': { fontSize: 11, fontWeight: 600 },
-                '&.Mui-selected svg': { filter: 'drop-shadow(0 0 8px rgba(200,241,63,0.55))' },
+                '&.Mui-selected svg': { filter: 'drop-shadow(0 0 8px rgba(255,255,255,0.45))' },
                 transition: 'transform 0.12s',
                 '&:active': { transform: 'scale(0.94)' },
               }}

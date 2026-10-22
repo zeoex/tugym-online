@@ -42,7 +42,7 @@ export async function exportarExcel({ gym, reporte, pagos = [], asistencias = []
   const ExcelJS = mod.default?.Workbook ? mod.default : mod;
 
   const wb = new ExcelJS.Workbook();
-  wb.creator = gym || 'TuGymOnLine';
+  wb.creator = gym || 'Torino Fitness';
   wb.created = new Date();
 
   const t = reporte.totales || {};
@@ -51,7 +51,7 @@ export async function exportarExcel({ gym, reporte, pagos = [], asistencias = []
   /* ── Resumen ── */
   const res = wb.addWorksheet('Resumen');
   res.columns = [{ width: 28 }, { width: 18 }, { width: 18 }, { width: 14 }];
-  res.addRow([gym || 'TuGymOnLine']).font = { bold: true, size: 14 };
+  res.addRow([gym || 'Torino Fitness']).font = { bold: true, size: 14 };
   res.addRow(['Reporte de recaudación y actividad']);
   res.addRow(['Período', `${fechaCorta(desde)} al ${fechaCorta(hasta)}`, `${reporte.periodo?.dias ?? ''} días`]);
   res.addRow(['Emitido', new Date().toLocaleString('es-AR')]);

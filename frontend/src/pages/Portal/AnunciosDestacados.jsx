@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Box, Typography, Chip, GlobalStyles } from '@mui/material';
 import CampaignIcon from '@mui/icons-material/Campaign';
-import { ACENTO, VIOLETA, INK } from '../../theme';
+import { ACENTO, ACERO, INK, HUESO, CROMO, BRILLO } from '../../theme';
 import { portalApi } from './portalApi';
 
 const esNuevo = (a) => (Date.now() - new Date(a.createdAt).getTime()) < 7 * 24 * 3600 * 1000;
@@ -44,41 +44,41 @@ export default function AnunciosDestacados() {
       {/* Borde con gradiente animado */}
       <Box sx={{
         p: '2px', borderRadius: 4.5,
-        background: `linear-gradient(110deg, ${ACENTO}, ${VIOLETA}, ${ACENTO})`,
+        background: 'linear-gradient(110deg, #F4F5F7, #9DA3AC, #F4F5F7)',
         backgroundSize: '220% 220%',
         animation: 'borde-vivo 5s ease infinite',
-        boxShadow: '0 6px 28px rgba(200,241,63,0.16)',
+        boxShadow: `0 10px 30px rgba(0,0,0,0.5), ${BRILLO}`,
       }}>
         <Box sx={{
           borderRadius: 4, px: 2, py: 1.75,
-          bgcolor: '#141910',
+          bgcolor: INK,
           display: 'flex', gap: 1.5, alignItems: 'flex-start',
           minHeight: 76,
         }}>
           <Box sx={{
             width: 40, height: 40, borderRadius: 2.5, flexShrink: 0,
-            bgcolor: ACENTO,
+            background: CROMO,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             animation: 'mega 3.2s ease-in-out infinite',
-            boxShadow: '0 0 18px rgba(200,241,63,0.4)',
+            boxShadow: '0 1px 0 rgba(255,255,255,0.5) inset, 0 0 18px rgba(255,255,255,0.22)',
           }}>
             <CampaignIcon sx={{ color: INK, fontSize: 24 }} />
           </Box>
 
           <Box flex={1} minWidth={0}>
             <Box display="flex" alignItems="center" gap={1} mb={0.25}>
-              <Typography fontWeight={800} fontSize={14} noWrap sx={{ color: '#F2F5EA' }}>
+              <Typography fontWeight={800} fontSize={14} noWrap sx={{ color: HUESO }}>
                 {anuncio.titulo}
               </Typography>
               {esNuevo(anuncio) && (
                 <Chip label="NUEVO" size="small" sx={{
                   height: 17, fontSize: 9.5, fontWeight: 900, letterSpacing: 0.5,
-                  bgcolor: VIOLETA, color: '#fff',
+                  bgcolor: ACERO, color: INK,
                 }} />
               )}
             </Box>
             <Typography fontSize={12.5} lineHeight={1.55} whiteSpace="pre-line"
-              sx={{ color: 'rgba(242,245,234,0.7)' }}>
+              sx={{ color: 'rgba(244,244,242,0.7)' }}>
               {anuncio.contenido}
             </Typography>
 
@@ -87,7 +87,7 @@ export default function AnunciosDestacados() {
                 {anuncios.map((_a, i) => (
                   <Box key={i} onClick={() => setActual(i)} sx={{
                     width: i === actual ? 18 : 6, height: 6, borderRadius: 3,
-                    bgcolor: i === actual ? ACENTO : 'rgba(242,245,234,0.25)',
+                    bgcolor: i === actual ? ACENTO : 'rgba(244,244,242,0.25)',
                     cursor: 'pointer', transition: 'all 0.3s',
                   }} />
                 ))}

@@ -1,7 +1,7 @@
-/* Service worker de TuGymOnLine.
+/* Service worker de Torino Fitness.
    Regla de oro: la API va SIEMPRE a la red. Solo se cachea el shell
    (navegaciones, red primero) y los assets con hash o imágenes (cache primero). */
-const CACHE = 'tugym-v5';
+const CACHE = 'torino-v6';
 
 self.addEventListener('install', () => self.skipWaiting());
 

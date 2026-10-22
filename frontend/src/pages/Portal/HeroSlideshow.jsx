@@ -2,14 +2,25 @@ import { useEffect, useRef, useState } from 'react';
 import { Box, GlobalStyles } from '@mui/material';
 import { NOCHE } from '../../theme';
 
-/* Fotos reales del gym (frontend/public/hero). Horizontales, oscuras, 1920 px.
-   El thumb de 32 px entra primero para que el hero nunca aparezca vacío.
-   Orden: la de la barra abre (es la que mejor se ve a través de las letras);
-   la silueta casi negra va última. */
-export const SLIDES = [2, 6, 4, 3, 5, 1].map((n) => ({
-  src: `/hero/0${n}.jpg`,
-  thumb: `/hero/0${n}-thumb.jpg`,
-}));
+/* Fotos del hero (frontend/public/hero). El thumb de 32 px entra primero para
+   que el hero nunca aparezca vacío.
+   - Celular (vertical): las fotos REALES de Torino Fitness, sacadas de su
+     Instagram (m1–m4, verticales), intercaladas con dos de stock.
+   - Pantalla ancha: fotos horizontales de stock a 1920 px — las de Instagram
+     son chicas para ese tamaño. La de la barra abre (es la que mejor se ve a
+     través de las letras); la silueta casi negra va última. */
+const slide = (n) => ({ src: `/hero/${n}.jpg`, thumb: `/hero/${n}-thumb.jpg` });
+export const SLIDES_ANCHO = ['02', '06', '04', '03', '05', '01'].map(slide);
+export const SLIDES_MOVIL = ['m1', 'm2', '02', 'm3', '06', '04'].map(slide);
+
+export const esPantallaMovil = () =>
+  typeof window !== 'undefined' && window.matchMedia?.('(max-width: 720px) and (orientation: portrait)').matches;
+
+export const SLIDES = SLIDES_ANCHO;
+export function useSlides() {
+  const [slides] = useState(() => (esPantallaMovil() ? SLIDES_MOVIL : SLIDES_ANCHO));
+  return slides;
+}
 
 export const DURACION_SLIDE = 6500;
 const DURACION_CORTE = 1100;
@@ -31,26 +42,26 @@ const capaFoto = (src) => ({
   position: 'absolute', inset: 0,
   backgroundImage: `url(${src})`,
   backgroundSize: 'cover',
-  backgroundPosition: 'center 40%',
+  backgroundPosition: 'center 35%',
 });
 
 const reduceMotion = () =>
   typeof window !== 'undefined' && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 
-export default function HeroSlideshow({ actual, texto, children }) {
+export default function HeroSlideshow({ actual, texto, children, slides = SLIDES }) {
   const [listas, setListas] = useState(() => new Set());
   const [visibles, setVisibles] = useState([actual]); // pila: [anterior?, actual]
   const anterior = useRef(actual);
 
   // Precarga: la actual y la que sigue. Mientras no llegó, se ve el thumb.
   useEffect(() => {
-    [actual, (actual + 1) % SLIDES.length].forEach((i) => {
+    [actual, (actual + 1) % slides.length].forEach((i) => {
       if (listas.has(i)) return;
       const img = new Image();
       img.onload = () => setListas((s) => new Set(s).add(i));
-      img.src = SLIDES[i].src;
+      img.src = slides[i].src;
     });
-  }, [actual, listas]);
+  }, [actual, listas, slides]);
 
   // Mantener la anterior montada mientras dura el corte, después soltarla.
   useEffect(() => {
@@ -66,7 +77,7 @@ export default function HeroSlideshow({ actual, texto, children }) {
     ? `aparece 0.6s ease-out both`
     : `corte ${DURACION_CORTE}ms cubic-bezier(0.76, 0, 0.24, 1) both`;
 
-  const fuente = (i) => (listas.has(i) ? SLIDES[i].src : SLIDES[i].thumb);
+  const fuente = (i) => (listas.has(i) ? slides[i].src : slides[i].thumb);
 
   return (
     <Box sx={{ position: 'absolute', inset: 0, overflow: 'hidden', bgcolor: NOCHE }}>
@@ -123,8 +134,8 @@ export default function HeroSlideshow({ actual, texto, children }) {
             {entrando && !reduceMotion() && (
               <Box sx={{
                 position: 'absolute', top: '-10%', bottom: '-10%', left: 0, width: 3,
-                bgcolor: 'rgba(200,241,63,0.85)',
-                boxShadow: '0 0 24px 6px rgba(200,241,63,0.45)',
+                bgcolor: 'rgba(255,255,255,0.9)',
+                boxShadow: '0 0 24px 6px rgba(255,255,255,0.4)',
                 animation: `borde-corte ${DURACION_CORTE}ms cubic-bezier(0.76, 0, 0.24, 1) both`,
               }} />
             )}

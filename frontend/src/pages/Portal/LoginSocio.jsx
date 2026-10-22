@@ -6,7 +6,7 @@ import {
 import BadgeIcon from '@mui/icons-material/Badge';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { ACENTO } from '../../theme';
+import { ACENTO, ACENTO_SUAVE, BRILLO } from '../../theme';
 import { portalApi, dniGuardado, sesionSocio } from './portalApi';
 
 /* Ingreso del socio: DNI + contraseña. La primera vez crea la suya.
@@ -128,7 +128,7 @@ export default function LoginSocio({ onIngreso, compacto = false }) {
     <Paper sx={{ p: 3, mb: 2, textAlign: 'center', animation: 'sube 0.45s 0.06s ease-out both' }}>
       <Box sx={{
         width: 56, height: 56, borderRadius: '50%', mx: 'auto', mb: 1.5,
-        bgcolor: 'rgba(200,241,63,0.12)', border: `2px solid ${ACENTO}`,
+        bgcolor: ACENTO_SUAVE, border: `2px solid ${ACENTO}`, boxShadow: BRILLO,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
       }}>
         <BadgeIcon sx={{ color: ACENTO, fontSize: 28 }} />

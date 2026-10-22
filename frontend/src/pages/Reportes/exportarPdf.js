@@ -3,7 +3,7 @@ import { moneda, entero, fechaCorta, fechaHora, mesLargo, nombreArchivo, etiquet
 
 const hexARgb = (hex) => [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
 const TINTA = hexARgb(INK);
-const LIMA = hexARgb(ACENTO);
+const PLATA = hexARgb(ACENTO);
 
 /* jsPDF con helvetica estándar no trae guion largo ni flechas: usamos ASCII. */
 const guion = (s) => String(s ?? '').replace(/—/g, '-').replace(/–/g, '-');
@@ -17,19 +17,19 @@ export async function exportarPdf({ gym, reporte, pagos = [], desde, hasta }) {
   const ANCHO = doc.internal.pageSize.getWidth();
   const ALTO = doc.internal.pageSize.getHeight();
   const M = 14;
-  const nombre = gym || 'TuGymOnLine';
+  const nombre = gym || 'Torino Fitness';
   const t = reporte.totales || {};
   const comp = reporte.comparativa || { anterior: {}, variacion: {} };
 
   const HEAD = { fillColor: TINTA, textColor: 255, fontStyle: 'bold' };
   const estilos = { fontSize: 9, cellPadding: 1.8, textColor: TINTA };
-  const alt = { fillColor: [245, 247, 242] };
+  const alt = { fillColor: [245, 245, 247] };
   const der = { halign: 'right' };
 
   /* ── Encabezado de la primera página ── */
   doc.setFillColor(...TINTA);
   doc.rect(0, 0, ANCHO, 30, 'F');
-  doc.setFillColor(...LIMA);
+  doc.setFillColor(...PLATA);
   doc.rect(0, 30, ANCHO, 1.2, 'F');
   doc.setTextColor(255);
   doc.setFont('helvetica', 'bold'); doc.setFontSize(17);

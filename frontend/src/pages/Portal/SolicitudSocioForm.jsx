@@ -6,7 +6,7 @@ import {
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { ACENTO } from '../../theme';
+import { ACENTO, ACENTO_SUAVE, BRILLO } from '../../theme';
 import { portalApi } from './portalApi';
 
 const INIT = { nombre: '', apellido: '', dni: '', telefono: '', email: '', sexo: 'OTROS', mensaje: '', password: '' };
@@ -51,7 +51,7 @@ export default function SolicitudSocioForm({ onIngresar }) {
       <Box sx={{ textAlign: 'center', py: 1 }}>
         <Box sx={{
           width: 56, height: 56, borderRadius: '50%', mx: 'auto', mb: 1.5,
-          bgcolor: 'rgba(200,241,63,0.12)', border: `2px solid ${ACENTO}`,
+          bgcolor: ACENTO_SUAVE, border: `2px solid ${ACENTO}`, boxShadow: BRILLO,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}>
           <CheckCircleIcon sx={{ color: ACENTO, fontSize: 30 }} />

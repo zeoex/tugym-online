@@ -1,35 +1,40 @@
 import { createTheme } from '@mui/material';
 
-/* ── Marca TuGymOnLine ─────────────────────────────────────────────
-   Lima eléctrica sobre verde-negro para el socio, tinta + lima para el
-   admin. Un solo lugar para tocar la identidad de toda la app.       */
-export const ACENTO        = '#C8F13F';
-export const ACENTO_HOVER  = '#B9E32C';
-export const ACENTO_SUAVE  = 'rgba(200,241,63,0.12)';
-export const VIOLETA       = '#8B5CF6';
-export const INK           = '#12160D';  // negro con tinte verde
-export const NOCHE         = '#0B0D08';  // fondo del portal
-export const NOCHE_PAPEL   = '#151A0F';
+/* ── Marca Torino Fitness ──────────────────────────────────────────
+   Sale del logo: un toro de cromo sobre negro. Negro profundo, plata
+   cepillada y serif romana. Un solo lugar para tocar la identidad.   */
+export const NOCHE        = '#070708';  // fondo del portal
+export const NOCHE_PAPEL  = '#121214';  // tarjetas del portal
+export const INK          = '#0E0E10';  // negro de la marca (botones, barra del admin)
+export const HUESO        = '#F4F4F2';  // blanco cálido para texto sobre negro
 
+export const ACENTO       = '#D7DADF';  // plata clara: botones, íconos, realces
+export const ACENTO_HOVER = '#EDEFF2';
+export const ACENTO_SUAVE = 'rgba(215,218,223,0.12)';
+export const ACERO        = '#9AA3B2';  // acero azulado: segundo tono, chips, texto de apoyo
+export const VIOLETA      = ACERO;      // alias histórico: lo que era violeta ahora es acero
 
-/* Barlow Condensed: la tipografía atlética por excelencia (recomendación
-   ui-ux-pro-max para gimnasios). Condensada para títulos y números grandes,
-   Inter para lectura. Nada de tracking negativo: condensed no lo necesita. */
-export const FUENTE_TITULOS = "'Barlow Condensed', 'Inter Variable', system-ui, sans-serif";
+/* Cromo cepillado: el degradé del logo, para el botón principal y los sellos. */
+export const CROMO = 'linear-gradient(180deg, #F4F5F7 0%, #CFD3D9 42%, #9DA3AC 50%, #E3E6EA 100%)';
+export const CROMO_TEXTO = 'linear-gradient(180deg, #FFFFFF 0%, #D5D8DD 48%, #9CA2AB 52%, #E9EBEE 100%)';
+export const BRILLO = '0 0 28px rgba(255,255,255,0.14)';
+
+/* Cinzel: la romana del logo, para la marca y los titulares. Inter para leer. */
+export const FUENTE_MARCA   = "'Cinzel', 'Times New Roman', serif";
+export const FUENTE_TITULOS = FUENTE_MARCA;
 const FUENTE_CUERPO  = "'Inter Variable', system-ui, sans-serif";
-const FUENTE_BOTONES = "'Barlow', 'Inter Variable', system-ui, sans-serif";
 
 const tipografia = {
   fontFamily: FUENTE_CUERPO,
-  h1: { fontFamily: FUENTE_TITULOS, fontWeight: 700, letterSpacing: '0.2px' },
-  h2: { fontFamily: FUENTE_TITULOS, fontWeight: 700, letterSpacing: '0.2px' },
-  h3: { fontFamily: FUENTE_TITULOS, fontWeight: 700, letterSpacing: '0.2px' },
-  h4: { fontFamily: FUENTE_TITULOS, fontWeight: 700, letterSpacing: '0.3px' },
-  h5: { fontFamily: FUENTE_TITULOS, fontWeight: 700, letterSpacing: '0.3px' },
-  h6: { fontFamily: FUENTE_TITULOS, fontWeight: 600, letterSpacing: '0.3px' },
+  h1: { fontFamily: FUENTE_MARCA, fontWeight: 700, letterSpacing: '0.02em' },
+  h2: { fontFamily: FUENTE_MARCA, fontWeight: 700, letterSpacing: '0.02em' },
+  h3: { fontFamily: FUENTE_MARCA, fontWeight: 700, letterSpacing: '0.02em' },
+  h4: { fontFamily: FUENTE_MARCA, fontWeight: 700, letterSpacing: '0.03em' },
+  h5: { fontFamily: FUENTE_CUERPO, fontWeight: 700, letterSpacing: '-0.01em' },
+  h6: { fontFamily: FUENTE_CUERPO, fontWeight: 700, letterSpacing: '-0.01em' },
   subtitle1: { fontWeight: 600 },
   subtitle2: { fontWeight: 700 },
-  button: { fontFamily: FUENTE_BOTONES, fontWeight: 700, textTransform: 'none', letterSpacing: '0.2px' },
+  button: { fontFamily: FUENTE_CUERPO, fontWeight: 700, textTransform: 'none', letterSpacing: '0.01em' },
 };
 
 /* La skill pide respetar reduced-motion: si el usuario lo activó, todo quieto. */
@@ -43,19 +48,19 @@ const reducedMotion = {
   },
 };
 
-/* ── Panel de administración: claro, tinta y lima ── */
+/* ── Panel de administración: claro, negro y plata ── */
 export const adminTheme = createTheme({
   palette: {
     mode: 'light',
     primary:    { main: INK, contrastText: '#FFFFFF' },
-    secondary:  { main: ACENTO, contrastText: INK },
-    background: { default: '#F5F7F2', paper: '#FFFFFF' },
+    secondary:  { main: ACERO, contrastText: '#FFFFFF' },
+    background: { default: '#F3F3F4', paper: '#FFFFFF' },
     error:      { main: '#DC2626' },
     warning:    { main: '#D97706' },
     success:    { main: '#16A34A' },
     info:       { main: '#2563EB' },
-    text:       { primary: '#191E13', secondary: '#5B6152' },
-    divider:    'rgba(25,30,19,0.1)',
+    text:       { primary: '#141416', secondary: '#5F6370' },
+    divider:    'rgba(14,14,16,0.1)',
   },
   typography: tipografia,
   shape: { borderRadius: 12 },
@@ -66,18 +71,22 @@ export const adminTheme = createTheme({
         root: { borderRadius: 10, fontWeight: 700 },
         contained: {
           boxShadow: 'none',
-          '&:hover': { boxShadow: '0 6px 16px rgba(18,22,13,0.25)' },
+          '&:hover': { boxShadow: '0 6px 16px rgba(14,14,16,0.25)' },
         },
         containedPrimary: {
-          '&:hover': { backgroundColor: '#242B1A' },
+          '&:hover': { backgroundColor: '#26262A' },
+        },
+        containedSecondary: {
+          background: CROMO, color: INK,
+          '&:hover': { background: CROMO, filter: 'brightness(1.04)' },
         },
       },
     },
     MuiCard: {
       styleOverrides: {
         root: {
-          boxShadow: '0 1px 3px rgba(18,22,13,0.05), 0 6px 20px rgba(18,22,13,0.04)',
-          border: '1px solid rgba(18,22,13,0.07)',
+          boxShadow: '0 1px 3px rgba(14,14,16,0.05), 0 6px 20px rgba(14,14,16,0.04)',
+          border: '1px solid rgba(14,14,16,0.07)',
           borderRadius: 14,
         },
       },
@@ -85,7 +94,7 @@ export const adminTheme = createTheme({
     MuiPaper: {
       styleOverrides: {
         root: { borderRadius: 14 },
-        elevation1: { boxShadow: '0 1px 3px rgba(18,22,13,0.05), 0 6px 20px rgba(18,22,13,0.04)' },
+        elevation1: { boxShadow: '0 1px 3px rgba(14,14,16,0.05), 0 6px 20px rgba(14,14,16,0.04)' },
       },
     },
     MuiAppBar: {
@@ -94,7 +103,7 @@ export const adminTheme = createTheme({
           backgroundColor: INK,
           color: '#FFFFFF',
           boxShadow: 'none',
-          borderBottom: '1px solid rgba(255,255,255,0.06)',
+          borderBottom: '1px solid rgba(255,255,255,0.08)',
         },
       },
     },
@@ -102,8 +111,8 @@ export const adminTheme = createTheme({
       styleOverrides: {
         root: {
           '& .MuiTableCell-head': {
-            backgroundColor: '#EFF2EA',
-            color: '#4B5142',
+            backgroundColor: '#ECEDEF',
+            color: '#4B4F5A',
             fontWeight: 700,
             fontSize: 12,
             textTransform: 'uppercase',
@@ -123,8 +132,8 @@ export const adminTheme = createTheme({
     MuiTableContainer: {
       styleOverrides: {
         root: {
-          boxShadow: '0 1px 3px rgba(18,22,13,0.05), 0 6px 20px rgba(18,22,13,0.04)',
-          border: '1px solid rgba(18,22,13,0.07)',
+          boxShadow: '0 1px 3px rgba(14,14,16,0.05), 0 6px 20px rgba(14,14,16,0.04)',
+          border: '1px solid rgba(14,14,16,0.07)',
           borderRadius: 14,
         },
       },
@@ -135,19 +144,19 @@ export const adminTheme = createTheme({
   },
 });
 
-/* ── Portal del socio: negro noche + lima eléctrica ── */
+/* ── Portal del socio: negro profundo + cromo ── */
 export const portalTheme = createTheme({
   palette: {
     mode: 'dark',
-    primary:    { main: ACENTO, contrastText: '#111503' },
-    secondary:  { main: VIOLETA, contrastText: '#FFFFFF' },
+    primary:    { main: ACENTO, contrastText: INK },
+    secondary:  { main: ACERO, contrastText: INK },
     background: { default: NOCHE, paper: NOCHE_PAPEL },
     error:      { main: '#F87171' },
     warning:    { main: '#FBBF24' },
     success:    { main: '#4ADE80' },
-    info:       { main: '#60A5FA' },
-    text:       { primary: '#F2F5EA', secondary: 'rgba(242,245,234,0.55)' },
-    divider:    'rgba(242,245,234,0.09)',
+    info:       { main: '#93C5FD' },
+    text:       { primary: HUESO, secondary: 'rgba(244,244,242,0.58)' },
+    divider:    'rgba(244,244,242,0.09)',
   },
   typography: tipografia,
   shape: { borderRadius: 16 },
@@ -156,8 +165,8 @@ export const portalTheme = createTheme({
       styleOverrides: {
         ...reducedMotion,
         body: {
-          backgroundImage: `radial-gradient(ellipse 80% 45% at 50% -10%, rgba(200,241,63,0.09), transparent),
-                            radial-gradient(ellipse 60% 40% at 100% 110%, rgba(139,92,246,0.07), transparent)`,
+          backgroundImage: `radial-gradient(ellipse 80% 45% at 50% -10%, rgba(255,255,255,0.07), transparent),
+                            radial-gradient(ellipse 60% 40% at 100% 110%, rgba(154,163,178,0.08), transparent)`,
           backgroundAttachment: 'fixed',
         },
       },
@@ -166,8 +175,9 @@ export const portalTheme = createTheme({
       styleOverrides: {
         root: { borderRadius: 12, fontWeight: 700 },
         containedPrimary: {
-          boxShadow: '0 0 24px rgba(200,241,63,0.25)',
-          '&:hover': { backgroundColor: ACENTO_HOVER, boxShadow: '0 0 32px rgba(200,241,63,0.4)' },
+          background: CROMO, color: INK,
+          boxShadow: '0 1px 0 rgba(255,255,255,0.35) inset, 0 10px 30px rgba(0,0,0,0.45)',
+          '&:hover': { background: CROMO, filter: 'brightness(1.05)', boxShadow: '0 1px 0 rgba(255,255,255,0.5) inset, 0 12px 34px rgba(0,0,0,0.5)' },
         },
       },
     },
@@ -175,19 +185,19 @@ export const portalTheme = createTheme({
       styleOverrides: {
         root: {
           backgroundImage: 'none',
-          border: '1px solid rgba(242,245,234,0.07)',
+          border: '1px solid rgba(244,244,242,0.08)',
         },
       },
     },
     MuiBottomNavigation: {
       styleOverrides: {
-        root: { backgroundColor: 'rgba(16,19,11,0.92)', backdropFilter: 'blur(14px)' },
+        root: { backgroundColor: 'rgba(10,10,12,0.92)', backdropFilter: 'blur(14px)' },
       },
     },
     MuiBottomNavigationAction: {
       styleOverrides: {
         root: {
-          color: 'rgba(242,245,234,0.4)',
+          color: 'rgba(244,244,242,0.4)',
           '&.Mui-selected': { color: ACENTO },
         },
       },

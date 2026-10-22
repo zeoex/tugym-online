@@ -175,7 +175,7 @@ export default function Reportes() {
     setExportando(tipo);
     try {
       const pagos = detalle.pagos ?? await cargarDetalle('pagos');
-      const base = { gym: gym || 'TuGymOnLine', reporte: datos, pagos: pagos || [], desde, hasta };
+      const base = { gym: gym || 'Torino Fitness', reporte: datos, pagos: pagos || [], desde, hasta };
       if (tipo === 'excel') {
         const asistencias = detalle.asistencias ?? await cargarDetalle('asistencias');
         const { exportarExcel } = await import('./exportarExcel');

@@ -4,7 +4,6 @@ import {
   Alert, CircularProgress, Divider, Tooltip,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -13,14 +12,18 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import api from '../../services/api';
 import { NAV_GROUPS } from './navItems';
-import { ACENTO, INK } from '../../theme';
+import { ACENTO, INK, CROMO, FUENTE_MARCA } from '../../theme';
 
 const PASS_INIT = { passwordActual: '', passwordNuevo: '', passwordConfirm: '' };
 
 /* Pastilla con el contador de un ítem del menú (ej. solicitudes pendientes).
-   No se renderiza cuando el total es 0. */
-function ContadorNav({ valor, oscuro = false }) {
+   No se renderiza cuando el total es 0. `oscuro` = sobre la barra negra;
+   `sobreCromo` = dentro del pill activo (fondo cromo), donde la plata no se vería. */
+function ContadorNav({ valor, oscuro = false, sobreCromo = false }) {
   if (!valor) return null;
+  const colores = sobreCromo
+    ? { bgcolor: INK, color: '#fff' }
+    : oscuro ? { bgcolor: ACENTO, color: INK } : { bgcolor: INK, color: ACENTO };
   return (
     <Box
       component="span"
@@ -29,8 +32,7 @@ function ContadorNav({ valor, oscuro = false }) {
         borderRadius: 10,
         display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
         fontSize: 11, fontWeight: 800, lineHeight: 1,
-        bgcolor: oscuro ? ACENTO : INK,
-        color: oscuro ? INK : ACENTO,
+        ...colores,
         flexShrink: 0,
       }}
     >
@@ -99,14 +101,16 @@ export default function Navbar({ onMenuClick, badges = {} }) {
             onClick={() => navigate('/dashboard')}
             sx={{ display: 'flex', alignItems: 'center', gap: 1, cursor: 'pointer', mr: { md: 2 }, flexShrink: 0 }}
           >
-            <Box sx={{
-              width: 32, height: 32, borderRadius: 2, bgcolor: ACENTO,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}>
-              <FitnessCenterIcon sx={{ color: INK, fontSize: 18 }} />
-            </Box>
-            <Typography variant="h6" fontSize={17} color="#fff" sx={{ display: { xs: 'none', sm: 'block' } }}>
-              TuGymOnLine
+            <Box component="img" src="/marca/toro.png" alt="Torino Fitness" sx={{ height: 26, width: 'auto', display: 'block' }} />
+            <Typography
+              component="span"
+              sx={{
+                display: { xs: 'none', sm: 'block' },
+                fontFamily: FUENTE_MARCA, fontWeight: 700, fontSize: 15,
+                color: '#fff', textTransform: 'uppercase', letterSpacing: '0.08em', lineHeight: 1,
+              }}
+            >
+              Torino Fitness
             </Typography>
           </Box>
 
@@ -123,10 +127,10 @@ export default function Navbar({ onMenuClick, badges = {} }) {
                 borderRadius: 2.5,
                 cursor: 'pointer',
                 whiteSpace: 'nowrap',
-                color: activo ? ACENTO : 'rgba(242,245,234,0.6)',
-                bgcolor: activo ? 'rgba(200,241,63,0.12)' : abierto ? 'rgba(242,245,234,0.07)' : 'transparent',
+                color: activo ? INK : 'rgba(244,244,242,0.6)',
+                background: activo ? CROMO : abierto ? 'rgba(255,255,255,0.08)' : 'transparent',
                 transition: 'all 0.15s',
-                '&:hover': { color: activo ? ACENTO : '#fff', bgcolor: activo ? 'rgba(200,241,63,0.14)' : 'rgba(242,245,234,0.06)' },
+                '&:hover': { color: activo ? INK : '#fff', background: activo ? CROMO : 'rgba(255,255,255,0.08)', filter: activo ? 'brightness(1.04)' : 'none' },
                 '&:active': { transform: 'scale(0.96)' },
               };
 
@@ -136,7 +140,7 @@ export default function Navbar({ onMenuClick, badges = {} }) {
                   <Box key={path} onClick={() => navigate(path)} sx={estiloPill}>
                     <Box sx={{ display: 'flex', '& svg': { fontSize: 19 } }}>{icon}</Box>
                     <Typography fontSize={13.5} fontWeight={activo ? 700 : 500}>{label}</Typography>
-                    <ContadorNav valor={contadorGrupo} oscuro />
+                    <ContadorNav valor={contadorGrupo} oscuro sobreCromo={activo} />
                   </Box>
                 );
               }
@@ -148,7 +152,7 @@ export default function Navbar({ onMenuClick, badges = {} }) {
                   sx={estiloPill}
                 >
                   <Typography fontSize={13.5} fontWeight={activo ? 700 : 500}>{grupo.label}</Typography>
-                  <ContadorNav valor={contadorGrupo} oscuro />
+                  <ContadorNav valor={contadorGrupo} oscuro sobreCromo={activo} />
                   <ExpandMoreIcon sx={{
                     fontSize: 17, transition: 'transform 0.2s',
                     transform: abierto ? 'rotate(180deg)' : 'none',
@@ -187,7 +191,7 @@ export default function Navbar({ onMenuClick, badges = {} }) {
           </Menu>
 
           <IconButton onClick={(e) => setAnchor(e.currentTarget)} size="small" sx={{ flexShrink: 0 }}>
-            <Avatar sx={{ width: 34, height: 34, bgcolor: ACENTO, color: INK, fontSize: 14, fontWeight: 800 }}>
+            <Avatar sx={{ width: 34, height: 34, background: CROMO, color: INK, fontSize: 14, fontWeight: 800 }}>
               {usuario?.nombre?.charAt(0).toUpperCase()}
             </Avatar>
           </IconButton>

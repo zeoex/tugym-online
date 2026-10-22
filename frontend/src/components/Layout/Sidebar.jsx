@@ -1,10 +1,9 @@
 import { List, ListItemButton, ListItemIcon, ListItemText, Box, Typography } from '@mui/material';
-import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { ACENTO, INK } from '../../theme';
+import { ACENTO, ACENTO_SUAVE, ACERO, INK, FUENTE_MARCA } from '../../theme';
 import { NAV_GROUPS } from './navItems';
 
-const DEFAULT_CLR = 'rgba(242,245,234,0.45)';
+const DEFAULT_CLR = 'rgba(244,244,242,0.45)';
 
 export default function Sidebar({ badges = {} }) {
   const navigate = useNavigate();
@@ -15,19 +14,21 @@ export default function Sidebar({ badges = {} }) {
       {/* Marca */}
       <Box sx={{ px: 3, pt: 3.5, pb: 3, display: 'flex', alignItems: 'center', gap: 1.5 }}>
         <Box sx={{
-          width: 38, height: 38, borderRadius: 2.5,
-          bgcolor: ACENTO,
+          width: 36, height: 36, borderRadius: 2.5, flexShrink: 0,
+          bgcolor: 'rgba(255,255,255,0.05)',
+          border: '1px solid rgba(255,255,255,0.1)',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          boxShadow: '0 0 18px rgba(200,241,63,0.3)',
         }}>
-          <FitnessCenterIcon sx={{ color: INK, fontSize: 20 }} />
+          <Box component="img" src="/marca/toro.png" alt="Torino Fitness" sx={{ height: 26, width: 'auto', display: 'block' }} />
         </Box>
         <Box>
-          <Typography variant="subtitle1" fontWeight={800} color="#fff" lineHeight={1.2} letterSpacing="-0.3px"
-            fontFamily="'Barlow Condensed', sans-serif">
-            TuGymOnLine
+          <Typography
+            lineHeight={1.2}
+            sx={{ fontFamily: FUENTE_MARCA, fontWeight: 700, fontSize: 15, color: '#fff', textTransform: 'uppercase', letterSpacing: '0.08em' }}
+          >
+            Torino Fitness
           </Typography>
-          <Typography variant="caption" sx={{ color: ACENTO, lineHeight: 1, fontSize: 10, fontWeight: 700, letterSpacing: 1 }}>
+          <Typography variant="caption" sx={{ color: ACERO, lineHeight: 1, fontSize: 10, fontWeight: 700, letterSpacing: 1 }}>
             ADMIN
           </Typography>
         </Box>
@@ -41,7 +42,7 @@ export default function Sidebar({ badges = {} }) {
               <Typography
                 variant="caption"
                 sx={{
-                  color: 'rgba(242,245,234,0.25)',
+                  color: 'rgba(244,244,242,0.25)',
                   px: 1.5, pt: gi === 0 ? 1 : 2, pb: 0.75,
                   display: 'block',
                   letterSpacing: '1.4px',
@@ -63,8 +64,8 @@ export default function Sidebar({ badges = {} }) {
                     onClick={() => navigate(path)}
                     sx={{
                       borderRadius: 2.5, mb: 0.5, px: 1.5,
-                      bgcolor: active ? 'rgba(200,241,63,0.1)' : 'transparent',
-                      '&:hover': { bgcolor: active ? 'rgba(200,241,63,0.12)' : 'rgba(242,245,234,0.04)' },
+                      bgcolor: active ? ACENTO_SUAVE : 'transparent',
+                      '&:hover': { bgcolor: active ? ACENTO_SUAVE : 'rgba(255,255,255,0.08)' },
                       transition: 'all 0.15s',
                     }}
                   >
@@ -102,9 +103,9 @@ export default function Sidebar({ badges = {} }) {
       </Box>
 
       {/* Pie */}
-      <Box sx={{ px: 3, py: 2, borderTop: '1px solid rgba(242,245,234,0.06)' }}>
-        <Typography variant="caption" sx={{ color: 'rgba(242,245,234,0.25)', fontSize: 10 }}>v2.0.0</Typography>
-        <Typography variant="caption" display="block" sx={{ color: 'rgba(242,245,234,0.18)', fontSize: 9, mt: 0.25 }}>
+      <Box sx={{ px: 3, py: 2, borderTop: '1px solid rgba(244,244,242,0.06)' }}>
+        <Typography variant="caption" sx={{ color: 'rgba(244,244,242,0.25)', fontSize: 10 }}>v2.0.0</Typography>
+        <Typography variant="caption" display="block" sx={{ color: 'rgba(244,244,242,0.18)', fontSize: 9, mt: 0.25 }}>
           &copy; ZeoDev 2026
         </Typography>
       </Box>

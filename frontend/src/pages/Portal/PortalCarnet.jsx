@@ -8,9 +8,8 @@ import BadgeIcon from '@mui/icons-material/Badge';
 import LogoutIcon from '@mui/icons-material/Logout';
 import LocalFireDepartmentIcon from '@mui/icons-material/LocalFireDepartment';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
-import FitnessCenterIcon from '@mui/icons-material/FitnessCenter';
 import HistoryIcon from '@mui/icons-material/History';
-import { ACENTO, INK } from '../../theme';
+import { ACENTO, ACENTO_SUAVE, INK, CROMO_TEXTO, BRILLO, FUENTE_MARCA } from '../../theme';
 import { portalApi, sesionSocio } from './portalApi';
 
 const fmtFecha = (f) => new Date(f).toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' });
@@ -87,7 +86,7 @@ export default function PortalCarnet() {
   const estadoCuota = !cuota.plan
     ? { texto: 'Sin plan activo', color: '#fff', bg: '#F87171' }
     : cuota.vigente
-      ? { texto: 'Cuota al día', color: INK, bg: ACENTO }
+      ? { texto: 'Cuota al día', color: INK, bg: '#4ADE80' }
       : { texto: 'Cuota vencida', color: INK, bg: '#FBBF24' };
   const iniciales = `${socio.nombre?.[0] || ''}${socio.apellido?.[0] || ''}`.toUpperCase();
 
@@ -105,60 +104,76 @@ export default function PortalCarnet() {
           },
         }} />
 
-        {/* ══ CARNET ══ */}
+        {/* ══ CARNET ══ credencial negra con filete de cromo */}
         <Box sx={{
           p: '1.5px', borderRadius: 3.5, mb: 2,
-          background: `linear-gradient(135deg, rgba(200,241,63,0.55), rgba(139,92,246,0.3) 45%, rgba(200,241,63,0.12))`,
-          boxShadow: '0 18px 50px rgba(0,0,0,0.55)',
+          background: 'linear-gradient(135deg, rgba(244,245,247,0.6), rgba(157,163,172,0.3) 45%, rgba(244,245,247,0.14))',
+          boxShadow: `0 18px 50px rgba(0,0,0,0.6), ${BRILLO}`,
           animation: 'sube 0.45s ease-out both',
         }}>
           <Box sx={{
             borderRadius: 3.3, p: 2.25, position: 'relative', overflow: 'hidden',
-            background: 'linear-gradient(150deg, #1B2310 0%, #0B0F06 55%, #141B0A 100%)',
+            bgcolor: INK,
+            backgroundImage: `radial-gradient(ellipse 75% 65% at 12% -5%, rgba(255,255,255,0.09), transparent 62%),
+                              radial-gradient(ellipse 55% 55% at 105% 110%, rgba(154,163,178,0.07), transparent 65%)`,
           }}>
-            {/* marca de agua */}
-            <FitnessCenterIcon sx={{
-              position: 'absolute', right: -34, bottom: -38, fontSize: 180,
-              color: 'rgba(200,241,63,0.05)', transform: 'rotate(-18deg)', pointerEvents: 'none',
-            }} />
-            {/* destello lima */}
-            <Box sx={{
-              position: 'absolute', top: -70, left: -50, width: 200, height: 200, borderRadius: '50%',
-              background: 'radial-gradient(circle, rgba(200,241,63,0.12) 0%, transparent 70%)', pointerEvents: 'none',
+            {/* marca de agua: el toro, grande y apenas visible */}
+            <Box component="img" src="/marca/toro.png" alt="" aria-hidden="true" sx={{
+              position: 'absolute', right: -44, bottom: -28, width: 270, opacity: 0.08,
+              pointerEvents: 'none', userSelect: 'none',
             }} />
             {/* brillo que recorre la tarjeta */}
             <Box sx={{
               position: 'absolute', top: 0, bottom: 0, width: '45%', pointerEvents: 'none',
-              background: 'linear-gradient(105deg, transparent, rgba(255,255,255,0.05), transparent)',
+              background: 'linear-gradient(105deg, transparent, rgba(255,255,255,0.07), transparent)',
               animation: 'brillo-carnet 6s ease-in-out infinite',
             }} />
 
-            {/* socio + estado (el nombre del gym ya está en el header de la app) */}
-            <Box display="flex" alignItems="center" gap={1.5} mb={2}>
+            {/* marca + estado de la cuota */}
+            <Box display="flex" alignItems="center" justifyContent="space-between" gap={1} mb={1.75}>
+              <Box component="img" src="/marca/toro.png" alt="Torino Fitness" sx={{
+                height: 32, width: 'auto', display: 'block',
+                filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.6))',
+              }} />
+              <Chip label={estadoCuota.texto} size="small" sx={{
+                bgcolor: estadoCuota.bg, color: estadoCuota.color,
+                fontWeight: 900, fontSize: 10.5, height: 22, letterSpacing: 0.3, flexShrink: 0,
+              }} />
+            </Box>
+
+            {/* socio */}
+            <Box display="flex" alignItems="center" gap={1.5} mb={1.75}>
               <Avatar
                 src={socio.foto || undefined}
                 sx={{
                   width: 52, height: 52, fontSize: 19, fontWeight: 800,
-                  bgcolor: 'rgba(200,241,63,0.15)', color: ACENTO,
-                  border: `2px solid ${ACENTO}`,
+                  bgcolor: ACENTO_SUAVE, color: ACENTO,
+                  border: '2px solid rgba(215,218,223,0.6)',
+                  boxShadow: '0 0 0 1px rgba(0,0,0,0.6), 0 6px 18px rgba(0,0,0,0.5)',
                 }}
               >
                 {iniciales}
               </Avatar>
               <Box minWidth={0} flex={1}>
-                <Typography variant="h5" fontSize={24} lineHeight={1.08}
-                  sx={{ textTransform: 'uppercase', letterSpacing: '0.5px', wordBreak: 'break-word' }}>
+                <Typography component="h2" sx={{
+                  fontFamily: FUENTE_MARCA, fontWeight: 700, fontSize: 22, lineHeight: 1.1,
+                  textTransform: 'uppercase', letterSpacing: '0.05em', wordBreak: 'break-word',
+                  background: CROMO_TEXTO, WebkitBackgroundClip: 'text', backgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent', color: ACENTO,
+                }}>
                   {socio.nombre} {socio.apellido}
                 </Typography>
                 <Typography variant="caption" color="text.secondary">
                   Socio desde {fmtFecha(socio.fechaAlta)}
                 </Typography>
               </Box>
-              <Chip label={estadoCuota.texto} size="small" sx={{
-                bgcolor: estadoCuota.bg, color: estadoCuota.color, alignSelf: 'flex-start',
-                fontWeight: 900, fontSize: 10.5, height: 22, letterSpacing: 0.3, flexShrink: 0,
-              }} />
             </Box>
+
+            {/* separador: línea fina de cromo */}
+            <Box sx={{
+              height: '1px', mb: 1.75,
+              background: 'linear-gradient(90deg, transparent, rgba(244,245,247,0.6) 25%, rgba(157,163,172,0.55) 70%, transparent)',
+            }} />
 
             {/* plan + QR: el bloque del QR está acotado para que NUNCA
                 desborde la tarjeta, ni con letra grande ni en pantallas
@@ -168,7 +183,8 @@ export default function PortalCarnet() {
                 {cuota.plan ? (
                   <>
                     <Chip label={cuota.plan} size="small" sx={{
-                      bgcolor: 'rgba(200,241,63,0.14)', color: ACENTO, fontWeight: 800, fontSize: 11.5, mb: 0.75,
+                      bgcolor: ACENTO_SUAVE, color: ACENTO, fontWeight: 800, fontSize: 11.5, mb: 0.75,
+                      border: '1px solid rgba(215,218,223,0.25)',
                     }} />
                     {cuota.venceEl && (
                       <Typography fontSize={12} color="text.secondary">
@@ -182,21 +198,21 @@ export default function PortalCarnet() {
                   </Typography>
                 )}
                 {info?.ventanaPago && cuota.plan && (
-                  <Typography fontSize={10.5} sx={{ color: 'rgba(242,245,234,0.4)', mt: 0.75, lineHeight: 1.5 }}>
+                  <Typography fontSize={10.5} sx={{ color: 'rgba(244,244,242,0.45)', mt: 0.75, lineHeight: 1.5 }}>
                     Pagá del {info.ventanaPago.desde} al {info.ventanaPago.hasta} y evitás el recargo
                   </Typography>
                 )}
               </Box>
               <Box sx={{ textAlign: 'center', flexShrink: 0, maxWidth: 104, ml: 'auto' }}>
                 <Box sx={{
-                  bgcolor: '#fff', p: 0.7, borderRadius: '6px', lineHeight: 0,
+                  bgcolor: '#fff', p: 0.8, borderRadius: '10px', lineHeight: 0,
                   display: 'inline-block',
-                  boxShadow: '0 4px 18px rgba(0,0,0,0.45)',
+                  boxShadow: '0 6px 22px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.18)',
                 }}>
                   <QRCodeSVG value={String(socio.dni || socio.id)} size={78} level="M" />
                 </Box>
                 <Typography sx={{
-                  fontSize: 8.5, color: 'rgba(242,245,234,0.4)', mt: 0.5,
+                  fontSize: 8.5, color: 'rgba(244,244,242,0.45)', mt: 0.5,
                   letterSpacing: 0.3, lineHeight: 1.35, maxWidth: 96, mx: 'auto',
                 }}>
                   MOSTRÁ EN RECEPCIÓN
@@ -210,7 +226,7 @@ export default function PortalCarnet() {
         <Box display="flex" gap={1.5} mb={2} sx={{ animation: 'sube 0.45s 0.08s ease-out both' }}>
           {[
             { icono: <LocalFireDepartmentIcon sx={{ fontSize: 20 }} />, color: '#FBBF24', bg: 'rgba(251,191,36,0.13)', valor: racha, label: racha === 1 ? 'día de racha' : 'días de racha' },
-            { icono: <EventAvailableIcon sx={{ fontSize: 20 }} />, color: ACENTO, bg: 'rgba(200,241,63,0.13)', valor: visitas30, label: 'visitas · 30 días' },
+            { icono: <EventAvailableIcon sx={{ fontSize: 20 }} />, color: ACENTO, bg: ACENTO_SUAVE, valor: visitas30, label: 'visitas · 30 días' },
           ].map((s, i) => (
             <Paper key={i} sx={{ flex: 1, p: 2, display: 'flex', alignItems: 'center', gap: 1.5 }}>
               <Box sx={{
@@ -243,12 +259,12 @@ export default function PortalCarnet() {
                 <Box display="flex" flexDirection="column" alignItems="center" sx={{ width: 12, flexShrink: 0 }}>
                   <Box sx={{
                     width: 10, height: 10, borderRadius: '50%', mt: 0.6,
-                    bgcolor: i === 0 ? ACENTO : 'rgba(200,241,63,0.3)',
-                    boxShadow: i === 0 ? '0 0 10px rgba(200,241,63,0.5)' : 'none',
+                    bgcolor: i === 0 ? ACENTO : 'rgba(215,218,223,0.3)',
+                    boxShadow: i === 0 ? '0 0 10px rgba(255,255,255,0.45)' : 'none',
                     flexShrink: 0,
                   }} />
                   {i < ultimas.length - 1 && (
-                    <Box sx={{ width: 2, flex: 1, bgcolor: 'rgba(242,245,234,0.08)', my: 0.4 }} />
+                    <Box sx={{ width: 2, flex: 1, bgcolor: 'rgba(244,244,242,0.08)', my: 0.4 }} />
                   )}
                 </Box>
                 {/* contenido */}
@@ -265,7 +281,7 @@ export default function PortalCarnet() {
                     sx={{
                       fontSize: 10, height: 20, fontWeight: 700, flexShrink: 0,
                       color: a.metodo === 'MANUAL' ? 'text.secondary' : ACENTO,
-                      borderColor: a.metodo === 'MANUAL' ? 'rgba(242,245,234,0.2)' : 'rgba(200,241,63,0.4)',
+                      borderColor: a.metodo === 'MANUAL' ? 'rgba(244,244,242,0.2)' : 'rgba(215,218,223,0.45)',
                     }}
                   />
                 </Box>

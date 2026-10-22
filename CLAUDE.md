@@ -131,8 +131,10 @@ Copy `backend/.env.example` to `backend/.env` and fill in values before running 
 - Each phone sends a `deviceId` (UUID in localStorage); the server rejects a check-in for a DIFFERENT socio from the same device within the configured window (`checkinVentanaHs`). Clearing browser data resets the id — proportional barrier, not cryptography
 
 ### Theming
-- `frontend/src/theme.js` holds both MUI themes and brand tokens (LIMA/INK/NOCHE): `portalTheme` (dark, lime-on-black) and `adminTheme` (light, ink + lime). `App.jsx` mounts one shell per route tree — only one CssBaseline is active at a time
-- Fonts are bundled locally via `@fontsource-variable` (Space Grotesk for headings, Inter for body) — no CDN
+- Brand is **Torino Fitness** (bull + barbell in chrome on black, from the client's logo; original in `docs/logo-torino-original.jpeg`, derived assets in `frontend/public/marca/` — `logo.png` full, `toro.png` mark — and PWA icons in `frontend/public/`). The app name shown to users comes from `Configuracion.nombreGym`; hardcoded fallbacks say "Torino Fitness"
+- `frontend/src/theme.js` holds both MUI themes and the brand tokens: `NOCHE`/`NOCHE_PAPEL`/`INK` (blacks), `HUESO` (warm white), `ACENTO` (silver), `ACERO` (steel blue-gray, second tone), `CROMO`/`CROMO_TEXTO` (brushed-chrome gradients for primary buttons and knockout text), `BRILLO`, `FUENTE_MARCA` (Cinzel). `portalTheme` is dark (chrome on black), `adminTheme` is light (ink + silver). Never reintroduce the old lime (#C8F13F) or green-tinted blacks; use the tokens, not raw hex
+- Fonts are bundled locally (`@fontsource/cinzel` for brand/display, `@fontsource-variable/inter` for body) — no CDN
+- Landing hero photos: `frontend/public/hero/01–06.jpg` are stock (Unsplash) wide shots for desktop; `m1–m4.jpg` are the gym's own Instagram photos (upscaled 2×, portrait) used on phones. `HeroSlideshow.useSlides()` picks the set by viewport
 
 ### Key Behaviors
 - Membership expiry is computed from `Pago.fechaFin`; the cron job updates `Socio.estado` to `INACTIVO` when memberships expire
