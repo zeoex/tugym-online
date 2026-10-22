@@ -5,6 +5,7 @@ import { useAuth } from './context/AuthContext';
 import Layout from './components/Layout/Layout';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
+import Reportes from './pages/Reportes/Reportes';
 import ListaSocios from './pages/Socios/ListaSocios';
 import FormSocio from './pages/Socios/FormSocio';
 import DetalleSocio from './pages/Socios/DetalleSocio';
@@ -67,6 +68,7 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route element={<ProtectedRoute><Layout /></ProtectedRoute>}>
           <Route path="dashboard"          element={<Dashboard />} />
+          <Route path="reportes"           element={<Reportes />} />
           <Route path="socios"             element={<ListaSocios />} />
           <Route path="socios/nuevo"       element={<FormSocio />} />
           <Route path="socios/:id/detalle" element={<DetalleSocio />} />

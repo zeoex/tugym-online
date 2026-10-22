@@ -1,4 +1,5 @@
 import DashboardIcon from '@mui/icons-material/Dashboard';
+import AssessmentIcon from '@mui/icons-material/Assessment';
 import PeopleIcon from '@mui/icons-material/People';
 import HowToRegIcon from '@mui/icons-material/HowToReg';
 import PaymentIcon from '@mui/icons-material/Payment';
@@ -17,6 +18,12 @@ export const NAV_GROUPS = [
   {
     items: [
       { label: 'Dashboard',    icon: <DashboardIcon />,     path: '/dashboard'    },
+    ],
+  },
+  {
+    /* Grupo de un solo ítem: la barra superior lo muestra como pill de primer nivel. */
+    items: [
+      { label: 'Reportes',     icon: <AssessmentIcon />,    path: '/reportes'     },
     ],
   },
   {

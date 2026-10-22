@@ -49,6 +49,8 @@ Copy `backend/.env.example` to `backend/.env` and fill in values before running 
 - **`config/database.js`** — Prisma client singleton
 - **`middleware/auth.js`** — JWT verification middleware applied to all protected routes
 - **`controllers/`** — One controller per resource (auth, socios, planes, pagos, dashboard)
+- **`controllers/reportesController.js`** — `/api/reportes` (admin JWT): revenue/activity aggregates for a `desde`–`hasta` range (totals, previous-period comparison, by payment method/plan/day/month/hour, daily cash register reconciliation) plus `/pagos` and `/asistencias` exportable detail (capped at 5000 rows, `X-Truncado: true` when cut). Aggregation is done in JS over `findMany` with narrow `select`s; cancelled payments are excluded from totals
+- **Group by LOCAL date, never UTC**: the container runs in `America/Argentina/Buenos_Aires`, so day/month keys come from `utils/fechasLocales.js` (`getFullYear/getMonth/getDate`, like `cajaController.inicioDia`). `toISOString().slice(0,10)` would push a 23:30 payment onto the next day
 - **`routes/`** — Express routers that map HTTP methods to controller functions
 - **`services/notificacionService.js`** — Nodemailer email delivery for expiry alerts
 - **`jobs/vencimientosJob.js`** — `node-cron` job running daily at 8 AM to mark expired memberships and trigger notifications

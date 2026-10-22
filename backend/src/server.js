@@ -21,6 +21,7 @@ const configRoutes    = require('./routes/config');
 const ejerciciosRoutes = require('./routes/ejercicios');
 const rutinasBibliotecaRoutes = require('./routes/rutinasBiblioteca');
 const solicitudesRoutes = require('./routes/solicitudes');
+const reportesRoutes  = require('./routes/reportes');
 const { sembrarBiblioteca, importarCatalogoCompleto, servirGif } = require('./services/bibliotecaService');
 const auth            = require('./middleware/auth');
 require('./jobs/vencimientosJob');
@@ -90,6 +91,7 @@ app.use('/api/config',    auth, configRoutes);
 app.use('/api/ejercicios', auth, ejerciciosRoutes);
 app.use('/api/rutinas-biblioteca', auth, rutinasBibliotecaRoutes);
 app.use('/api/solicitudes', solicitudesRoutes);
+app.use('/api/reportes',  reportesRoutes);
 
 app.use(errorHandler);
 
