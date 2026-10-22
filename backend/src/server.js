@@ -35,6 +35,9 @@ app.set('trust proxy', 1);
 // videos de YouTube embebidos (iframe + miniaturas) y las previews del catálogo
 // de animaciones que el admin mira directo desde GitHub antes de elegirlas.
 app.use(helmet({
+  // El default (no-referrer) hace que YouTube rechace el embed con "Error 153":
+  // el reproductor exige saber desde qué sitio lo incrustan.
+  referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
   contentSecurityPolicy: {
     directives: {
       ...helmet.contentSecurityPolicy.getDefaultDirectives(),
