@@ -1,11 +1,17 @@
-# gymapp (TuGymOnLine) — imagen para CapRover (https://gymapp.evopos.com.ar)
+# EvoGym (TuGymOnLine) — imagen para CapRover (app `evogym`)
 # Express + Prisma + Postgres. Una sola app: en producción el backend sirve el
 # frontend ya compilado (backend/src/server.js → ../../frontend/dist).
 FROM node:20-slim
 
 # openssl lo exige Prisma; ca-certificates para las llamadas salientes.
-RUN apt-get update && apt-get install -y --no-install-recommends openssl ca-certificates \
+RUN apt-get update && apt-get install -y --no-install-recommends openssl ca-certificates tzdata \
     && rm -rf /var/lib/apt/lists/*
+
+# Hora argentina fija en la imagen: sin tzdata la variable TZ se ignora y el contenedor
+# queda en UTC (rachas, check-ins, cron de vencimientos y rutina del día cortarían 3 h antes).
+ARG TZ=America/Argentina/Buenos_Aires
+ENV TZ=$TZ
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 WORKDIR /app
 
