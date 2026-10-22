@@ -290,6 +290,7 @@ function aSnapshot(rutina) {
     ejercicios: rutina.items
       .sort((a, b) => a.orden - b.orden)
       .map((it) => ({
+        ejercicioId: it.ejercicio.id,
         nombre: it.ejercicio.nombre,
         musculo: it.ejercicio.musculo,
         series: it.series,

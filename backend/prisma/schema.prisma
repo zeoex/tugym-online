@@ -83,6 +83,10 @@ model Ejercicio {
   nombre    String
   musculo   String?
   mediaKey  String?  @map("media_key")
+  // Media propia del gym: gana sobre el catálogo (ver bibliotecaService.resolverMediaDe)
+  imagenes    String[] @default([])        // /uploads/ejercicios/ej_<id>_<ts>.<ext>, en el orden que eligió el gym
+  videos      String[] @default([])        // https://www.youtube.com/watch?v=ID (normalizados, sin repetir)
+  descripcion String?
   categoria String   @default("CUERPO")
   activo    Boolean  @default(true)
   createdAt DateTime @default(now()) @map("created_at")

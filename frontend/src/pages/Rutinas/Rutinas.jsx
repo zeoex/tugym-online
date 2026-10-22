@@ -7,6 +7,7 @@ import {
 import TodayIcon from '@mui/icons-material/Today';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import PlantillasTab from './PlantillasTab';
+import Ejercicios from '../Ejercicios/Ejercicios';
 import QrCode2Icon from '@mui/icons-material/QrCode2';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -128,9 +129,10 @@ export default function Rutinas() {
       <Tabs value={tab} onChange={(_e, v) => setTab(v)} sx={{ mb: 2.5 }}>
         <Tab icon={<TodayIcon sx={{ fontSize: 18 }} />} iconPosition="start" label="Del día" />
         <Tab icon={<LibraryBooksIcon sx={{ fontSize: 18 }} />} iconPosition="start" label="Plantillas" />
+        <Tab icon={<FitnessCenterIcon sx={{ fontSize: 18 }} />} iconPosition="start" label="Ejercicios" />
       </Tabs>
 
-      {tab === 1 ? <PlantillasTab /> : (<>
+      {tab === 2 ? <Ejercicios embebido /> : tab === 1 ? <PlantillasTab /> : (<>
 
       {/* Botones QR */}
       {(hombre || mujer) && (

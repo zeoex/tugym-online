@@ -31,7 +31,18 @@ const app = express();
 // todos y el rate limit pasa a ser un unico cupo compartido por todo el gimnasio.
 app.set('trust proxy', 1);
 
-app.use(helmet());
+// CSP de helmet, abierta solo para lo que el portal y el admin cargan de afuera:
+// videos de YouTube embebidos (iframe + miniaturas) y las previews del catálogo
+// de animaciones que el admin mira directo desde GitHub antes de elegirlas.
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+      'img-src': ["'self'", 'data:', 'blob:', 'https://img.youtube.com', 'https://i.ytimg.com', 'https://raw.githubusercontent.com'],
+      'frame-src': ["'self'", 'https://www.youtube-nocookie.com', 'https://www.youtube.com'],
+    },
+  },
+}));
 const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:5173')
   .split(',').map(s => s.trim());
 app.use(cors({

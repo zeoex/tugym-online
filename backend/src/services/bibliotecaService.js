@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const prisma = require('../config/database');
 const uploadsDir = require('../config/uploads');
+const { normalizarYoutube } = require('../utils/youtube');
 
 // Catálogo del dataset (1.324 ejercicios): nombreEn, músculo, pasos en español
 // y el archivo del GIF para descargarlo on-demand.
@@ -23,6 +24,35 @@ function resolverMedia(mediaKey) {
     ? `/anim/${mediaKey}.gif`
     : `/media/anim/${mediaKey}.gif`;
   return { gif, pasos: info.pasos, nombreEn: info.nombreEn };
+}
+
+// Media de un ejercicio completo: lo PROPIO del gym (imagenes/videos/descripcion)
+// gana sobre el catálogo por mediaKey. Devuelve null solo si no hay nada.
+//   { imagenes, gif, videos: [{url,id}], video, videoId, pasos, nombreEn, origen }
+// `gif`/`video`/`videoId` son compat: el primero de cada lista (o el catálogo).
+function resolverMediaDe(ejercicio) {
+  if (!ejercicio) return null;
+  const imagenes = Array.isArray(ejercicio.imagenes) ? ejercicio.imagenes.filter(Boolean) : [];
+  const videos = (Array.isArray(ejercicio.videos) ? ejercicio.videos : [])
+    .map((v) => normalizarYoutube(v))
+    .filter((v) => v.ok && v.url)
+    .map((v) => ({ url: v.url, id: v.id }));
+  const catalogo = resolverMedia(ejercicio.mediaKey);
+  const descripcion = String(ejercicio.descripcion || '').trim();
+
+  const propia = imagenes.length > 0 || videos.length > 0;
+  if (!propia && !catalogo && !descripcion) return null;
+
+  return {
+    imagenes,
+    gif: imagenes[0] || catalogo?.gif || null,
+    videos,
+    video: videos[0]?.url || null,
+    videoId: videos[0]?.id || null,
+    pasos: catalogo?.pasos || (descripcion ? [descripcion] : undefined),
+    nombreEn: catalogo?.nombreEn || undefined,
+    origen: propia ? 'PROPIA' : (catalogo ? 'CATALOGO' : null),
+  };
 }
 
 // Sirve el GIF desde el volumen; si todavía no está, lo baja del dataset.
@@ -67,7 +97,7 @@ function conMedia(items) {
     series: it.series,
     reps: it.reps,
     descanso: it.descanso,
-    media: resolverMedia(it.ejercicio.mediaKey),
+    media: resolverMediaDe(it.ejercicio),
   }));
 }
 
@@ -209,25 +239,36 @@ async function importarCatalogoCompleto() {
   console.log(`[Biblioteca] Importados ${nuevos.length} ejercicios (total: ${await prisma.ejercicio.count()})`);
 }
 
-// Enriquecer snapshots de rutina-del-día con media: primero por mediaKey
-// (snapshots nuevos), si no por nombre contra la biblioteca (snapshots viejos).
+// Enriquecer snapshots de rutina-del-día con media. El snapshot guarda
+// nombre + mediaKey (+ ejercicioId en los nuevos); la media propia del gym
+// vive en la biblioteca, así que se busca el Ejercicio actual por id →
+// mediaKey → nombre (snapshots viejos) y se resuelve sobre él.
 async function enriquecerSnapshot(ejercicios) {
-  const sinKey = ejercicios.filter((e) => !e.mediaKey).map((e) => e.nombre);
-  let porNombre = {};
-  if (sinKey.length) {
-    const encontrados = await prisma.ejercicio.findMany({
-      where: { nombre: { in: sinKey } },
-      select: { nombre: true, mediaKey: true },
-    });
-    porNombre = Object.fromEntries(encontrados.map((e) => [e.nombre, e.mediaKey]));
+  const ids = ejercicios.map((e) => e.ejercicioId).filter(Boolean);
+  const keys = ejercicios.map((e) => e.mediaKey).filter(Boolean);
+  const nombres = ejercicios.map((e) => e.nombre).filter(Boolean);
+  const or = [];
+  if (ids.length) or.push({ id: { in: ids } });
+  if (keys.length) or.push({ mediaKey: { in: keys } });
+  if (nombres.length) or.push({ nombre: { in: nombres } });
+
+  const encontrados = or.length ? await prisma.ejercicio.findMany({ where: { OR: or } }) : [];
+  const porId = new Map(encontrados.map((e) => [e.id, e]));
+  const porKey = new Map();
+  const porNombre = new Map();
+  for (const e of encontrados) {
+    if (e.mediaKey && !porKey.has(e.mediaKey)) porKey.set(e.mediaKey, e);
+    if (!porNombre.has(e.nombre)) porNombre.set(e.nombre, e);
   }
-  return ejercicios.map((e) => ({
-    ...e,
-    media: resolverMedia(e.mediaKey || porNombre[e.nombre]),
-  }));
+
+  return ejercicios.map((e) => {
+    const ej = porId.get(e.ejercicioId) || porKey.get(e.mediaKey) || porNombre.get(e.nombre);
+    // Sin ejercicio en la biblioteca (borrado): solo queda el catálogo por mediaKey
+    return { ...e, media: ej ? resolverMediaDe(ej) : resolverMediaDe({ mediaKey: e.mediaKey }) };
+  });
 }
 
 module.exports = {
-  resolverMedia, servirGif, asegurarGif, conMedia, enriquecerSnapshot,
+  resolverMedia, resolverMediaDe, servirGif, asegurarGif, conMedia, enriquecerSnapshot,
   sembrarBiblioteca, importarCatalogoCompleto, DATASET, GIFS_INCLUIDOS,
 };
